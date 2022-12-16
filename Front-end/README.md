@@ -41,8 +41,11 @@ There should be a payroll section which displays all the payroll data for the mo
 ### TECH STACK 
 > ARMS  
 • PHP Laravel (back-end) 
+
 • Vuejs (front-end) 
+
 • MySQL (database) 
+
 > PAYROLL BACK-END 
 • Java Spring boot 
 • Postgres (database) 
