@@ -114,18 +114,16 @@ class AuthController extends Controller
     }
 
 
-    public function deleteEmployee(Request $request): Response
-    {
 
+
+    public function deleteAccount(Request $request): Response
+    {
         $user = $request->user();
-        $employee = Employee::where("user_id",$user->user_id);
-        $employee->delete();
-        $user->delete();
+        $response =   $this->delete($user);
         $user->tokens()->delete();
-        return new Response([
-            "message"=>"User deleted successful",
-        ],201);
+        return $response;
     }
+
     public function logout(Request $request): Response
     {
         $user = $request->user();
@@ -135,8 +133,14 @@ class AuthController extends Controller
         ],201);
     }
 
-    function  delete(Request $request){
-
+   public static function delete($user): Response
+    {
+        $employee = Employee::where("user_id",$user->user_id);
+        $employee->delete();
+        $user->delete();
+        return new Response([
+            "message"=>"User deleted successful",
+        ],201);
     }
 
 }

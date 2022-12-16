@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TrafficController;
@@ -30,10 +31,11 @@ Route::group(['prefix' => '/v1'],function (){
 //        change password
         Route::post('/change-password',[AuthController::class,'changePassword']);
         Route::post('/logout',[AuthController::class,'logout']);
-        Route::delete('/delete-account',[AuthController::class,'deleteEmployee']);
-        Route::delete('/delete-employee',[AuthController::class,'deleteEmployee']);
+        Route::delete('/delete-account',[AuthController::class,'deleteAccount']);
+        Route::delete('/delete-employee',[EmployeeController::class,'deleteEmployee']);
 
-
+//        manage employee
+        Route::resource("employees",EmployeeController::class);
 
 
 

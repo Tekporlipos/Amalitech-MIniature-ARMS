@@ -13,7 +13,7 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): Response
+    public function index()
     {
        return Employee::all();
     }
@@ -55,7 +55,7 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        //
+        return $id;
     }
 
     /**
@@ -76,9 +76,22 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public static function update(Request $request, $id)
     {
         //
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteEmployee(Request $request): Response
+    {
+        $user = $request->user();
+      return  AuthController::delete($user);
     }
 
     /**
