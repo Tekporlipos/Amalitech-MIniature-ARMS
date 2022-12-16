@@ -12,14 +12,20 @@ class EmployeeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private $employee;
+    private $password;
+    private string $email;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($employee,$email,$password)
     {
-        //
+        $this->employee = $employee;
+        $this->email  = $email;
+        $this->password = $password;
     }
 
     /**
@@ -34,7 +40,7 @@ class EmployeeMail extends Mailable
             replyTo: [
                 new Address('john.dzikunu@amalitech.com', 'john dzikunu'),
             ],
-            subject: 'New user'
+            subject: 'New user onboarding'
         );
     }
 
@@ -46,7 +52,13 @@ class EmployeeMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'welcome',
+            view: 'mails.newUserMail',
+//            view: 'welcome',
+            with: [
+                'employee' => $this->employee,
+                'password' => $this->password,
+                'email' => $this->email,
+            ],
 //            text: 'emails.orders.shipped-text'
         );
     }
