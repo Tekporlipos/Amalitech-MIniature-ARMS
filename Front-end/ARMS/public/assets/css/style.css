@@ -4448,7 +4448,7 @@ input[type="button"].btn-block {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: 10;
   display: none;
   float: left;
   min-width: 10rem;
@@ -6779,7 +6779,7 @@ a.close.disabled {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1050;
+  z-index: 10;
   display: none;
   width: 100%;
   height: 100%;
@@ -6871,7 +6871,7 @@ a.close.disabled {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1040;
+  z-index: 10;
   width: 100vw;
   height: 100vh;
   background-color: #000; }
@@ -8505,21 +8505,21 @@ button.bg-dark:focus,
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030; }
+  z-index: 10; }
 
 .fixed-bottom {
   position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1030; }
+  z-index: 10; }
 
 @supports ((position: -webkit-sticky) or (position: sticky)) {
   .sticky-top {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-    z-index: 1020; } }
+    z-index: 10; } }
 
 .sr-only {
   position: absolute;
@@ -12823,7 +12823,7 @@ select.tt-hint {
   border-top-color: #ffab2d; }
 
 .circle-loader:before {
-  z-index: 100;
+  z-index: 10;
   -webkit-animation: spin 1s infinite;
   animation: spin 1s infinite; }
 
@@ -13439,7 +13439,7 @@ select.tt-hint {
   filter: alpha(opacity=0);
   top: 50%;
   left: 50%;
-  z-index: 1000;
+  z-index: 10;
   font-size: 0.875rem;
   font-family: 'Poppins', sans-serif;;
   font-weight: initial;
@@ -13460,7 +13460,7 @@ select.tt-hint {
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 101;
+  z-index: 10;
   visibility: hidden;
   opacity: 0;
   filter: alpha(opacity=0); }
@@ -14325,7 +14325,7 @@ dl {
   transition-property: right, -webkit-box-shadow;
   transition-property: right, box-shadow;
   transition-property: right, box-shadow, -webkit-box-shadow;
-  z-index: 9999; }
+  z-index: 10; }
   .settings-panel .settings-heading {
     padding: 16px 0 13px 35px;
     font-size: 0.875rem;
@@ -14412,7 +14412,7 @@ dl {
     cursor: pointer;
     -webkit-transition-duration: 0.2s;
     transition-duration: 0.2s;
-    z-index: 999; }
+    z-index: 10; }
     .settings-panel .settings-close:hover {
       background: rgba(255, 255, 255, 0.3); }
     .rtl .settings-panel .settings-close {
@@ -14447,7 +14447,7 @@ dl {
   height: 45px;
   width: 45px;
   background: #ff886c;
-  z-index: 99;
+  z-index: 10;
   -webkit-box-shadow: 0px 0px 31px 6px rgba(0, 0, 0, 0.17);
   box-shadow: 0px 0px 31px 6px rgba(0, 0, 0, 0.17);
   display: -webkit-box;
@@ -14820,7 +14820,7 @@ dl {
       transition-property: background;
       -webkit-transition-property: background; }
       .sidebar .nav .nav-item .collapse {
-        z-index: 999; }
+        z-index: 10; }
       .sidebar .nav .nav-item .nav-link {
         display: -webkit-box;
         display: -ms-flexbox;

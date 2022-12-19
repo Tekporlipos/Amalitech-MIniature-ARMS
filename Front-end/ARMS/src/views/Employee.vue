@@ -75,9 +75,69 @@
     </div>
   </div>
 </div>
-
-
 </div>
+
+<p class="required">
+  <i class="mdi mdi-plus"></i> Bank Information
+</p>
+
+<div class="row mt-4">
+<div class="col-md-6 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <form class="forms-sample">
+        <div class="form-group">
+          <label for="exampleInputUsername1">Bank Account Name:<span class="required">*</span></label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Bank Account Name" aria-label="Bank Account Name" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button"> Update </button>
+          </div>
+         </div>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputUsername1">Bank Account Number:<span class="required">*</span></label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Bank Account Number" aria-label="Bank Account Number" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button"> Update </button>
+          </div>
+         </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-6 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+
+      <div class="form-group">
+          <label for="exampleInputUsername1">Bank Branch:<span class="required">*</span></label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Bank Branch" aria-label="Bank Branch" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button"> Update </button>
+          </div>
+         </div>
+        </div>
+
+
+        <div class="form-group">
+          <label for="exampleInputUsername1">Phone Number:<span class="required">*</span></label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Phone Number" aria-label="Phone Number" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button"> Update </button>
+          </div>
+         </div>
+        </div>
+    </div>
+  </div>
+</div>
+</div>
+
 </template>
 
 <script setup lang="ts">
