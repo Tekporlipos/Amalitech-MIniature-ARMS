@@ -18,12 +18,13 @@ class AuthRegisterValidate
     {
 
         $request->validate([
-            'firstName'=>'string|required',
-            'lastName'=>'string|required',
-            'email'=>'string|required|email|unique:users',
-            'gender'=>'string|required',
-            'department'=>'string|required',
-            'hireDate'=>'date|required',
+            'firstName' => 'string|required',
+            'lastName' => 'string|required',
+            'email' => 'string|required|email|unique:users',
+            'gender' => 'string|required',
+            'role' => 'string|required|min:4',
+            'department' => 'string|required',
+            'hireDate' => 'date|required',
         ]);
 
 

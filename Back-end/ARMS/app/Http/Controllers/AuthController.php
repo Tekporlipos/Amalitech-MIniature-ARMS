@@ -3,38 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\MailSender;
-use App\Mail\EmployeeMail;
-use App\Models\Employee;
+use App\Models\User;
 use App\Threads\MailThread;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use PhpParser\Node\Scalar\String_;
-use Thread;
 
 class AuthController extends Controller
 {
     public function create(Request $request): Response|Application|ResponseFactory
     {
-        $user_id = Str::uuid()->toString();
+        $userId = Str::uuid()->toString();
         $password =  strval(rand(11111111,99999999));
           User::create(
-            [
-                "name"=>$request->get("firstName")." ".$request->get("lastName"),
-                "user_id"=> $user_id,
-                "email"=>$request->get("email"),
-                "password"=>bcrypt($password),
-            ]
+              [
+                  "name" => $request->get("firstName") . " " . $request->get("lastName"),
+                  "user_id" => $userId,
+                  "role" => $request->get("role"),
+                  "email" => $request->get("email"),
+                  "password" => bcrypt($password),
+              ]
         );
 
-        $employee =   EmployeeController::create($request,$user_id);
+        $employee =   EmployeeController::create($request, $userId);
 
-       $this->dispatch(new MailSender($employee,$request->get("email"),$password));
+       $this->dispatch(new MailSender($employee, $request->get("email"), $password));
 
 
         return Response([
@@ -97,7 +93,7 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        if($user && Hash::check($request->get("old_password"),$user->password) ){
+        if ($user && Hash::check($request->get("old_password"), $user->password) ){
             $user->password = bcrypt($request->get("password"));
             $user->update();
             return new Response([
@@ -114,32 +110,12 @@ class AuthController extends Controller
     }
 
 
-
-
-    public function deleteAccount(Request $request): Response
-    {
-        $user = $request->user();
-        $response =   $this->delete($user);
-        $user->tokens()->delete();
-        return $response;
-    }
-
     public function logout(Request $request): Response
     {
         $user = $request->user();
         $user->tokens()->delete();
         return new Response([
             "message"=>"logout successful",
-        ],201);
-    }
-
-   public static function delete($user): Response
-    {
-        $employee = Employee::where("user_id",$user->user_id);
-        $employee->delete();
-        $user->delete();
-        return new Response([
-            "message"=>"User deleted successful",
         ],201);
     }
 

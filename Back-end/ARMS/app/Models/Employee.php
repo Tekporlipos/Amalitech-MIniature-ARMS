@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @method static create(array $array)
  * @method static where(string $string, $user_id)
+ * @method static find(int $int)
  */
 class Employee extends Model
 {
@@ -26,6 +27,7 @@ class Employee extends Model
     ];
 
     protected $hidden = [
-        "deleted_at"
+        "deleted_at",
+        "id"
     ];
 }

@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\EmployeeController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TrafficController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\TrafficController;
+use App\Http\Middleware\AuthRegisterValidate;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,28 +18,26 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::group(['prefix' => '/v1'],function (){
+Route::group(['prefix' => '/v1'], function()
+{
 //    authentication
-    Route::post("/register",[AuthController::class,'create'])->middleware([\App\Http\Middleware\AuthRegisterValidate::class]);
-    Route::post("/login",[AuthController::class,'login']);
-    Route::post("/validate",[AuthController::class,'validateEmail']);
+    Route::post("/register", [AuthController::class,'create'])
+        ->middleware([AuthRegisterValidate::class]);
+    Route::post("/login", [AuthController::class,'login']);
+    Route::post("/validate", [AuthController::class,'validateEmail']);
 
 
     //authorization
-    Route::group(['middleware'=>'auth:sanctum'],function (){
+    Route::group(['middleware'=>'auth:sanctum'], function () {
 //        get all traffic on the website
-        Route::get('/traffic',[TrafficController::class,'getAll']);
+        Route::get('/traffic', [TrafficController::class, 'getAll']);
 //        change password
-        Route::post('/change-password',[AuthController::class,'changePassword']);
-        Route::post('/logout',[AuthController::class,'logout']);
-        Route::delete('/delete-account',[AuthController::class,'deleteAccount']);
-        Route::delete('/delete-employee',[EmployeeController::class,'deleteEmployee']);
+        Route::post('/change-password', [AuthController::class, 'changePassword']);
+        Route::post('/logout', [AuthController::class, 'logout']);
 
 //        manage employee
-        Route::resource("employees",EmployeeController::class);
-
-
-
+        Route::resource("employees", EmployeeController::class);
+        Route::resource("onboarding-assistant", OnboardingController::class);
 
 
     });

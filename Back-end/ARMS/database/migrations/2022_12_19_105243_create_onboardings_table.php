@@ -13,17 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('onboardings', function (Blueprint $table) {
             $table->id();
-            $table->uuid("user_id");
+            $table->uuid("user_id")->unique();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->string("first_name");
-            $table->string("last_name");
-            $table->string("other_names")->nullable();
-            $table->string("gender");
-            $table->string("hire_date");
-            $table->string("department");
-            $table->softDeletes();
+            $table->string("location")->nullable()->default("Takoradi");;
+            $table->string("start_date");
+            $table->string("start_time")->nullable()->default("07:30 AM");
             $table->timestamps();
         });
     }
@@ -35,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('onboardings');
     }
 };

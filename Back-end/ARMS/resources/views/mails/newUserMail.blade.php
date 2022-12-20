@@ -108,23 +108,27 @@
                         <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
 
                             Excellence at AmaliTech Means working to the best of your ability.
-                            Striving for extraordinary achievement, and surpassing internal and external expectations. It is our priority to provide high quality work and outstanding result wih maximum level of professionalism and most efficient use of resources.
+                            Striving for extraordinary achievement, and surpassing internal and external expectations.
+                            It is our priority to provide high quality work and outstanding result wih maximum level of
+                            professionalism and most efficient use of resources.
 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <pre>
-            <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
+        <br>
+        <br>
+        <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
             <div class="text-center text-sm text-gray-500 sm:text-left">
                 <div class="flex items-center">
                     <a href="https://arms-beta.amalitech.org/home" class="ml-1 underline">Amalitech Service Center</a>
                 </div>
             </div>
-            <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">Enterprise Resource Planning (ERP)</div>
+            <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">Enterprise Resource Planning
+                (ERP)
+            </div>
         </div>
-        </pre>
     </div>
 </div>
 </body>
