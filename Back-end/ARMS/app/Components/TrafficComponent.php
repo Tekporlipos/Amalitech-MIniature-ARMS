@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Components;
 use App\Models\traffic;
 class TrafficComponent
