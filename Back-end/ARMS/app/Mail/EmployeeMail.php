@@ -15,15 +15,17 @@ class EmployeeMail extends Mailable
     private $employee;
     private $password;
     private string $email;
+    private string $assistantName;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($employee,$email,$password)
+    public function __construct($employee, $email, $password, $assistantName)
     {
         $this->employee = $employee;
+        $this->assistantName  = $assistantName;
         $this->email  = $email;
         $this->password = $password;
     }
@@ -58,6 +60,7 @@ class EmployeeMail extends Mailable
                 'employee' => $this->employee,
                 'password' => $this->password,
                 'email' => $this->email,
+                'name' => $this->assistantName,
             ],
 //            text: 'emails.orders.shipped-text'
         );

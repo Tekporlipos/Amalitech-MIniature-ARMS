@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Constants;
 use App\Jobs\MailSender;
+use App\Models\Assign;
 use App\Models\User;
 use App\Threads\MailThread;
 use Illuminate\Contracts\Foundation\Application;
@@ -17,30 +19,29 @@ class AuthController extends Controller
     public function create(Request $request): Response|Application|ResponseFactory
     {
         $userId = Str::uuid()->toString();
-        $password =  strval(rand(11111111,99999999));
-          User::create(
-              [
-                  "name" => $request->get("firstName") . " " . $request->get("lastName"),
-                  "user_id" => $userId,
-                  "role" => $request->get("role"),
-                  "email" => $request->get("email"),
-                  "password" => bcrypt($password),
-              ]
-        );
+        $password =  strval(rand(11111111, 99999999));
 
-        $employee =   EmployeeController::create($request, $userId);
+        $this->createUser($request, $userId, $password);
 
-       $this->dispatch(new MailSender($employee, $request->get("email"), $password));
+        $employee =  (new EmployeeController)->create($request, $userId);
 
+        if ($request->get("assistant_id")) {
+            $this->createAssistant($userId, $request->get("assistant_id"));
+        }
+
+        $assist = User::where("user_id", $request->get("assistant_id"))->get();
+
+       $this->dispatch(new MailSender($employee, $request->get("email"),
+           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT));
 
         return Response([
             "message"=>"New User added successfully",
             "employee"=> $employee,
             "email"=> $request->get("email"),
             "password"=> $password,
-        ],201);
-
+        ], 201);
     }
+
 
     public function validateEmail(Request $request): Response
     {
@@ -50,7 +51,7 @@ class AuthController extends Controller
 
         return new Response([
             "message"=>"valid email",
-        ],200);
+        ], 200);
     }
 
     public function login(Request $request): Response
@@ -59,27 +60,27 @@ class AuthController extends Controller
             'email'=>'string|required|email',
             'password'=>'string|required',
         ]);
-        $user = User::where("email",$request->get("email"))->first();
+        $user = User::where("email", $request->get("email"))->first();
 
-        if(!$user){
+        if (!$user){
             return new Response([
                 "Message"=>"No user exist with this email",
-            ],504);
+            ], 504);
         }
 
 
-        if(Hash::check($request->get("password"),$user->password) ){
+        if (Hash::check($request->get("password"), $user->password)) {
             $token = $user->createToken("amaliTech")->plainTextToken;
             return new Response([
                 "message"=>"login successful",
                 "user"=>$user,
                 "token"=> $token
-            ],201);
+            ], 201);
         }
 
         return new Response([
             "Message"=>"wrong credentials",
-        ],504);
+        ], 504);
 
 
     }
@@ -99,12 +100,12 @@ class AuthController extends Controller
             return new Response([
                 "message"=>"password changed successful",
                 "user"=>$user,
-            ],201);
+            ], 201);
         }
 
         return new Response([
             "Message"=>"wrong credential",
-        ],504);
+        ], 504);
 
 
     }
@@ -116,7 +117,26 @@ class AuthController extends Controller
         $user->tokens()->delete();
         return new Response([
             "message"=>"logout successful",
-        ],201);
+        ], 201);
+    }
+
+    public function createAssistant(string $userId, string $assistantId){
+        Assign::create([
+            "assistant_id"=>$assistantId,
+            "user_id"=>$userId
+        ]);
+    }
+
+   public function createUser($request, $userId, $password){
+       User::create(
+           [
+               "name" => $request->get("first_name") . " " . $request->get("last_name"),
+               "user_id" => $userId,
+               "role" => $request->get("role"),
+               "email" => $request->get("email"),
+               "password" => bcrypt($password),
+           ]
+       );
     }
 
 }

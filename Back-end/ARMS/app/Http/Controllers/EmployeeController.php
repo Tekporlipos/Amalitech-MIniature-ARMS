@@ -18,7 +18,7 @@ class EmployeeController extends Controller
      */
     public function index(): array
     {
-        return DB::select(Constants::employees_user());
+        return DB::select(Constants::EMPLOYEE_USER);
     }
 
     /**
@@ -32,11 +32,11 @@ class EmployeeController extends Controller
     {
         return Employee::create([
             "user_id" => $userId,
-            "first_name" => $request->get("firstName"),
-            "last_name" => $request->get("lastName"),
-            "other_names" => $request->get("otherName"),
+            "first_name" => $request->get("first_name"),
+            "last_name" => $request->get("last_name"),
+            "other_names" => $request->get("other_names"),
             "gender" => $request->get("gender"),
-            "hire_date" => $request->get("hireDate"),
+            "hire_date" => $request->get("hire_date"),
             "department" => $request->get("department"),
         ]);
     }
@@ -61,7 +61,7 @@ class EmployeeController extends Controller
      * @param string $id
      * @return Response
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): Response
     {
 
         $employee =  Employee::where("user_id", $id)->first(['*']);
@@ -72,15 +72,12 @@ class EmployeeController extends Controller
             ], 404);
         }
         if ($request->get("first_name")) {
-            $request->validate(['first_name' => Constants::REQUIRE]);
             $employee->first_name = $request->get("first_name");
         }
         if ($request->get("last_name")) {
-            $request->validate(['last_name' => Constants::REQUIRE]);
             $employee->last_name = $request->get("last_name");
         }
         if ($request->get("other_name")) {
-            $request->validate(['other_name' => Constants::REQUIRE]);
             $employee->other_names = $request->get("other_name");
         }
         if ($request->get("email")) {
@@ -88,15 +85,12 @@ class EmployeeController extends Controller
             $employee->email = $request->get("email");
         }
         if ($request->get("gender")) {
-            $request->validate(['gender' => Constants::REQUIRE]);
             $employee->gender = $request->get("gender");
         }
         if ($request->get("role")) {
-            $request->validate(['role' => Constants::REQUIRE]);
             $employee->role = $request->get("role");
         }
         if ($request->get("department")) {
-            $request->validate(['department' => Constants::REQUIRE]);
             $employee->department = $request->get("department");
         }
         if ($request->get("hire_date")) {
@@ -114,7 +108,7 @@ class EmployeeController extends Controller
      * @param string $id
      * @return Response
      */
-    public function destroy(Request $request,string $id): Response
+    public function destroy(Request $request, string $id): Response
     {
         $user = $request->user();
         if ($user->get("role")[0]["role"] == "admin") {
