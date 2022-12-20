@@ -1,39 +1,37 @@
 <?php
 
 namespace App\Mail;
+
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class EmployeeMail extends Mailable
+class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    private $employee;
-    private $password;
-    private string $email;
-    private string $assistantName;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($employee, $email, $password, $assistantName)
+
+    private string $email;
+    private string $password;
+    public function __construct(string $password, string $email)
     {
-        $this->employee = $employee;
-        $this->assistantName  = $assistantName;
-        $this->email  = $email;
-        $this->password = $password;
+        $this->password= $password;
+        $this->email= $email;
     }
 
     /**
      * Get the message envelope.
      *
-     * @return \Illuminate\Mail\Mailables\Envelope
+     * @return Envelope
      */
     public function envelope(): Envelope
     {
@@ -42,7 +40,7 @@ class EmployeeMail extends Mailable
             replyTo: [
                 new Address(env('HELP_EMAIL'), env('HELP_NAME')),
             ],
-            subject: 'New user onboarding'
+            subject: 'Password Reset Mail',
         );
     }
 
@@ -54,15 +52,11 @@ class EmployeeMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.newUserMail',
-//            view: 'welcome',
+            view: 'mails.passwordResetMail',
             with: [
-                'employee' => $this->employee,
                 'password' => $this->password,
                 'email' => $this->email,
-                'name' => $this->assistantName,
             ],
-//            text: 'emails.orders.shipped-text'
         );
     }
 
@@ -73,10 +67,6 @@ class EmployeeMail extends Mailable
      */
     public function attachments(): array
     {
-        return [
-//            Attachment::fromPath('/path/to/file')
-//                ->as('name.pdf')
-//                ->withMime('application/pdf'),
-        ];
+        return [];
     }
 }

@@ -23,7 +23,12 @@ Route::group(['prefix' => '/v1'], function ()
 {
 //    authentication
     Route::post("/login", [AuthController::class,'login']);
+    Route::post("/reset-password", [AuthController::class,'resetPassword']);
     Route::post("/validate", [AuthController::class,'validateEmail']);
+
+//    //the register is here for temporary use is for only admin
+//    Route::post("/register", [AuthController::class,'create'])
+//        ->middleware([AuthRegisterValidate::class]);
 
     //authorization
     Route::group(['middleware'=>'auth:sanctum'], function () {
@@ -35,7 +40,7 @@ Route::group(['prefix' => '/v1'], function ()
 //        get all traffic on the website
         Route::get('/traffic', [TrafficController::class, 'getAll']);
 //        change password
-        Route::post('/change-password', [AuthController::class, 'changePassword']);
+        Route::patch('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/logout', [AuthController::class, 'logout']);
 
 //        manage employee

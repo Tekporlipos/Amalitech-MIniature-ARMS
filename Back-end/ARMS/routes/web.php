@@ -19,5 +19,5 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/mail-template', function () {
-    return view('mails.newUserMail');
+    return view('mails.loginAlert');
 });

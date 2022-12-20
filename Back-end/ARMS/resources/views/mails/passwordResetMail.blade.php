@@ -24,7 +24,7 @@
 
     <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
-            <h1> Hello {{$employee->gender=="male"?"Mr":"Miss"}} {{$employee->first_name}},</h1>
+            <h1> Hello dear,</h1>
         </div>
 
         <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
@@ -33,25 +33,26 @@
                     <svg style="width:24px;height:24px" class="text-gray-500" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M7 12C9.2 12 11 10.2 11 8S9.2 4 7 4 3 5.8 3 8 4.8 12 7 12M11 20V14.7C9.9 14.3 8.5 14 7 14C3.1 14 0 15.8 0 18V20H11M15 4C13.9 4 13 4.9 13 6V18C13 19.1 13.9 20 15 20H22C23.1 20 24 19.1 24 18V6C24 4.9 23.1 4 22 4H15Z" />
                     </svg>
-                    <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://amalitech.com/" class="underline text-gray-900 dark:text-white">{{$employee->first_name}} {{$employee->last_name}}</a></div>
+                    <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://amalitech.com/" class="underline text-gray-900 dark:text-white">Amaliteches</a></div>
                 </div>
 
                 <div class="ml-12">
                     <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                        <b>Welcome To AmaliTech!</b> <br>
-                        You have been onboarded onto Amalitech Resource Management System (ARMS). <br>
-                        Reporting Date: {{$employee->hire_date}} <br>
-                        Reporting Time: 07:30 <br>
-                        Reporting Branch: TAKORADI <br>
-                        Contact Person: {{$name}} <br>
-                        <b>Hire Instruction: Congratulations once again! Please reach out to us if you have any challenges.</b>
-                        <br>
+                        <b>AmaliTech! password reset Bot.</b> <br>
+                     <p>We're sorry this is happening to you; we've been informed that you're experiencing trouble trying to log into your account and wish to reset your password.</p>
+                      <br>
                         <blockquote>
                             <ul>
-                                <li>Please login with the credentials below:</li>
+                                <li>Please use this as your credentials, login and update your password:</li>
                                 <li>Email: {{$email}}</li>
                                 <li>Password: {{$password}}</li>
                             </ul>
+                        </blockquote>
+
+                        <br>
+                        <br>
+                        <blockquote>
+                            <b class="container">If you did not make this request kindly disregard this message, Thank you.</b>
                         </blockquote>
 
                     </div>
@@ -67,7 +68,7 @@
 
                     <div class="ml-12">
                         <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                           At Amalitech, we share moral principles that cannot be compromised. We adhere to ethics and strive for authenticity, as well as consistency in our thoughts and actions. Amalitech cares about the legal safety, trust and reputation of everyone associated with the company, and we aim at reflecting our core value through honest and transparent communication.
+                            At Amalitech, we share moral principles that cannot be compromised. We adhere to ethics and strive for authenticity, as well as consistency in our thoughts and actions. Amalitech cares about the legal safety, trust and reputation of everyone associated with the company, and we aim at reflecting our core value through honest and transparent communication.
                         </div>
                     </div>
                 </div>
@@ -80,7 +81,7 @@
 
                     <div class="ml-12">
                         <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                           At amalitech, we believe that collaboration is key. As a group of individuals, we work towards one common goals - hand in hand - pushing our agenda forward with utmost efficiency. We recognize individual strength, value the contribution of others, and enrich our work through the experience, skills, and perspective of our team members.
+                            At amalitech, we believe that collaboration is key. As a group of individuals, we work towards one common goals - hand in hand - pushing our agenda forward with utmost efficiency. We recognize individual strength, value the contribution of others, and enrich our work through the experience, skills, and perspective of our team members.
                         </div>
                     </div>
                 </div>

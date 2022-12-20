@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('bank_details', function (Blueprint $table) {
             $table->id();
-            $table->string("user_id")->unique();
+            $table->string("user_id")->unique()->index();;
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->string("bank_name")->nullable();
             $table->string("account_name")->nullable();

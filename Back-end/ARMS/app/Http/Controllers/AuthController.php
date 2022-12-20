@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Constants\Constants;
+use App\Jobs\LoginAlertJob;
 use App\Jobs\MailSender;
+use App\Jobs\PasswordResetJob;
 use App\Models\Assign;
 use App\Models\User;
-use App\Threads\MailThread;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\PasswordReset;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AuthController extends Controller
 {
@@ -68,9 +71,19 @@ class AuthController extends Controller
             ], 504);
         }
 
-
-        if (Hash::check($request->get("password"), $user->password)) {
+        $passwordReset = PasswordReset::where('email', $request->get("email"))->get();
+        if (Hash::check($request->get("password"), $user->password)  ||
+            (sizeof($passwordReset) && Hash::check($request->get("password"), $passwordReset[0]->token))) {
             $token = $user->createToken("amaliTech")->plainTextToken;
+
+            $this->dispatch(new LoginAlertJob([
+                "ip"=>$request->ip(),
+                "name"=>$request->headers->get("user-agent"),
+                "date"=>date("Y:M:D-H:m:s"),
+                "userName"=>$user->name,
+                "email"=>$user->email
+            ]));
+
             return new Response([
                 "message"=>"login successful",
                 "user"=>$user,
@@ -91,23 +104,26 @@ class AuthController extends Controller
             'old_password'=>'string|required',
             'password'=>'string|required|confirmed',
         ]);
-
         $user = $request->user();
-
-        if ($user && Hash::check($request->get("old_password"), $user->password) ){
+        $passwordResetModel = PasswordReset::where('email', $request->user()->email);
+        $passwordReset = $passwordResetModel->get();
+        if ($user && Hash::check($request->get("old_password"), $user->password) ||
+            (sizeof($passwordReset) && Hash::check($request->get("old_password"), $passwordReset[0]->token))){
             $user->password = bcrypt($request->get("password"));
             $user->update();
+
+            if (sizeof($passwordReset)){
+                $passwordResetModel->delete();
+            }
+
             return new Response([
                 "message"=>"password changed successful",
                 "user"=>$user,
             ], 201);
         }
-
         return new Response([
             "Message"=>"wrong credential",
         ], 504);
-
-
     }
 
 
@@ -119,6 +135,28 @@ class AuthController extends Controller
             "message"=>"logout successful",
         ], 201);
     }
+
+
+    public function resetPassword(Request $request): Response
+    {
+        $request->validate([
+            'email'=>'string|email|required|unique:Password_Resets,email|exists:Users,email',
+        ]);
+//
+        $password =  strval(rand(11111111, 99999999));
+       PasswordReset::create([
+           'email'=>$request->get("email"),
+           'token'=>bcrypt($password),
+       ]);
+
+        $this->dispatch(new PasswordResetJob($password, $request->get("email")));
+
+        return  new Response([
+           'message'=>"password reset token is sent to the email"
+       ], 202);
+    }
+
+
 
     public function createAssistant(string $userId, string $assistantId){
         Assign::create([

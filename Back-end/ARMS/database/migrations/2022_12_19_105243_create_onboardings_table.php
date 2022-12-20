@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('onboardings', function (Blueprint $table) {
             $table->id();
-            $table->uuid("user_id")->unique();
+            $table->uuid("user_id")->unique()->index();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->string("location")->nullable()->default("Takoradi");;
             $table->string("start_date");
