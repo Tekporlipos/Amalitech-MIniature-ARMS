@@ -79,7 +79,7 @@ class AuthController extends Controller
             $this->dispatch(new LoginAlertJob([
                 "ip"=>$request->ip(),
                 "name"=>$request->headers->get("user-agent"),
-                "date"=>date("Y:M:D-H:m:s"),
+                "date"=>date("Y-m-d H:i:s"),
                 "userName"=>$user->name,
                 "email"=>$user->email
             ]));

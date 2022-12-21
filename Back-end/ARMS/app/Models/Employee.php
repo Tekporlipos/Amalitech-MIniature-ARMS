@@ -22,6 +22,7 @@ class Employee extends Model
         "last_name",
         "other_names",
         "gender",
+        "salary",
         "hire_date",
         "department"
     ];

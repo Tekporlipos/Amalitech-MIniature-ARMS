@@ -19,12 +19,6 @@ class AuthRegisterValidate
     public function handle(Request $request, Closure $next)
     {
 
-        if ($request->user()->role!="admin") {
-            return new Response([
-                "message"=>"Unauthenticated Access"
-            ], 502);
-        }
-
         $request->validate([
             'first_name' => Constants::REQUIRE,
             'last_name' => Constants::REQUIRE,
