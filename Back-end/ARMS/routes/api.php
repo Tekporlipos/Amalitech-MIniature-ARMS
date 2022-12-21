@@ -4,6 +4,7 @@ use App\Http\Controllers\BankDetailController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TrafficController;
+use App\Http\Middleware\AdminAccess;
 use App\Http\Middleware\AuthRegisterValidate;
 use Illuminate\Support\Facades\Route;
 
@@ -25,16 +26,15 @@ Route::group(['prefix' => '/v1'], function ()
     Route::post("/reset-password", [AuthController::class,'resetPassword']);
     Route::post("/validate", [AuthController::class,'validateEmail']);
 
-//    //the register is here for temporary use is for only admin
-//    Route::post("/register", [AuthController::class,'create'])
-//        ->middleware([AuthRegisterValidate::class]);
+    //the register is here for temporary use is for only admin
+    Route::post("/register", [AuthController::class,'create']);
 
     //authorization
     Route::group(['middleware'=>'auth:sanctum'], function () {
 
         //the register is here for temporary use is for only admin
-        Route::post("/register", [AuthController::class,'create'])
-            ->middleware([AuthRegisterValidate::class]);
+//        Route::post("/register", [AuthController::class,'create'])
+//            ->middleware([AuthRegisterValidate::class,AdminAccess::class]);
 
 //        get all traffic on the website
         Route::get('/traffic', [TrafficController::class, 'getAll']);
@@ -44,6 +44,9 @@ Route::group(['prefix' => '/v1'], function ()
 
 //        manage employee
         Route::resource("employees", EmployeeController::class);
+
+        Route::post("upload", [EmployeeController::class,"upload"]);
+
         Route::resource("assistant", OnboardingController::class);
         Route::resource("bank-detail", BankDetailController::class);
         Route::patch("bank-detail", [BankDetailController::class,'update']);

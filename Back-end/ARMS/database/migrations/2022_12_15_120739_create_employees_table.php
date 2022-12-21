@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string("gender");
             $table->string("hire_date");
             $table->string("department");
+            $table->string("salary")->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

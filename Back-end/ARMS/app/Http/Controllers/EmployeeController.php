@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use JetBrains\PhpStorm\NoReturn;
 
 class EmployeeController extends Controller
 {
@@ -37,6 +38,7 @@ class EmployeeController extends Controller
             "other_names" => $request->get("other_names"),
             "gender" => $request->get("gender"),
             "hire_date" => $request->get("hire_date"),
+            "salary" => $request->get("salary"),
             "department" => $request->get("department"),
         ]);
     }
@@ -122,5 +124,22 @@ class EmployeeController extends Controller
                 "message" => "unauthorized request"
             ], 504);
         }
+    }
+
+
+ public function upload(Request $request): Response
+    {
+
+        $request->validate(['profile'=>"file|mimes:jpeg,jpg,png,gif|required|max:10000"]);
+        $file = $request->file('profile');
+        //Move Uploaded File
+        $destinationPath = 'profiles';
+      $path =  $file->move($destinationPath, date("Y-m-d H-i-s").$file->getClientOriginalName());
+      $user = $request->user();
+      $user->profile = $path->getRealPath();
+      $user->save();
+        return new Response([
+            "message"=>$path->getRealPath()
+        ], 202);
     }
 }
