@@ -1,10 +1,8 @@
 package com.amalitech.payroll.controller;
 
 
-import com.amalitech.payroll.component.AllowanceComponent;
 import com.amalitech.payroll.model.Allowance;
 import com.amalitech.payroll.service.AllowanceService;
-import com.amalitech.payroll.utils.Constants;
 import com.amalitech.payroll.utils.ResponseData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
