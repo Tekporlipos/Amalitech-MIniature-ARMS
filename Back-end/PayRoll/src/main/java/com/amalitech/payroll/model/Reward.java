@@ -10,7 +10,6 @@ import lombok.Data;
 public class Reward {
     @Id
     @GeneratedValue
-    @Column(updatable = false, nullable = false)
     private Long id;
     @Column()
     private String type;

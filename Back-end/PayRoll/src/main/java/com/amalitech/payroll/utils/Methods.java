@@ -1,24 +1,33 @@
 package com.amalitech.payroll.utils;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.*;
 
-public class Methods {
-    public static String stream(URL url) {
-        try (InputStream input = url.openStream()) {
-            InputStreamReader isr = new InputStreamReader(input);
-            BufferedReader reader = new BufferedReader(isr);
-            StringBuilder json = new StringBuilder();
-            int c;
-            while ((c = reader.read()) != -1) {
-                json.append((char) c);
-            }
-            return json.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+public class Methods<T> {
+    public static String stream(String path, String method, String auth) throws IOException, ParseException {
+        // Sending get request
+        URL url = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestProperty("Authorization","Bearer "+auth);
+        conn.setRequestProperty("Content-Type","application/json");
+        conn.setRequestMethod(method);
+        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String output;
+        StringBuffer response = new StringBuffer();
+        while ((output = in.readLine()) != null) {
+            response.append(output);
         }
+        in.close();
+        return response.toString();
     }
+
+
+
 }

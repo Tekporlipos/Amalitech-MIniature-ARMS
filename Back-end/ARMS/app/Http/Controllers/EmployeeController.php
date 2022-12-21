@@ -23,6 +23,16 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return array
+     */
+    public function employeeWithBank(): array
+    {
+        return DB::select(Constants::EMPLOYEE_PAYROLL);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @param Request $request

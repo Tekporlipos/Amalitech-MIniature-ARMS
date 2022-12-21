@@ -1,10 +1,7 @@
 package com.amalitech.payroll.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.UUID;
@@ -17,12 +14,10 @@ public class Users {
     @Id
     @GeneratedValue
     private long id;
+    @Column(unique = true)
     private UUID userId;
-    private String firstName;
-    private String lastName;
-    private String otherName;
+    private String name;
     private String email;
     private String profile;
     private String role;
-
 }

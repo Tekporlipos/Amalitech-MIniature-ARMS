@@ -1,24 +1,21 @@
 package com.amalitech.payroll.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "reward_allocation")
 public class RewardAllocation {
     @Id
     @GeneratedValue
-    private long id;
-
+    private Long id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private Users users;
+    private String rewardName;
     private String type;
 
-    private String startDate;
-    private String endDate;
-    private String userId;
+    private String month;
     private String amount;
 
 }

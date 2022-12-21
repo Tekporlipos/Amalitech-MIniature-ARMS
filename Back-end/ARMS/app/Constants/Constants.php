@@ -9,6 +9,8 @@ class Constants
 FROM `users`, `employees`
 WHERE users.user_id = employees.user_id;";
 
+   const  EMPLOYEE_PAYROLL = "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender, employees.department, employees.hire_date,employees.salary, bank_details.bank_name, bank_details.account_name, bank_details.bank_branch, bank_details.account_number, bank_details.tell
+FROM `users`, `employees`,`bank_details` WHERE bank_details.user_id = users.user_id AND employees.user_id = users.user_id;";
     const EMPLOYEE_USER_BANK = "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender, employees.department, employees.hire_date
 FROM `users`, `employees`
 WHERE users.user_id = employees.user_id;";

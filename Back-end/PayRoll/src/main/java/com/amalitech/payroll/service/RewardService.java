@@ -21,8 +21,8 @@ public class RewardService implements RewardContract {
     @Override
     public ResponseData getAllReward() {
         final Iterable<Reward> all = rewardRepository.findAll();
-        ArrayList<String> arrayList = new ArrayList<>();
-        all.forEach(value->arrayList.add(value.getType()));
+        ArrayList<Reward> arrayList = new ArrayList<>();
+        all.forEach(value->arrayList.add(value));
         return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
     }
 
@@ -35,7 +35,7 @@ public class RewardService implements RewardContract {
     @Override
     public ResponseData deleteRewardByName(String name) {
         rewardRepository.deleteByName(name);
-        return new ResponseData(Constants.OK,Constants.SUCCESS, Map.of("message",name+" deleted successful"));
+        return new ResponseData(Constants.OK,Constants.SUCCESS, Map.of("message","delete successful"));
     }
 
     @Override

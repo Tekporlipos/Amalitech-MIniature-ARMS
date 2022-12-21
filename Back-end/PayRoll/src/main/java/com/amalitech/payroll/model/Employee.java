@@ -1,9 +1,6 @@
 package com.amalitech.payroll.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.UUID;
@@ -15,11 +12,17 @@ public class Employee {
     @Id
     @GeneratedValue
     private long id;
-    private UUID userId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private Users users;
     private String firstName;
     private String lastName;
     private String otherName;
-    private String email;
-    private String profile;
+    private String gender;
     private String role;
+    private String hireDate;
+    private String department;
+    private String salary;
+    private String ssf;
 }

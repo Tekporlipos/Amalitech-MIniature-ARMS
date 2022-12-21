@@ -5,6 +5,7 @@ public class Constants {
     public static final String OK = "Success";
     public static final String BAD = "Error";
 
+    public static final String URL = "http://127.0.0.1:8000/api/v1/";
     public static final  String DENIED = "Permission denied";
 
     //HTTP Codes
