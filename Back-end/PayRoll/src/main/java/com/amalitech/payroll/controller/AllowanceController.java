@@ -14,7 +14,7 @@ public class AllowanceController {
 
    @GetMapping("")
     public ResponseData getAllowance(){
-        return allowanceService.getAllAllowance();
+        return allowanceService.getAllAllowance(); 
     }
 
     @DeleteMapping("/{delete}")
