@@ -9,13 +9,13 @@ public class RewardAllocation {
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private Users users;
     private String rewardName;
     private String type;
-
-    private String month;
-    private String amount;
+    private String startMonth;
+    private Long amount;
 
 }

@@ -27,7 +27,7 @@ Route::group(['prefix' => '/v1'], function ()
     Route::post("/validate", [AuthController::class,'validateEmail']);
 
     //the register is here for temporary use is for only admin
-    Route::post("/register", [AuthController::class,'create']);
+//    Route::post("/register", [AuthController::class,'create']);
 
     //authorization
     Route::group(['middleware'=>'auth:sanctum'], function () {
@@ -35,8 +35,8 @@ Route::group(['prefix' => '/v1'], function ()
         //pagination is not done
 
         //the register is here for temporary use is for only admin
-//        Route::post("/register", [AuthController::class,'create'])
-//            ->middleware([AuthRegisterValidate::class,AdminAccess::class]);
+        Route::post("/register", [AuthController::class,'create'])
+            ->middleware([AuthRegisterValidate::class,AdminAccess::class]);
 
 //        get all traffic on the website
         Route::get('/traffic', [TrafficController::class, 'getAll']);
@@ -46,12 +46,12 @@ Route::group(['prefix' => '/v1'], function ()
 
 //        manage employee
         Route::resource("employees", EmployeeController::class);
-        Route::get("payroll",[EmployeeController::class,"employeeWithBank"]);
+        Route::get("payroll", [EmployeeController::class,"employeeWithBank"]);
 
         Route::post("upload", [EmployeeController::class,"upload"]);
 
         Route::resource("assistant", OnboardingController::class);
-        Route::resource("bank-detail", BankDetailController::class);
+        Route::resource("bank-detail", BankDetailController::class)->middleware([AdminAccess::class]);
         Route::patch("bank-detail", [BankDetailController::class,'update']);
         Route::get("can-assistant", [OnboardingController::class, "showCanOnboard"]);
         Route::get("available-assistant", [OnboardingController::class, "showAvailable"]);
