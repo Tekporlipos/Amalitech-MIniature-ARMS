@@ -130,7 +130,7 @@ class EmployeeController extends Controller
  public function upload(Request $request): Response
     {
 
-        $request->validate(['profile'=>"file|required"]);
+        $request->validate(['profile'=>"file|mimes:jpeg,jpg,png,gif|required|max:10000"]);
         $file = $request->file('profile');
         //Move Uploaded File
         $destinationPath = 'profiles';
