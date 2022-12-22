@@ -40,7 +40,7 @@
                 <div class="ml-12 ">
                     <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
                         <b>AmaliTech! login alert Bot.</b> <br>
-                     <p>Your ARMS account was just login.</p>
+                     <p>{{$device["message"]}}</p>
                         <br>
                       <br>
                         <b>Login details</b>
