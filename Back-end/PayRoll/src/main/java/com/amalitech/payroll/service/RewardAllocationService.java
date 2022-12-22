@@ -34,6 +34,7 @@ public class RewardAllocationService implements RewardAllocationContract {
         return new ResponseData(Constants.OK,Constants.SUCCESS, byType.isPresent()? byType.get(): Arrays.asList());
     }
 
+
     @Override
     public ResponseData deleteRewardByName(Long id) {
         repository.deleteById(id);

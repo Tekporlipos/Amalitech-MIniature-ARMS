@@ -2,6 +2,7 @@ package com.amalitech.payroll.controller;
 
 
 import com.amalitech.payroll.service.FetchUserService;
+import com.amalitech.payroll.utils.ResponseData;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
@@ -14,15 +15,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/fetch")
+@RequestMapping("/payroll")
 @RequiredArgsConstructor
 public class FetchUsersController {
 
     final FetchUserService fetchUserService;
-    @GetMapping("")
+    @GetMapping("/generate")
     public Object getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
-        Object allUsers = fetchUserService.getAllEmployee(token);
+        Object allUsers = fetchUserService.getAllUsers(token);
         return  allUsers;
     }
+
+    @GetMapping("")
+    public ResponseData getAllPayroll(){
+        return  fetchUserService.getAllPayRolls();
+    }
+
+    @GetMapping("/user")
+    public Object getPayrollByUserId(@RequestHeader("authorization") String token) throws IOException, ParseException {
+        return  fetchUserService.getPayRollByUserId(token);
+    }
+
 
 }

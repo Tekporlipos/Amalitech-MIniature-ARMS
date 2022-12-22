@@ -7,5 +7,4 @@ public interface RewardAllocationContract extends RewardContract{
     ResponseData deleteRewardByName(Long id);
     ResponseData addRewardAllocation(RewardAllocation rewardAllocation);
 
-
 }

@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface RewardAllocationRepository extends CrudRepository<RewardAllocation, Long> {
     Optional<RewardAllocation> findByType(String type);
+    Iterable<RewardAllocation> findAllByTypeAndUserId(String type,String userId);
 }

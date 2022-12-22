@@ -9,13 +9,11 @@ public class RewardAllocation {
     @Id
     @GeneratedValue
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private Users users;
-    private String rewardName;
+    private String userId;
     private String type;
+    private String rewardName;
     private String startMonth;
+    private String endMonth;
     private Long amount;
 
 }
