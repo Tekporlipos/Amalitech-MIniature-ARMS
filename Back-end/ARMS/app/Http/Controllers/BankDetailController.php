@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Constants\Constants;
 use App\Models\BankDetails;
-use App\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -60,9 +59,10 @@ class BankDetailController extends Controller
      * @param string $id
      * @return Collection
      */
-    public function show(string $id) : Collection
+    public function index(Request $request) : Collection
     {
-        return BankDetails::where("user_id", $id)->get();
+        $user = $request->user();
+        return BankDetails::where("user_id", $user->user_id)->get();
     }
 
 

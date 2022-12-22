@@ -7,6 +7,7 @@ use App\Jobs\LoginAlertJob;
 use App\Jobs\MailSender;
 use App\Jobs\PasswordResetJob;
 use App\Models\Assign;
+use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -14,8 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use App\Models\PasswordReset;
-use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AuthController extends Controller
 {
@@ -34,8 +33,10 @@ class AuthController extends Controller
 
         $assist = User::where("user_id", $request->get("assistant_id"))->get();
 
-       $this->dispatch(new MailSender($employee, $request->get("email"),
-           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT));
+       $this->dispatch(new MailSender(
+           $employee, $request->get("email"),
+           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
+       ));
 
         return Response([
             "message"=>"New User added successfully",
@@ -76,13 +77,7 @@ class AuthController extends Controller
             (sizeof($passwordReset) && Hash::check($request->get("password"), $passwordReset[0]->token))) {
             $token = $user->createToken("amaliTech")->plainTextToken;
 
-            $this->dispatch(new LoginAlertJob([
-                "ip"=>$request->ip(),
-                "name"=>$request->headers->get("user-agent"),
-                "date"=>date("Y-m-d H:i:s"),
-                "userName"=>$user->name,
-                "email"=>$user->email
-            ]));
+            $this->sendAlert($request, $user, "Your ARMS account was just login.");
 
             return new Response([
                 "message"=>"login successful",
@@ -90,12 +85,9 @@ class AuthController extends Controller
                 "token"=> $token
             ], 201);
         }
-
         return new Response([
             "Message"=>"wrong credentials",
         ], 504);
-
-
     }
 
     public function changePassword(Request $request): Response
@@ -116,6 +108,8 @@ class AuthController extends Controller
                 $passwordResetModel->delete();
             }
 
+            $this->sendAlert($request, $user, "Your password was just changed.");
+
             return new Response([
                 "message"=>"password changed successful",
                 "user"=>$user,
@@ -126,6 +120,10 @@ class AuthController extends Controller
         ], 504);
     }
 
+    function user (Request $request)
+    {
+        return $request->user();
+    }
 
     public function logout(Request $request): Response
     {
@@ -163,6 +161,17 @@ class AuthController extends Controller
             "assistant_id"=>$assistantId,
             "user_id"=>$userId
         ]);
+    }
+
+    public function sendAlert(Request $request, $user, $message){
+        $this->dispatch(new LoginAlertJob([
+            "ip"=>$request->ip(),
+            "name"=>$request->headers->get("user-agent"),
+            "date"=>date("Y-m-d H:i:s"),
+            "userName"=>$user->name,
+            "email"=>$user->email,
+            "message"=>$message
+        ]));
     }
 
    public function createUser($request, $userId, $password){

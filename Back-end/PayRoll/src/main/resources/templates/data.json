@@ -1,0 +1,38 @@
+[
+    {
+        "bank_branch": "KNUST",
+        "account_number": "00001234566",
+        "role": "admin",
+        "gender": "male",
+        "profile": "C:\\Users\\JohnDzikunu\\Documents\\My Developments\\Amalitech\\PROJECTS\\Amalitech-MIniature-ARMS\\Back-end\\ARMS\\public\\profiles\\2022-12-21 13-25-50WIN_20221221_12_22_36_Pro.jpg",
+        "tell": "054371591",
+        "last_name": "Dzikunu",
+        "other_names": null,
+        "hire_date": "2022-12-20T16:01:17",
+        "salary": "2500.00",
+        "user_id": "8b977731-3887-4801-88f7-c8f81085a83f",
+        "account_name": "John Dzikunu",
+        "bank_name": "CalBank",
+        "department": "service center",
+        "first_name": "John",
+        "email": "johndzikunu36@gmail.com"
+    },
+    {
+        "bank_branch": "KNUST",
+        "account_number": "00001234566",
+        "role": "employee",
+        "gender": "male",
+        "profile": null,
+        "tell": "054371591",
+        "last_name": "Dzikunu",
+        "other_names": null,
+        "hire_date": "2022-12-20T16:01:17",
+        "salary": "2500.00",
+        "user_id": "3dae3eb9-6a43-4e4c-816b-5b3ea354dd3d",
+        "account_name": "John Dzikunu",
+        "bank_name": "CalBank",
+        "department": "service center",
+        "first_name": "John",
+        "email": "johndzikunu1213@gmail.com"
+    }
+]
