@@ -2,49 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Constants;
+use App\Jobs\LoginAlertJob;
 use App\Jobs\MailSender;
-use App\Mail\EmployeeMail;
-use App\Models\Employee;
-use App\Threads\MailThread;
+use App\Jobs\PasswordResetJob;
+use App\Models\Assign;
+use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use PhpParser\Node\Scalar\String_;
-use Thread;
+use App\Models\PasswordReset;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AuthController extends Controller
 {
     public function create(Request $request): Response|Application|ResponseFactory
     {
-        $user_id = Str::uuid()->toString();
-        $password =  strval(rand(11111111,99999999));
-          User::create(
-            [
-                "name"=>$request->get("firstName")." ".$request->get("lastName"),
-                "user_id"=> $user_id,
-                "email"=>$request->get("email"),
-                "password"=>bcrypt($password),
-            ]
-        );
+        $userId = Str::uuid()->toString();
+        $password =  strval(rand(11111111, 99999999));
 
-        $employee =   EmployeeController::create($request,$user_id);
+        $this->createUser($request, $userId, $password);
 
-       $this->dispatch(new MailSender($employee,$request->get("email"),$password));
+        $employee =  (new EmployeeController)->create($request, $userId);
 
+        if ($request->get("assistant_id")) {
+            $this->createAssistant($userId, $request->get("assistant_id"));
+        }
+
+        $assist = User::where("user_id", $request->get("assistant_id"))->get();
+
+       $this->dispatch(new MailSender($employee, $request->get("email"),
+           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT));
 
         return Response([
             "message"=>"New User added successfully",
             "employee"=> $employee,
             "email"=> $request->get("email"),
             "password"=> $password,
-        ],201);
-
+        ], 201);
     }
+
 
     public function validateEmail(Request $request): Response
     {
@@ -54,7 +54,7 @@ class AuthController extends Controller
 
         return new Response([
             "message"=>"valid email",
-        ],200);
+        ], 200);
     }
 
     public function login(Request $request): Response
@@ -63,27 +63,37 @@ class AuthController extends Controller
             'email'=>'string|required|email',
             'password'=>'string|required',
         ]);
-        $user = User::where("email",$request->get("email"))->first();
+        $user = User::where("email", $request->get("email"))->first();
 
-        if(!$user){
+        if (!$user){
             return new Response([
                 "Message"=>"No user exist with this email",
-            ],504);
+            ], 504);
         }
 
-
-        if(Hash::check($request->get("password"),$user->password) ){
+        $passwordReset = PasswordReset::where('email', $request->get("email"))->get();
+        if (Hash::check($request->get("password"), $user->password)  ||
+            (sizeof($passwordReset) && Hash::check($request->get("password"), $passwordReset[0]->token))) {
             $token = $user->createToken("amaliTech")->plainTextToken;
+
+            $this->dispatch(new LoginAlertJob([
+                "ip"=>$request->ip(),
+                "name"=>$request->headers->get("user-agent"),
+                "date"=>date("Y-m-d H:i:s"),
+                "userName"=>$user->name,
+                "email"=>$user->email
+            ]));
+
             return new Response([
                 "message"=>"login successful",
                 "user"=>$user,
                 "token"=> $token
-            ],201);
+            ], 201);
         }
 
         return new Response([
             "Message"=>"wrong credentials",
-        ],504);
+        ], 504);
 
 
     }
@@ -94,35 +104,28 @@ class AuthController extends Controller
             'old_password'=>'string|required',
             'password'=>'string|required|confirmed',
         ]);
-
         $user = $request->user();
-
-        if($user && Hash::check($request->get("old_password"),$user->password) ){
+        $passwordResetModel = PasswordReset::where('email', $request->user()->email);
+        $passwordReset = $passwordResetModel->get();
+        if ($user && Hash::check($request->get("old_password"), $user->password) ||
+            (sizeof($passwordReset) && Hash::check($request->get("old_password"), $passwordReset[0]->token))){
             $user->password = bcrypt($request->get("password"));
             $user->update();
+
+            if (sizeof($passwordReset)){
+                $passwordResetModel->delete();
+            }
+
             return new Response([
                 "message"=>"password changed successful",
                 "user"=>$user,
-            ],201);
+            ], 201);
         }
-
         return new Response([
             "Message"=>"wrong credential",
-        ],504);
-
-
+        ], 504);
     }
 
-
-
-
-    public function deleteAccount(Request $request): Response
-    {
-        $user = $request->user();
-        $response =   $this->delete($user);
-        $user->tokens()->delete();
-        return $response;
-    }
 
     public function logout(Request $request): Response
     {
@@ -130,17 +133,48 @@ class AuthController extends Controller
         $user->tokens()->delete();
         return new Response([
             "message"=>"logout successful",
-        ],201);
+        ], 201);
     }
 
-   public static function delete($user): Response
+
+    public function resetPassword(Request $request): Response
     {
-        $employee = Employee::where("user_id",$user->user_id);
-        $employee->delete();
-        $user->delete();
-        return new Response([
-            "message"=>"User deleted successful",
-        ],201);
+        $request->validate([
+            'email'=>'string|email|required|unique:Password_Resets,email|exists:Users,email',
+        ]);
+//
+        $password =  strval(rand(11111111, 99999999));
+       PasswordReset::create([
+           'email'=>$request->get("email"),
+           'token'=>bcrypt($password),
+       ]);
+
+        $this->dispatch(new PasswordResetJob($password, $request->get("email")));
+
+        return  new Response([
+           'message'=>"password reset token is sent to the email"
+       ], 202);
+    }
+
+
+
+    public function createAssistant(string $userId, string $assistantId){
+        Assign::create([
+            "assistant_id"=>$assistantId,
+            "user_id"=>$userId
+        ]);
+    }
+
+   public function createUser($request, $userId, $password){
+       User::create(
+           [
+               "name" => $request->get("first_name") . " " . $request->get("last_name"),
+               "user_id" => $userId,
+               "role" => $request->get("role"),
+               "email" => $request->get("email"),
+               "password" => bcrypt($password),
+           ]
+       );
     }
 
 }

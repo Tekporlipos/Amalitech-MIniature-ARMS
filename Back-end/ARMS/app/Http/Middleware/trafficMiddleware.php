@@ -21,7 +21,7 @@ class trafficMiddleware
         $user_agent = $request->headers->get("user-agent");
         $page = $request->getRequestUri();
 
-        $traffic = new TrafficComponent($ip,$user_agent,$page);
+        $traffic = new TrafficComponent($ip, $user_agent, $page);
         $traffic->saveTraffic();
 
         return $next($request);

@@ -4,7 +4,7 @@ use App\Models\traffic;
 class TrafficComponent
 {
     private string $ip;
-    private string $user_agent;
+    private string $userAgent;
 
     /**
      * @return string
@@ -27,15 +27,15 @@ class TrafficComponent
      */
     public function getUserAgent(): string
     {
-        return $this->user_agent;
+        return $this->userAgent;
     }
 
     /**
-     * @param string $user_agent
+     * @param string $userAgent
      */
-    public function setUserAgent(string $user_agent): void
+    public function setUserAgent(string $userAgent): void
     {
-        $this->user_agent = $user_agent;
+        $this->userAgent = $userAgent;
     }
 
     /**
@@ -57,7 +57,7 @@ class TrafficComponent
     public function __construct(String $ip, String $agent, String $page)
     {
         $this->ip = $ip;
-        $this->user_agent = $agent;
+        $this->userAgent = $agent;
         $this->page = $page;
     }
 

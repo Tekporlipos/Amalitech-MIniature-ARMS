@@ -23,8 +23,10 @@ class MailSender implements ShouldQueue
     private $employee;
     private string $email;
     private int $password;
-    public function __construct($employee,$email,$password)
+    private string $assistantName;
+    public function __construct($employee, $email, $password, $assistantName)
     {
+        $this->assistantName = $assistantName;
         $this->employee = $employee;
         $this->email = $email;
         $this->password = $password;
@@ -37,6 +39,7 @@ class MailSender implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->email)->send(New EmployeeMail($this->employee,$this->email,$this->password));
+        Mail::to($this->email)
+            ->send(new EmployeeMail($this->employee, $this->email, $this->password, $this->assistantName));
     }
 }

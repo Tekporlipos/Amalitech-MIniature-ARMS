@@ -15,15 +15,17 @@ class EmployeeMail extends Mailable
     private $employee;
     private $password;
     private string $email;
+    private string $assistantName;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($employee,$email,$password)
+    public function __construct($employee, $email, $password, $assistantName)
     {
         $this->employee = $employee;
+        $this->assistantName  = $assistantName;
         $this->email  = $email;
         $this->password = $password;
     }
@@ -36,9 +38,9 @@ class EmployeeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('johntekporlipos@outlook.com', 'John Dzikunu'),
+            from: new Address(env("MAIL_FROM_ADDRESS"), env('MAIL_FROM_NAME')),
             replyTo: [
-                new Address('john.dzikunu@amalitech.com', 'john dzikunu'),
+                new Address(env('HELP_EMAIL'), env('HELP_NAME')),
             ],
             subject: 'New user onboarding'
         );
@@ -47,7 +49,7 @@ class EmployeeMail extends Mailable
     /**
      * Get the message content definition.
      *
-     * @return \Illuminate\Mail\Mailables\Content
+     * @return Content
      */
     public function content(): Content
     {
@@ -58,6 +60,7 @@ class EmployeeMail extends Mailable
                 'employee' => $this->employee,
                 'password' => $this->password,
                 'email' => $this->email,
+                'name' => $this->assistantName,
             ],
 //            text: 'emails.orders.shipped-text'
         );

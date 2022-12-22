@@ -33,7 +33,7 @@
                     <svg style="width:24px;height:24px" class="text-gray-500" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M7 12C9.2 12 11 10.2 11 8S9.2 4 7 4 3 5.8 3 8 4.8 12 7 12M11 20V14.7C9.9 14.3 8.5 14 7 14C3.1 14 0 15.8 0 18V20H11M15 4C13.9 4 13 4.9 13 6V18C13 19.1 13.9 20 15 20H22C23.1 20 24 19.1 24 18V6C24 4.9 23.1 4 22 4H15Z" />
                     </svg>
-                    <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel.com/docs" class="underline text-gray-900 dark:text-white">John Dzikunu</a></div>
+                    <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://amalitech.com/" class="underline text-gray-900 dark:text-white">{{$employee->first_name}} {{$employee->last_name}}</a></div>
                 </div>
 
                 <div class="ml-12">
@@ -43,7 +43,7 @@
                         Reporting Date: {{$employee->hire_date}} <br>
                         Reporting Time: 07:30 <br>
                         Reporting Branch: TAKORADI <br>
-                        Contact Person: Anita Nana Ama Agyepong <br>
+                        Contact Person: {{$name}} <br>
                         <b>Hire Instruction: Congratulations once again! Please reach out to us if you have any challenges.</b>
                         <br>
                         <blockquote>
@@ -108,23 +108,27 @@
                         <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
 
                             Excellence at AmaliTech Means working to the best of your ability.
-                            Striving for extraordinary achievement, and surpassing internal and external expectations. It is our priority to provide high quality work and outstanding result wih maximum level of professionalism and most efficient use of resources.
+                            Striving for extraordinary achievement, and surpassing internal and external expectations.
+                            It is our priority to provide high quality work and outstanding result wih maximum level of
+                            professionalism and most efficient use of resources.
 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <pre>
-            <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
+        <br>
+        <br>
+        <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
             <div class="text-center text-sm text-gray-500 sm:text-left">
                 <div class="flex items-center">
                     <a href="https://arms-beta.amalitech.org/home" class="ml-1 underline">Amalitech Service Center</a>
                 </div>
             </div>
-            <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">Enterprise Resource Planning (ERP)</div>
+            <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">Enterprise Resource Planning
+                (ERP)
+            </div>
         </div>
-        </pre>
     </div>
 </div>
 </body>

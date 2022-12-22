@@ -2,106 +2,144 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Constants;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use JetBrains\PhpStorm\NoReturn;
 
 class EmployeeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return array
      */
-    public function index()
+    public function index(): array
     {
-       return Employee::all();
+        return DB::select(Constants::EMPLOYEE_USER);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return void
+     * @param Request $request
+     * @param string $userId
+     * @return Employee
      */
-    static function create(Request $request,String $user_id) : Employee
+    public function create(Request $request, string $userId): Employee
     {
         return Employee::create([
-              "user_id"=>$user_id,
-              "first_name"=>$request->get("firstName"),
-              "last_name"=>$request->get("lastName"),
-              "other_names"=>$request->get("otherName"),
-              "gender"=>$request->get("gender"),
-              "hire_date"=>$request->get("hireDate"),
-              "department"=>$request->get("department"),
-          ]);
+            "user_id" => $userId,
+            "first_name" => $request->get("first_name"),
+            "last_name" => $request->get("last_name"),
+            "other_names" => $request->get("other_names"),
+            "gender" => $request->get("gender"),
+            "hire_date" => $request->get("hire_date"),
+            "salary" => $request->get("salary"),
+            "department" => $request->get("department"),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-
-    }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $id
+     * @return Response
      */
-    public function show($id)
+    public function show(string $id): Response
     {
-        return $id;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public static function update(Request $request, $id)
-    {
-        //
+        return Employee::where("user_id", $id)->first(['*']);
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $id
+     * @return Response
      */
-    public function deleteEmployee(Request $request): Response
+    public function update(Request $request, string $id): Response
     {
-        $user = $request->user();
-      return  AuthController::delete($user);
+
+        $employee =  Employee::where("user_id", $id)->first(['*']);
+
+        if (!$employee) {
+            return new Response([
+                "message" => "noting to update"
+            ], 404);
+        }
+        if ($request->get("first_name")) {
+            $employee->first_name = $request->get("first_name");
+        }
+        if ($request->get("last_name")) {
+            $employee->last_name = $request->get("last_name");
+        }
+        if ($request->get("other_name")) {
+            $employee->other_names = $request->get("other_name");
+        }
+        if ($request->get("email")) {
+            $request->validate(['email' => Constants::REQUIRE.'|email|unique:users']);
+            $employee->email = $request->get("email");
+        }
+        if ($request->get("gender")) {
+            $employee->gender = $request->get("gender");
+        }
+        if ($request->get("role")) {
+            $employee->role = $request->get("role");
+        }
+        if ($request->get("department")) {
+            $employee->department = $request->get("department");
+        }
+        if ($request->get("hire_date")) {
+            $request->validate(['hire_date' => Constants::REQUIRE."|date"]);
+            $employee->hire_date = $request->get("hire_date");
+        }
+        $employee->save();
+        return $employee->get();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $id
+     * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, string $id): Response
     {
-        //
+        $user = $request->user();
+        if ($user->get("role")[0]["role"] == "admin") {
+            User::where("user_id", $id)->delete();
+            Employee::where("user_id", $id)->delete();
+            return new Response([
+                "message" => "Employee deleted successfully"
+            ], 201);
+        } else {
+            return new Response([
+                "message" => "unauthorized request"
+            ], 504);
+        }
+    }
+
+
+ public function upload(Request $request): Response
+    {
+
+        $request->validate(['profile'=>"file|mimes:jpeg,jpg,png,gif|required|max:10000"]);
+        $file = $request->file('profile');
+        //Move Uploaded File
+        $destinationPath = 'profiles';
+      $path =  $file->move($destinationPath, date("Y-m-d H-i-s").$file->getClientOriginalName());
+      $user = $request->user();
+      $user->profile = $path->getRealPath();
+      $user->save();
+        return new Response([
+            "message"=>$path->getRealPath()
+        ], 202);
     }
 }
