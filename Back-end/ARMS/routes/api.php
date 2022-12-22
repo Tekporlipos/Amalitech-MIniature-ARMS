@@ -46,6 +46,7 @@ Route::group(['prefix' => '/v1'], function ()
 //        change password
         Route::patch('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/user', [AuthController::class, 'user']);
 
 //        manage employee
         Route::resource("employees", EmployeeController::class);

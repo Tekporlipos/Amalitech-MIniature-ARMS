@@ -33,8 +33,10 @@ class AuthController extends Controller
 
         $assist = User::where("user_id", $request->get("assistant_id"))->get();
 
-       $this->dispatch(new MailSender($employee, $request->get("email"),
-           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT));
+       $this->dispatch(new MailSender(
+           $employee, $request->get("email"),
+           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
+       ));
 
         return Response([
             "message"=>"New User added successfully",
@@ -118,6 +120,10 @@ class AuthController extends Controller
         ], 504);
     }
 
+    function user (Request $request)
+    {
+        return $request->user();
+    }
 
     public function logout(Request $request): Response
     {

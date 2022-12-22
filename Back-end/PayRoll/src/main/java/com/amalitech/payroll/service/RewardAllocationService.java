@@ -9,10 +9,7 @@ import com.amalitech.payroll.utils.ResponseData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +27,10 @@ public class RewardAllocationService implements RewardAllocationContract {
 
     @Override
     public ResponseData getAllRewardByType(String type) {
-        Optional<RewardAllocation> byType = repository.findByType(type);
-        return new ResponseData(Constants.OK,Constants.SUCCESS, byType.isPresent()? byType.get(): Arrays.asList());
+        Iterable<RewardAllocation> allByType = repository.findAllByType(type);
+        ArrayList<RewardAllocation> byType = new ArrayList<>();
+        allByType.forEach(byType::add);
+        return new ResponseData(Constants.OK,Constants.SUCCESS, byType);
     }
 
 
@@ -44,7 +43,6 @@ public class RewardAllocationService implements RewardAllocationContract {
     @Override
     public ResponseData addRewardAllocation(RewardAllocation rewardAllocation) {
         RewardAllocation save = repository.save(rewardAllocation);
-        System.out.println(rewardAllocation);
         return new ResponseData(Constants.OK,Constants.SUCCESS,save);
     }
 

@@ -20,15 +20,16 @@ import java.util.ArrayList;
 public class FetchUsersController {
 
     final FetchUserService fetchUserService;
-    @GetMapping("/generate")
-    public Object getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
-        Object allUsers = fetchUserService.getAllUsers(token);
-        return  allUsers;
-    }
 
     @GetMapping("")
     public ResponseData getAllPayroll(){
         return  fetchUserService.getAllPayRolls();
+    }
+
+    @GetMapping("/generate")
+    public Object getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
+        Object allUsers = fetchUserService.getAllUsers(token);
+        return  allUsers;
     }
 
     @GetMapping("/user")
