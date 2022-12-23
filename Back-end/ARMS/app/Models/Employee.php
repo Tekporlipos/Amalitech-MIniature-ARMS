@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static create(array $array)
  * @method static where(string $string, $user_id)
  * @method static find(int $int)
+ * @method static select(string $string)
  */
 class Employee extends Model
 {

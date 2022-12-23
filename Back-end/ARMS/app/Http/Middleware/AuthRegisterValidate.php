@@ -27,7 +27,7 @@ class AuthRegisterValidate
             'role' =>Constants::REQUIRE.'|min:4',
             'department' => Constants::REQUIRE,
             'hireDate' => 'date|required',
-            'salary' => 'int|required',
+            'salary' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         ]);
 
         if ($request->get("assistantId")) {

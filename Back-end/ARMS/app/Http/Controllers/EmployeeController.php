@@ -15,11 +15,31 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return array
+     * @param Request $request
+     * @return Response
      */
-    public function index(): array
+    public function index(Request $request): Response
     {
-        return DB::select(Constants::EMPLOYEE_USER);
+        $page = 0;
+        $limit = 10;
+
+        if ($request->get("page")){
+            $request->validate(["page"=>"required|int"]);
+            $page = $request->get("page");
+        }
+
+        if ($request->get("limit")){
+            $request->validate(["limit"=>"required|int"]);
+            $limit = $request->get("limit");
+        }
+
+        $page = $page * $limit;
+
+        return new Response([
+            "page"=>$page/$limit,
+            "limit"=>$limit,
+            "message"=> DB::select(Constants::EMPLOYEE_USER($page, $limit))
+        ], 202);
     }
 
     /**
@@ -65,6 +85,36 @@ class EmployeeController extends Controller
         return Employee::where("user_id", $id)->first(['*']);
     }
 
+
+    /**
+     * Display the specified resource.
+     *
+     * @param string $id
+     * @return Response
+     */
+    public function search(Request $request)
+    {
+         $page = 0;
+         $limit = 10;
+
+        if ($request->get("page")){
+            $request->validate(["page"=>"required|int"]);
+            $page = $request->get("page");
+        }
+
+        if ($request->get("limit")){
+            $request->validate(["limit"=>"required|int"]);
+            $limit = $request->get("limit");
+        }
+
+        $page = $page * $limit;
+        $search = $request->get('search');
+        return new Response([
+            "page"=>$page/$limit,
+            "limit"=>$limit,
+            "message"=> DB::select(Constants::SEARCH("%".$search."%", $page, $limit))
+        ], 202);
+    }
 
     /**
      * Update the specified resource in storage.
