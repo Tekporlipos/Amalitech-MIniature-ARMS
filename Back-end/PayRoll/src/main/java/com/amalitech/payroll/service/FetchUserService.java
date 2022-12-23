@@ -36,9 +36,10 @@ public class FetchUserService {
 
     public  ResponseData getPayRollByUserId(String token) throws IOException, ParseException {
         final Map<String, Object> user = (Map<String, Object>) getData(token,"user");
+        System.out.println(user);
         final Optional<Employee> byUserId = employeeRepository.findByUserId(String.valueOf(user.get("user_id")));
-        return new ResponseData(Constants.OK,Constants.SUCCESS, byUserId.isPresent()? byUserId.get(): Arrays.asList());
-    };
+        return new ResponseData(Constants.OK,Constants.SUCCESS, byUserId.isPresent()? byUserId.get(): List.of());
+    }
 
 
 

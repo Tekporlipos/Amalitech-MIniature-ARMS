@@ -24,10 +24,6 @@ public class Employee {
     private Double salary;
     private Double allowance;
     private Double bonus;
-    private String bankBranch;
-    private String accountNumber;
-    private String accountName;
-    private String bankName;
     private Double ssf;
 
 
@@ -44,10 +40,6 @@ public class Employee {
         setHireDate(String.valueOf(data.get("hire_date")));
         setDepartment(String.valueOf(data.get("department")));
         setSalary(Double.parseDouble(String.valueOf(data.get("salary"))));
-        setAccountNumber(String.valueOf(data.get("account_number")));
-        setAccountName(String.valueOf(data.get("account_name")));
-        setBankBranch(String.valueOf(data.get("bank_branch")));
-        setBankName(String.valueOf(data.get("bank_name")));
         setSsf(Double.parseDouble(String.valueOf(data.get("salary"))) * 0.05);
         setAllowance(allowance);
         setBonus(bonus);
