@@ -43,11 +43,11 @@ class EmployeeController extends Controller
     {
         return Employee::create([
             "user_id" => $userId,
-            "first_name" => $request->get("first_name"),
-            "last_name" => $request->get("last_name"),
-            "other_names" => $request->get("other_names"),
+            "first_name" => $request->get("firstName"),
+            "last_name" => $request->get("lastName"),
+            "other_names" => $request->get("otherName"),
             "gender" => $request->get("gender"),
-            "hire_date" => $request->get("hire_date"),
+            "hire_date" => $request->get("hireDate"),
             "salary" => $request->get("salary"),
             "department" => $request->get("department"),
         ]);
@@ -146,10 +146,10 @@ class EmployeeController extends Controller
         $destinationPath = 'profiles';
       $path =  $file->move($destinationPath, date("Y-m-d H-i-s").$file->getClientOriginalName());
       $user = $request->user();
-      $user->profile = $path->getRealPath();
+      $user->profile = join("/", [Constants::URL,'profiles',$path->getFilename()]);
       $user->save();
         return new Response([
-            "message"=>$path->getRealPath()
+            "message"=> join("/", [Constants::URL,'profiles',$path->getFilename()])
         ], 202);
     }
 }

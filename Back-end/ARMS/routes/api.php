@@ -27,7 +27,7 @@ Route::group(['prefix' => '/v1'], function ()
     Route::post("/validate", [AuthController::class,'validateEmail']);
 
     //the register is here for temporary use is for only admin
-//    Route::post("/register", [AuthController::class,'create']);
+    Route::post("/register", [AuthController::class,'create']);
 
     //authorization
     Route::group(['middleware'=>'auth:sanctum'], function () {

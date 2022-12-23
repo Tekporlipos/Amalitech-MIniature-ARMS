@@ -20,17 +20,18 @@ class AuthRegisterValidate
     {
 
         $request->validate([
-            'first_name' => Constants::REQUIRE,
-            'last_name' => Constants::REQUIRE,
+            'firstName' => Constants::REQUIRE,
+            'lastName' => Constants::REQUIRE,
             'email' => Constants::REQUIRE.'|email|unique:users',
             'gender' => Constants::REQUIRE,
             'role' =>Constants::REQUIRE.'|min:4',
             'department' => Constants::REQUIRE,
-            'hire_date' => 'date|required',
+            'hireDate' => 'date|required',
+            'salary' => 'int|required',
         ]);
 
-        if ($request->get("assistant_id")) {
-            $request->validate(['assistant_id'=>'uuid|exists:Users,user_id']);
+        if ($request->get("assistantId")) {
+            $request->validate(['assistantId'=>'uuid|exists:Users,user_id']);
         }
 
 

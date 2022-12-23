@@ -27,11 +27,11 @@ class AuthController extends Controller
 
         $employee =  (new EmployeeController)->create($request, $userId);
 
-        if ($request->get("assistant_id")) {
-            $this->createAssistant($userId, $request->get("assistant_id"));
+        if ($request->get("assistantId")) {
+            $this->createAssistant($userId, $request->get("assistantId"));
         }
 
-        $assist = User::where("user_id", $request->get("assistant_id"))->get();
+        $assist = User::where("user_id", $request->get("assistantId"))->get();
 
        $this->dispatch(new MailSender(
            $employee, $request->get("email"),
@@ -93,14 +93,14 @@ class AuthController extends Controller
     public function changePassword(Request $request): Response
     {
         $request->validate([
-            'old_password'=>'string|required',
+            'oldPassword'=>'string|required',
             'password'=>'string|required|confirmed',
         ]);
         $user = $request->user();
         $passwordResetModel = PasswordReset::where('email', $request->user()->email);
         $passwordReset = $passwordResetModel->get();
-        if ($user && Hash::check($request->get("old_password"), $user->password) ||
-            (sizeof($passwordReset) && Hash::check($request->get("old_password"), $passwordReset[0]->token))){
+        if ($user && Hash::check($request->get("oldPassword"), $user->password) ||
+            (sizeof($passwordReset) && Hash::check($request->get("oldPassword"), $passwordReset[0]->token))){
             $user->password = bcrypt($request->get("password"));
             $user->update();
 
@@ -177,7 +177,7 @@ class AuthController extends Controller
    public function createUser($request, $userId, $password){
        User::create(
            [
-               "name" => $request->get("first_name") . " " . $request->get("last_name"),
+               "name" => $request->get("firstName") . " " . $request->get("lastName"),
                "user_id" => $userId,
                "role" => $request->get("role"),
                "email" => $request->get("email"),
