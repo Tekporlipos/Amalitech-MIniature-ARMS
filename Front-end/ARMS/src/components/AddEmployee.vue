@@ -110,16 +110,16 @@ import {postData,getData} from '../assets/api'
 
 export default {
   name:"AddEmployee",
-  props:["edit"],
+  props:["id"],
   methods: {
     submit() {
       this.$emit('someEvent')
     },
     submitData(){
-      if(this.edit){
+      if(this.id){
 
       }else{
-        postData("register",this.inputData,"1|WamEYOrZJmFq37G5cD2z4c0GHdhzkddFPL56t12T").then(value=>{
+        postData("register",this.inputData,"2|QvUuL87g1JbowZoUSZG3Doh3Gsk0XIEzIG5o7tCX").then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
@@ -138,21 +138,23 @@ export default {
     }
   },
   mounted() {
-    getData("assistant","1|WamEYOrZJmFq37G5cD2z4c0GHdhzkddFPL56t12T").then(value=>{
+
+    if(this.id){
+      getData(`employees/${this.id}`,"2|QvUuL87g1JbowZoUSZG3Doh3Gsk0XIEzIG5o7tCX").then(value=>{
+        this.inputData = {...value};
+        this.firstName = value.first_name,
+        this.lastName = value.last_name,
+        this.otherName = value.other_names,
+        this.hireDate = value.hire_date
+        console.log();
+});
+    }
+
+    getData("assistant","2|QvUuL87g1JbowZoUSZG3Doh3Gsk0XIEzIG5o7tCX").then(value=>{
 if(!value.errors){
   this.canAssist = value
 }
 });
-
-if(this.edit){
-  getData("employees","1|WamEYOrZJmFq37G5cD2z4c0GHdhzkddFPL56t12T").then(value=>{
-    inputData.firstName = value;
-    inputData.firstName = value;
-    inputData.firstName = value;
-    inputData.firstName = value;
-    inputData.firstName = value;
-});
-}
   },
   data(){
     return {

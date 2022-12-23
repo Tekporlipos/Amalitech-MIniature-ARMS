@@ -47,9 +47,8 @@
                             <div class="dropdown-menu" aria-labelledby="actions">
                   
                               <div class="dropdown-item" href="#">
-
-                                <button class="btn btn-primary btn-md m-1"> Edit </button>
-                                <button @click="deleteEmployee(employ.user_id, `${employ.first_name} ${employ.last_name}` )" class="btn btn-danger btn-md m-1">Delete</button>
+                                <a href="#" id="openModal"><button type="button" @click="[edit(),employee.id=employ.user_id]" class="btn btn-sm ml-3 btn-success"> Edit</button></a>
+                                <button @click="[dialogState = true,employee.name = append(employ.first_name , employ.last_name),employee.id=employ.user_id]" class="btn btn-danger btn-md m-1">Delete</button>
                                 
                               </div>
                              
@@ -66,14 +65,14 @@
                     <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">{{ employee.length }} <i><small>0f</small></i> {{ employee.length }}</span>
                     </h3>
                     <div class="d-flex">
-                      <button class="btn btn-outline-default " disabled> 
+                      <button class="btn btn-outline-default " @click="prev()"> 
                         <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
                     </svg> 
                     Prev.
                   </button>
       
-              <button class="btn btn-outline-default" disabled> 
+              <button class="btn btn-outline-default" @click="next()"> 
                 Next
                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                       <path fill="currentColor" d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
@@ -87,44 +86,91 @@
 
             <Teleport v-if="showAddModel" to="#modal">
                 <div class="modalView">
-                    <AddEmployee @close="ShowAddEmployeeModel" @submit="submited"/>
+                    <AddEmployee :id="employee.id"  @close="ShowAddEmployeeModel" @submit="submited"/>
                 </div>
             </Teleport>
+
+            <GDialog v-model="dialogState" max-width="500">
+              <div class="card container p-3">
+                <h3 class="card-title">DELETE ALERT</h3>
+                <div class="card-content">Are you sure you want to delete {{ employee.name }}</div>
+              </div>
+              <div class="card-footer">
+                <div class="page-header flex-wrap">
+              <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block"></span>
+              </h3>
+              <div class="d-flex">
+                <button type="button" @click="dialogState = false" class="btn btn-sm ml-3 btn-defualt"> Discard </button>
+                <input type="button" @click="[deleteEmployee(employee.id),dialogState = false]" value=" Delete"   class="btn btn-sm ml-3 btn-success">
+              </div>
+            </div>
+              </div>
+            </GDialog>
 </template>
 
 <script setup>
 import AddEmployee from '../components/AddEmployee.vue'
 import {postData,getData,timeSince,deleteData} from '../assets/api'
 import {ref} from 'vue';
+import 'gitart-vue-dialog/dist/style.css'
+import { GDialog } from 'gitart-vue-dialog'
+import { createToaster } from "@meforma/vue-toaster";
 
 let showAddModel = false;
+const toaster = createToaster({position:"top-left",});
 function ShowAddEmployeeModel() {
     showAddModel = !showAddModel;
+    edditEmployee.value = false;
 }
-
+function edit() {
+  showAddModel = !showAddModel;
+}
 function submited(value) {
   ShowAddEmployeeModel();
  document.getElementById("openModal").click()
  //bad solution
  getEmployees();
+ edditEmployee.value = false;
 }
 
 
 let employee = ref([]);
+let page = 0;
+let dialogState = ref(false)
+let edditEmployee = ref(false)
+
+function next() {
+  page++;
+  getEmployees();
+}
+
+function prev() {
+  if(page>0){
+    page--;
+    getEmployees();
+  }
+}
+
+function append(p1,p2) {
+  return p1 +" "+p2;
+}
 
 function getEmployees() {
-  getData("employees","1|WamEYOrZJmFq37G5cD2z4c0GHdhzkddFPL56t12T").then(value=>{
-employee.value = value;
+  getData(`employees?page=${page}`,"1|d7IoBijt1q5Or5rWnf6UliO6lfFEjcNmumdJ4HXW").then(value=>{
+employee.value = value.message;
+if(value.message.length < 10){
+  page = -1;
+}
 });
 }
 
 getEmployees();
 
-function deleteEmployee(id,name) {
-const check =   confirm("Are you sure you want to delete "+name )
-if(check){
-deleteData("employees/"+id,"1|WamEYOrZJmFq37G5cD2z4c0GHdhzkddFPL56t12T").then(value=>{
+function deleteEmployee(id) {
+if(true){
+deleteData(`employees/`+id,"1|d7IoBijt1q5Or5rWnf6UliO6lfFEjcNmumdJ4HXW").then(value=>{
   getEmployees();
+  toaster.show(value.message);
 })
 }
 }
@@ -138,7 +184,7 @@ height: 100vh;
 overflow-y: scroll;
 position: absolute;
 z-index: 20000;
-padding: 2%;
+padding: 3% 5%;
 }
 
 
