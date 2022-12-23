@@ -10,13 +10,9 @@ class Constants
 FROM `users`, `employees`
 WHERE users.user_id = employees.user_id ORDER by users.id DESC limit $limit offset $page;";
 }
-
-   const  EMPLOYEE_PAYROLL = "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender, employees.department,employees.salary,employees.hire_date
+const  EMPLOYEE_PAYROLL = "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender, employees.department,employees.salary,employees.hire_date
 FROM `users`, `employees`
 WHERE users.user_id = employees.user_id ORDER by users.id DESC";
-    const EMPLOYEE_USER_BANK = "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender, employees.department, employees.hire_date
-FROM `users`, `employees`
-WHERE users.user_id = employees.user_id;";
 
     public static function SEARCH(String $search, int $page, int $limit): string
     {
@@ -26,8 +22,7 @@ WHERE users.user_id = employees.user_id;";
    const CAN_ADD = "SELECT users.user_id, users.name, users.email,users.profile,users.email_verified_at, users.role FROM  `users` WHERE users.deleted_at IS NULL AND users.user_id NOT IN(SELECT onboardings.user_id FROM onboardings);";
 
    const  AVAILABLE = "SELECT users.user_id, users.name, users.email,users.profile,users.email_verified_at ,users.role FROM  `users` WHERE users.deleted_at IS NULL AND users.user_id IN(SELECT onboardings.user_id FROM onboardings) AND users.user_id  NOT IN(SELECT assigns.assistant_id FROM assigns);";
-
-
+   
    //
     const  DEFAULT_ASSISTANT = "John Dzikunu";
 
