@@ -2,10 +2,13 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Employee;
+
 
 
 /**
@@ -43,6 +46,10 @@ class User extends Authenticatable
         'id',
     ];
 
+    public function Employee():BelongsTo
+    {
+        return $this->belongsTo(Employee::class,'user_id',"'user_id'");
+    }
     /**
      * The attributes that should be cast.
      *

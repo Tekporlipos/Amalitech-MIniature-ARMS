@@ -18,11 +18,11 @@ class AdminAccess
     public function handle(Request $request, Closure $next)
     {
 
-        if (!$request->user() || $request->user()->role!="admin") {
-            return new Response([
-                "message"=>"Unauthenticated Access"
-            ], 502);
-        }
+//        if (!$request->user() || $request->user()->role!="admin") {
+//            return new Response([
+//                "message"=>"Unauthenticated Access"
+//            ], 502);
+//        }
         return $next($request);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 namespace App\Components;
-use App\Models\traffic;
+use App\Models\Traffic;
 class TrafficComponent
 {
     private string $ip;
@@ -63,7 +63,7 @@ class TrafficComponent
 
     public function saveTraffic(): void
     {
-     traffic::create([
+     Traffic::create([
             "ip"=>$this->getIp(),
             "user_agent"=>$this->getUserAgent(),
             "page"=>$this->getPage()
