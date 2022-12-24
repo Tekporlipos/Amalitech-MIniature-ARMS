@@ -33,10 +33,12 @@ class AuthController extends Controller
 
         $assist = User::where("user_id", $request->get("assistantId"))->get();
 
-       $this->dispatch(new MailSender(
-           $employee, $request->get("email"),
-           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
-       ));
+        //remember to uncomment this block
+
+//       $this->dispatch(new MailSender(
+//           $employee, $request->get("email"),
+//           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
+//       ));
 
         return Response([
             "message"=>"New User added successfully",
@@ -77,7 +79,8 @@ class AuthController extends Controller
             (sizeof($passwordReset) && Hash::check($request->get("password"), $passwordReset[0]->token))) {
             $token = $user->createToken("amaliTech")->plainTextToken;
 
-            $this->sendAlert($request, $user, "Your ARMS account was just login.");
+            //remember to uncomment this block
+//            $this->sendAlert($request, $user, "Your ARMS account was just login.");
 
             return new Response([
                 "message"=>"login successful",

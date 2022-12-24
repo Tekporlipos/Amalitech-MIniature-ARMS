@@ -46,10 +46,7 @@ class User extends Authenticatable
         'id',
     ];
 
-    public function Employee():BelongsTo
-    {
-        return $this->belongsTo(Employee::class,'user_id',"'user_id'");
-    }
+
     /**
      * The attributes that should be cast.
      *

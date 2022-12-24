@@ -3,7 +3,7 @@
               <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Enterprise Resource Planning Center.</span>
               </h3>
               <div class="d-flex">
-                <a href="#" id="openModal"><button type="button" @click="ShowAddEmployeeModel()" class="btn btn-sm ml-3 btn-success"> Add Employee </button></a>
+               <button type="button" @click="ShowAddEmployeeModel()" class="btn btn-sm ml-3 btn-success"> Add Employee </button>
               </div>
             </div>
             
@@ -18,7 +18,7 @@
                           <tr>
                             <th>Bio</th>
                             <th>Department</th>
-                            <th>Started</th>
+                            <th>Start</th>
                             <th>Actions</th>
                           </tr>
                         </thead>
@@ -47,7 +47,7 @@
                             <div class="dropdown-menu" aria-labelledby="actions">
                   
                               <div class="dropdown-item" href="#">
-                                <a href="#" id="openModal"><button type="button" @click="[edit(),employee.id=employ.user_id]" class="btn btn-sm ml-3 btn-success"> Edit</button></a>
+                                <button type="button" @click="edit(employ.user_id)" class="btn btn-sm ml-3 btn-success"> Edit</button>
                                 <button @click="[dialogState = true,employee.name = append(employ.first_name , employ.last_name),employee.id=employ.user_id]" class="btn btn-danger btn-md m-1">Delete</button>
                                 
                               </div>
@@ -62,17 +62,17 @@
                     </div>
                   </div>
                   <div class="page-header flex-wrap container">
-                    <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">{{ employee.length }} <i><small>0f</small></i> {{ employee.length }}</span>
+                    <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">{{ employee.length + (10 * page) }} <i><small>0f</small></i> {{ total }}</span>
                     </h3>
                     <div class="d-flex">
-                      <button class="btn btn-outline-default " @click="prev()"> 
+                      <button class="btn btn-outline-default " :disabled="page==0" @click="prev()"> 
                         <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
                     </svg> 
                     Prev.
                   </button>
       
-              <button class="btn btn-outline-default" @click="next()"> 
+              <button class="btn btn-outline-default" :disabled="employee.length + (10 * page)  == total" @click="next()"> 
                 Next
                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                       <path fill="currentColor" d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
@@ -84,13 +84,13 @@
               </div>
             </div>
 
-            <Teleport v-if="showAddModel" to="#modal">
-                <div class="modalView">
-                    <AddEmployee :id="employee.id"  @close="ShowAddEmployeeModel" @submit="submited"/>
-                </div>
-            </Teleport>
 
-            <GDialog v-model="dialogState" max-width="500">
+            <GDialog v-model="showAddModel"  max-width="95%">
+              <AddEmployee :id="id"  @close="ShowAddEmployeeModel" @submit="submited"/>
+            </GDialog>
+
+
+            <GDialog v-model="dialogState"  max-width="500">
               <div class="card container p-3">
                 <h3 class="card-title">DELETE ALERT</h3>
                 <div class="card-content">Are you sure you want to delete {{ employee.name }}</div>
@@ -116,28 +116,34 @@ import 'gitart-vue-dialog/dist/style.css'
 import { GDialog } from 'gitart-vue-dialog'
 import { createToaster } from "@meforma/vue-toaster";
 
-let showAddModel = false;
+let showAddModel = ref(false);
+let id = ref(null);
 const toaster = createToaster({position:"top-left",});
+
 function ShowAddEmployeeModel() {
-    showAddModel = !showAddModel;
-    edditEmployee.value = false;
+    showAddModel.value = !showAddModel.value;
 }
-function edit() {
-  showAddModel = !showAddModel;
-}
-function submited(value) {
+
+function edit(user_id) {
+  id.value= user_id;
   ShowAddEmployeeModel();
- document.getElementById("openModal").click()
+}
+
+function submited(value) {
+  showAddModel.value = false;
+  if(value.message){
+    toaster.show(value.message);
+  }
+  id.value = null;
  //bad solution
  getEmployees();
- edditEmployee.value = false;
 }
 
 
-let employee = ref([]);
+let employee = ref({});
 let page = 0;
+let total = 0;
 let dialogState = ref(false)
-let edditEmployee = ref(false)
 
 function next() {
   page++;
@@ -156,11 +162,9 @@ function append(p1,p2) {
 }
 
 function getEmployees() {
-  getData(`employees?page=${page}`,"1|d7IoBijt1q5Or5rWnf6UliO6lfFEjcNmumdJ4HXW").then(value=>{
+  getData(`employees?page=${page}`,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
 employee.value = value.message;
-if(value.message.length < 10){
-  page = -1;
-}
+total = value.total;
 });
 }
 
@@ -168,7 +172,7 @@ getEmployees();
 
 function deleteEmployee(id) {
 if(true){
-deleteData(`employees/`+id,"1|d7IoBijt1q5Or5rWnf6UliO6lfFEjcNmumdJ4HXW").then(value=>{
+deleteData(`employees/`+id,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
   getEmployees();
   toaster.show(value.message);
 })
@@ -177,16 +181,6 @@ deleteData(`employees/`+id,"1|d7IoBijt1q5Or5rWnf6UliO6lfFEjcNmumdJ4HXW").then(va
 </script>
 
 <style scoped>
-.modalView{
-background-color: rgba(0, 0, 0, 0.25);
-width: 100vw;
-height: 100vh;
-overflow-y: scroll;
-position: absolute;
-z-index: 20000;
-padding: 3% 5%;
-}
-
 
 .page-header{
     margin: 0;

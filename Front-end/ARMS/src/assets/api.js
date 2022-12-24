@@ -54,7 +54,7 @@ export  async function deleteData(url,token) {
       return response.json(); 
 }
 
-export  async function patchData(url,token) {
+export  async function patchData(url,data,token) {
     const  response = await fetch(path+url, {
         method: 'PATCH',
         mode: 'cors',
@@ -68,6 +68,7 @@ export  async function patchData(url,token) {
         },
         redirect: 'follow', 
         referrerPolicy: 'no-referrer', 
+        body: JSON.stringify(data),
       });
       return response.json(); 
 }

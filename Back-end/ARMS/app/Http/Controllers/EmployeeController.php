@@ -38,6 +38,7 @@ class EmployeeController extends Controller
         return new Response([
             "page"=>$page/$limit,
             "limit"=>$limit,
+            "total"=>Employee::count(),
             "message"=> DB::select(Constants::EMPLOYEE_USER($page, $limit))
         ], 202);
     }
@@ -80,9 +81,13 @@ class EmployeeController extends Controller
      * @param string $id
      * @return Response
      */
-    public function show(string $id): Response
+    public function show(string $id)
     {
-        return Employee::where("user_id", $id)->first(['*']);
+
+        return new Response([
+            "email"=>user::where("user_id", $id)->first(['*'])->email,
+            "message"=> Employee::where("user_id", $id)->first(['*']),
+        ], 202);
     }
 
 
@@ -123,7 +128,7 @@ class EmployeeController extends Controller
      * @param string $id
      * @return Response
      */
-    public function update(Request $request, string $id): Response
+    public function update(Request $request, string $id)
     {
 
         $employee =  Employee::where("user_id", $id)->first(['*']);
@@ -133,19 +138,21 @@ class EmployeeController extends Controller
                 "message" => "noting to update"
             ], 404);
         }
-        if ($request->get("first_name")) {
-            $employee->first_name = $request->get("first_name");
+        if ($request->get("firstName")) {
+            $employee->first_name = $request->get("firstName");
         }
-        if ($request->get("last_name")) {
-            $employee->last_name = $request->get("last_name");
+        if ($request->get("lastName")) {
+            $employee->last_name = $request->get("lastName");
         }
-        if ($request->get("other_name")) {
-            $employee->other_names = $request->get("other_name");
+        if ($request->get("otherName")) {
+            if(trim(strtolower($request->get("otherName"))) == "delete"){
+                $employee->other_names = null;
+            }else{
+                $employee->other_names = $request->get("otherName");
+            }
+
         }
-        if ($request->get("email")) {
-            $request->validate(['email' => Constants::REQUIRE.'|email|unique:users']);
-            $employee->email = $request->get("email");
-        }
+
         if ($request->get("gender")) {
             $employee->gender = $request->get("gender");
         }
@@ -155,12 +162,15 @@ class EmployeeController extends Controller
         if ($request->get("department")) {
             $employee->department = $request->get("department");
         }
-        if ($request->get("hire_date")) {
-            $request->validate(['hire_date' => Constants::REQUIRE."|date"]);
-            $employee->hire_date = $request->get("hire_date");
+        if ($request->get("hireDate")) {
+            $request->validate(['hireDate' => Constants::REQUIRE."|date"]);
+            $employee->hire_date = $request->get("hireDate");
         }
         $employee->save();
-        return $employee->get();
+        return new Response([
+            "message"=>"User information updated successfully",
+            "data"=>$employee
+        ]);
     }
 
     /**

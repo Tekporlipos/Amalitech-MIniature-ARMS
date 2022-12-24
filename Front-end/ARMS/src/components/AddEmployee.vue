@@ -1,24 +1,24 @@
 <template>
 
-<form class="modal-content p-5" @submit.prevent="submitData()">
+<form class="modal-content p-2" @submit.prevent="submitData()">
     <div class="row">
 
 <div class="col-md-6 grid-margin stretch-card">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Employee Details</h4>
+      <h4 class="card-title"> <span v-if="id">Edit</span> Employee Details</h4>
       <p class="card-description">Bio data</p>
       <div class="forms-sample">
         <div class="form-group">
           
-          <label >First Name:<span class="required">*</span></label>
+          <label >First Name:<span class="required" v-if="!id">*</span></label>
          <br><small v-if="error.firstName" class="required">{{ error.firstName }}</small>
-          <input v-model="inputData.firstName" @input="error.firstName = null" type="text" class="form-control" required placeholder="First Name" />
+          <input v-model="inputData.firstName" @input="error.firstName = null" type="text" class="form-control" :required="!id" placeholder="First Name" />
         </div>
         <div class="form-group">
-          <label>Last Name:<span class="required">*</span></label>
+          <label>Last Name:<span class="required" v-if="!id">*</span></label>
           <br><small v-if="error.lastName" class="required">{{ error.lastName }}</small>
-          <input v-model="inputData.lastName" @input="error.lastName = null" type="text" class="form-control" required  placeholder="Last Name" />
+          <input v-model="inputData.lastName" @input="error.lastName = null" type="text" class="form-control" :required="!id"  placeholder="Last Name" />
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Other Name:</label>
@@ -27,9 +27,9 @@
         </div>
 
         <div class="form-group">
-          <label >Gender:<span class="required">*</span></label>
+          <label >Gender:<span class="required" v-if="!id">*</span></label>
           <br><small v-if="error.gender" class="required">{{ error.gender }}</small>
-          <select v-model="inputData.gender" @input="error.gender = null" class="form-control form-control-lg" required>
+          <select v-model="inputData.gender" @input="error.gender = null" class="form-control form-control-lg" :required="!id">
             <option>Select -- Gender</option>
             <option>Male</option>
             <option>Female</option>
@@ -48,14 +48,14 @@
       <p class="card-description">Identity data</p> -->
       <div class="forms-sample">
         <div class="form-group">
-          <label >Email:<span class="required">*</span></label>
+          <label >Email:<span class="required" v-if="!id">*</span></label>
           <br><small v-if="error.email"  class="required">{{ error.email }}</small>
-          <input type="email" v-model="inputData.email" @focusout="checkEmail()" @input="error.email = null" class="form-control" required placeholder="Email" />
+          <input type="email" :disabled="id"  v-model="inputData.email" @focusout="checkEmail()" @input="error.email = null" class="form-control" :required="!id" placeholder="Email" />
         </div>
         <div class="form-group">
-          <label >Department:<span class="required">*</span></label>
+          <label >Department:<span class="required" v-if="!id">*</span></label>
           <br><small v-if="error.department" class="required">{{ error.department }}</small>
-          <select v-model="inputData.department" @input="error.department = null" class="form-control form-control-lg" required>
+          <select v-model="inputData.department" @input="error.department = null" class="form-control form-control-lg" :required="!id">
             <option value="">Select -- Department</option>
             <option value="Service Center">Service Center</option>
             <option value="Operation Center">Operation Center</option>
@@ -63,15 +63,15 @@
           </select>
         </div>
         <div class="form-group">
-          <label >Monthly Salary:<span class="required">*</span></label>
+          <label >Monthly Salary:<span v-if="!id" class="required">*</span></label>
           <br><small v-if="error.salary" class="required">{{ error.salary }}</small>
-          <input type="number" v-model="inputData.salary" @input="error.salary = null" class="form-control"  placeholder="Monthly Salary" />
+          <input type="number" :required="!id" v-model="inputData.salary" @input="error.salary = null" class="form-control"  placeholder="Monthly Salary" />
         </div>
         <div class="form-group">
-          <label >Hire Date:<span class="required">*</span></label>
+          <label >Hire Date:<span class="required" v-if="!id">*</span></label>
           <br><small v-if="error.hireDate" class="required">{{ error.hireDate }}</small>
           <input type="date" v-model="inputData.hireDate" @input="error.hireDate = null" class="form-control"  placeholder="Hire Date" />
-        </div>
+        </div>        
         <div class="form-group">
           <label >Contant Assistant</label>
           <br><small v-if="error.assistant" class="required">{{ error.assistant }}</small>
@@ -92,7 +92,7 @@
               <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block"></span>
               </h3>
               <div class="d-flex">
-                <a href="#"><button type="button" @click="$emit('close')" class="btn btn-sm ml-3 btn-defualt"> Discard </button></a>
+                <button type="button" @click="$emit('close')" class="btn btn-sm ml-3 btn-defualt"> Discard </button>
                 <input type="submit" value=" Save"  class="btn btn-sm ml-3 btn-success">
               </div>
             </div>
@@ -103,8 +103,7 @@
 </template>
 
 <script>
-import {postData,getData} from '../assets/api'
-
+import {postData,getData,patchData} from '../assets/api'
 
 
 
@@ -118,49 +117,96 @@ export default {
     submitData(){
       if(this.id){
 
+        patchData(`employees/${this.id}`,this.inputData,"4|GVWSJV3I8850E1v5LCCa9b4fvNPcVbhnnNCs2wmK").then(value=>{
+        if(value.errors){
+          this.error = value.errors;
+        };
+        if(value){
+        this.$emit("submit",value);
+        this.inputData = {role:"employee"};
+        this.error ={};
+        this.canAssist = {};
+        this.user_id ="";
+      }
+      });
+        
+
       }else{
-        postData("register",this.inputData,"2|QvUuL87g1JbowZoUSZG3Doh3Gsk0XIEzIG5o7tCX").then(value=>{
+        postData("register",this.inputData,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
         if(value.employee){
         this.$emit("submit",value);
+        this.error ={};
+        this.canAssist = {};
+        this.user_id ="";
       }
       });
     }
      
     },
     checkEmail(){
-      postData("validate",this.inputData,"").then(value=>{
+      if(!this.id){
+        postData("validate",this.inputData,"").then(value=>{
         if(value.errors || value.exception)this.error = value.errors;
       });
-      
-    }
-  },
-  mounted() {
-
-    if(this.id){
-      getData(`employees/${this.id}`,"2|QvUuL87g1JbowZoUSZG3Doh3Gsk0XIEzIG5o7tCX").then(value=>{
-        this.inputData = {...value};
-        this.firstName = value.first_name,
-        this.lastName = value.last_name,
-        this.otherName = value.other_names,
-        this.hireDate = value.hire_date
-        console.log();
-});
-    }
-
-    getData("assistant","2|QvUuL87g1JbowZoUSZG3Doh3Gsk0XIEzIG5o7tCX").then(value=>{
+      }
+    },
+    getDataEmployees(){
+      getData(`employees/${this.id}`,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
+        this.inputData = {...value.message,
+          firstName:value.message.first_name,
+          lastName: value.message.last_name,
+          otherName: value.message.other_names,
+          hireDate: value.message.hire_date,
+          email: value.email,
+        };
+        console.log(this.inputData);
+    });
+},
+getDataAssistant(){
+  getData("assistant","2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
 if(!value.errors){
   this.canAssist = value
 }
 });
+}
+},
+
+created(){
+  if(this.user_id !== this.id){
+    console.log(this.user_id);
+    this.user_id = this.id
+    this.getDataAssistant();
+    if(this.id){
+      this.getDataEmployees();
+    }
+  }
+ 
+},
+updated() {
+  if(this.user_id !== this.id){
+    console.log(this.user_id);
+    this.user_id = this.id
+    this.getDataAssistant();
+    if(this.id){
+      this.getDataEmployees();
+    }
+  }
+  },
+  unmounted() {
+    this.inputData = {role:"employee"};
+    this.error ={};
+    this.canAssist = {};
+    this.user_id ="";
   },
   data(){
     return {
       inputData:{role:"employee"},
       error:{},
-      canAssist:{}
+      canAssist:{},
+      user_id:""
     }
   }
 }
