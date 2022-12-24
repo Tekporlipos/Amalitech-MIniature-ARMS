@@ -12,18 +12,18 @@
         <div class="form-group">
           
           <label >First Name:<span class="required" v-if="!id">*</span></label>
-         <br><small v-if="error.firstName" class="required">{{ error.firstName }}</small>
-          <input v-model="inputData.firstName" @input="error.firstName = null" type="text" class="form-control" :required="!id" placeholder="First Name" />
+         <br><small v-if="error.first_name" class="required">{{ error.first_name }}</small>
+          <input v-model="inputData.first_name" @input="error.first_name = null" type="text" class="form-control" :required="!id" placeholder="First Name" />
         </div>
         <div class="form-group">
           <label>Last Name:<span class="required" v-if="!id">*</span></label>
-          <br><small v-if="error.lastName" class="required">{{ error.lastName }}</small>
-          <input v-model="inputData.lastName" @input="error.lastName = null" type="text" class="form-control" :required="!id"  placeholder="Last Name" />
+          <br><small v-if="error.last_name" class="required">{{ error.last_name }}</small>
+          <input v-model="inputData.last_name" @input="error.last_name = null" type="text" class="form-control" :required="!id"  placeholder="Last Name" />
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Other Name:</label>
-          <br><small v-if="error.otherName" class="required">{{ error.otherName }}</small>
-          <input v-model="inputData.otherName" @input="error.otherName = null" type="text" class="form-control"  placeholder="Other Name" />
+          <br><small v-if="error.other_name" class="required">{{ error.other_name }}</small>
+          <input v-model="inputData.other_names" @input="error.other_names = null" type="text" class="form-control"  placeholder="Other Name" />
         </div>
 
         <div class="form-group">
@@ -35,6 +35,12 @@
             <option>Female</option>
             <option>Others</option>
           </select>
+        </div>
+
+        <div class="form-group">
+          <label for="exampleInputPassword1">Phone Number:</label>
+          <br><small v-if="error.tell" class="required">{{ error.tell }}</small>
+          <input v-model="inputData.tell" @input="error.tell = null" type="text" class="form-control"  placeholder="Other Name" />
         </div>
       </div>
     </div>
@@ -63,14 +69,24 @@
           </select>
         </div>
         <div class="form-group">
+          <label >Position:<span class="required" v-if="!id">*</span></label>
+          <br><small v-if="error.position" class="required">{{ error.position }}</small>
+          <select v-model="inputData.position" @input="error.position = null" class="form-control form-control-lg" :required="!id">
+            <option value="">Select -- Position</option>
+            <option value="Service Center">Junior Associate</option>
+            <option value="Operation Center">Associate</option>
+            <option value="Others">Senior Associate</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label >Monthly Salary:<span v-if="!id" class="required">*</span></label>
           <br><small v-if="error.salary" class="required">{{ error.salary }}</small>
           <input type="number" :required="!id" v-model="inputData.salary" @input="error.salary = null" class="form-control"  placeholder="Monthly Salary" />
         </div>
         <div class="form-group">
           <label >Hire Date:<span class="required" v-if="!id">*</span></label>
-          <br><small v-if="error.hireDate" class="required">{{ error.hireDate }}</small>
-          <input type="date" v-model="inputData.hireDate" @input="error.hireDate = null" class="form-control"  placeholder="Hire Date" />
+          <br><small v-if="error.hire_date" class="required">{{ error.hire_date }}</small>
+          <input type="date" v-model="inputData.hire_date" @input="error.hire_date = null" class="form-control"  placeholder="Hire Date" />
         </div>        
         <div class="form-group">
           <label >Contant Assistant</label>
@@ -104,7 +120,7 @@
 
 <script>
 import {postData,getData,patchData} from '../assets/api'
-
+const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
 
 
 export default {
@@ -116,8 +132,7 @@ export default {
     },
     submitData(){
       if(this.id){
-
-        patchData(`employees/${this.id}`,this.inputData,"4|GVWSJV3I8850E1v5LCCa9b4fvNPcVbhnnNCs2wmK").then(value=>{
+        patchData(`employees/${this.id}`,this.inputData,token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
@@ -129,23 +144,21 @@ export default {
         this.user_id ="";
       }
       });
-        
-
-      }else{
-        postData("register",this.inputData,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
+    }else{
+        postData("register",this.inputData,token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
-        if(value.employee){
+        if(value){
         this.$emit("submit",value);
+        this.inputData = {role:"employee"};
         this.error ={};
         this.canAssist = {};
         this.user_id ="";
       }
       });
     }
-     
-    },
+  },
     checkEmail(){
       if(!this.id){
         postData("validate",this.inputData,"").then(value=>{
@@ -154,19 +167,15 @@ export default {
       }
     },
     getDataEmployees(){
-      getData(`employees/${this.id}`,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
-        this.inputData = {...value.message,
-          firstName:value.message.first_name,
-          lastName: value.message.last_name,
-          otherName: value.message.other_names,
-          hireDate: value.message.hire_date,
-          email: value.email,
-        };
-        console.log(this.inputData);
+      getData(`employees/${this.id}`,token).then(value=>{
+        if(value.length>0){
+          this.inputData = {...value[0]};
+        }
+       
     });
 },
 getDataAssistant(){
-  getData("assistant","2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
+  getData("assistant",token).then(value=>{
 if(!value.errors){
   this.canAssist = value
 }

@@ -18,6 +18,23 @@ export  async function postData(url,data,token) {
       return response.json(); 
 }
 
+export async function imageUpload(url,data,token) {
+  const  response = await fetch(path+url, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache', 
+      headers: {
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Accept': 'application/json',
+        'Authorization': 'Bearer '+token
+      },
+      redirect: 'follow', 
+      referrerPolicy: 'no-referrer', 
+      body: data
+    });
+    return response.json(); 
+}
+
 export  async function getData(url,token) {
     const  response = await fetch(path+url, {
         method: 'GET',

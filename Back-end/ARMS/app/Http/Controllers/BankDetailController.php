@@ -47,8 +47,7 @@ class BankDetailController extends Controller
             "user_id"=>$id,
             "bank_name"=>$request->get("bank_name"),
             "account_number"=> $request->get("account_number"),
-            "bank_branch"=>$request->get("bank_branch"),
-            "tell"=>$request->get("tell")
+            "bank_branch"=>$request->get("bank_branch")
         ]);
 
     }
@@ -56,7 +55,7 @@ class BankDetailController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param string $id
+     * @param Request $request
      * @return Collection
      */
     public function index(Request $request) : Collection
@@ -72,33 +71,27 @@ class BankDetailController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function update(Request $request) : Collection
+    public function update(Request $request)
     {
         $bankDetails =  BankDetails::where("user_id", $request->user()->user_id)->first(['*']);
-
         if ($request->get("bank_name")) {
             $bankDetails->bank_name = $request->get("bank_name");
         }
-
         if ($request->get("bank_branch")) {
             $bankDetails->bank_branch = $request->get("bank_branch");
         }
-
         if ($request->get("account_name")) {
             $bankDetails->account_name = $request->get("account_name");
         }
-
         if ($request->get("account_number")) {
             $request->validate(['account_number' => Constants::REQUIRE.'|min:10']);
             $bankDetails->account_number = $request->get("account_number");
         }
-
         if ($request->get("tell")) {
             $request->validate(['tell' => Constants::REQUIRE."|min:9"]);
             $bankDetails->tell = $request->get("tell");
         }
-
         $bankDetails->save();
-        return $bankDetails->get();
+        return $bankDetails;
     }
 }

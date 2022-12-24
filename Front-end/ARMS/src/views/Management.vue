@@ -18,6 +18,8 @@
                           <tr>
                             <th>Bio</th>
                             <th>Department</th>
+                            <th>Position</th>
+                            <th>Salary</th>
                             <th>Start</th>
                             <th>Actions</th>
                           </tr>
@@ -30,11 +32,14 @@
                                 <div class="table-user-name ml-3">
                                   <p class="mb-0 font-weight-medium"> {{ employ.first_name }} {{ employ.other_names?employ.other_names:"" }} {{ employ.last_name }} </p>
                                   <small> {{ employ.email }}</small><br>
+                                  <small> {{ employ.tell }}</small><br>
                                   <small> {{ employ.gender }}</small>
                                 </div>
                               </div>
                             </td>
                             <td>{{ employ.department }}</td>
+                            <td>{{ employ.position }}</td>
+                            <td>{{ employ.salary }}</td>
                             <td>
                               <div class="badge badge-inverse-success"> {{ timeSince(employ.hire_date) }} </div>
                             </td>
@@ -115,10 +120,10 @@ import {ref} from 'vue';
 import 'gitart-vue-dialog/dist/style.css'
 import { GDialog } from 'gitart-vue-dialog'
 import { createToaster } from "@meforma/vue-toaster";
-
+const toaster = createToaster({position:"top-left",});
 let showAddModel = ref(false);
 let id = ref(null);
-const toaster = createToaster({position:"top-left",});
+const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
 
 function ShowAddEmployeeModel() {
     showAddModel.value = !showAddModel.value;
@@ -162,7 +167,7 @@ function append(p1,p2) {
 }
 
 function getEmployees() {
-  getData(`employees?page=${page}`,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
+  getData(`employees?page=${page}`,token).then(value=>{
 employee.value = value.message;
 total = value.total;
 });
@@ -172,7 +177,7 @@ getEmployees();
 
 function deleteEmployee(id) {
 if(true){
-deleteData(`employees/`+id,"2|lUD066Yz4V0jsvDMvrO1SP5g7kDZrqR2cSSS4KG6").then(value=>{
+deleteData(`employees/`+id,token).then(value=>{
   getEmployees();
   toaster.show(value.message);
 })

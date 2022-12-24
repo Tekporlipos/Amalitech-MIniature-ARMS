@@ -28,7 +28,9 @@ class Employee extends Model
         "gender",
         "salary",
         "hire_date",
-        "department"
+        "department",
+        "tell",
+        "position"
     ];
 
     public function user()

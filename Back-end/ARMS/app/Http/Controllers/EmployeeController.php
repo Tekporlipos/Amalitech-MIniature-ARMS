@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Constants\Constants;
 use App\Models\Employee;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\NoReturn;
+use PhpParser\Node\Expr\Array_;
 
 class EmployeeController extends Controller
 {
@@ -64,11 +66,13 @@ class EmployeeController extends Controller
     {
         return Employee::create([
             "user_id" => $userId,
-            "first_name" => $request->get("firstName"),
-            "last_name" => $request->get("lastName"),
-            "other_names" => $request->get("otherName"),
+            "first_name" => $request->get("first_name"),
+            "last_name" => $request->get("last_name"),
+            "other_names" => $request->get("other_name"),
             "gender" => $request->get("gender"),
-            "hire_date" => $request->get("hireDate"),
+            "hire_date" => $request->get("hire_date"),
+            "position" => $request->get("position"),
+            "tell" => $request->get("tell"),
             "salary" => $request->get("salary"),
             "department" => $request->get("department"),
         ]);
@@ -79,15 +83,11 @@ class EmployeeController extends Controller
      * Display the specified resource.
      *
      * @param string $id
-     * @return Response
+     * @return Collection
      */
     public function show(string $id)
     {
-
-        return new Response([
-            "email"=>user::where("user_id", $id)->first(['*'])->email,
-            "message"=> Employee::where("user_id", $id)->first(['*']),
-        ], 202);
+        return DB::select(Constants::EMPLOYEE_BY_ID($id));
     }
 
 
@@ -128,7 +128,7 @@ class EmployeeController extends Controller
      * @param string $id
      * @return Response
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): Response
     {
 
         $employee =  Employee::where("user_id", $id)->first(['*']);
@@ -138,33 +138,37 @@ class EmployeeController extends Controller
                 "message" => "noting to update"
             ], 404);
         }
-        if ($request->get("firstName")) {
-            $employee->first_name = $request->get("firstName");
+        if ($request->get("first_name")) {
+            $employee->first_name = $request->get("first_name");
         }
-        if ($request->get("lastName")) {
-            $employee->last_name = $request->get("lastName");
+        if ($request->get("last_name")) {
+            $employee->last_name = $request->get("last_name");
         }
-        if ($request->get("otherName")) {
-            if(trim(strtolower($request->get("otherName"))) == "delete"){
+        if ($request->get("tell")) {
+            $employee->tell = $request->get("tell");
+        }
+
+        if ($request->get("position")) {
+            $employee->position = $request->get("position");
+        }
+
+        if ($request->get("other_names")) {
+            if(trim(strtolower($request->get("other_names"))) == "delete"){
                 $employee->other_names = null;
             }else{
-                $employee->other_names = $request->get("otherName");
+                $employee->other_names = $request->get("other_names");
             }
-
         }
-
         if ($request->get("gender")) {
             $employee->gender = $request->get("gender");
         }
-        if ($request->get("role")) {
-            $employee->role = $request->get("role");
-        }
+
         if ($request->get("department")) {
             $employee->department = $request->get("department");
         }
-        if ($request->get("hireDate")) {
-            $request->validate(['hireDate' => Constants::REQUIRE."|date"]);
-            $employee->hire_date = $request->get("hireDate");
+        if ($request->get("hire_date")) {
+            $request->validate(['hire_date' => Constants::REQUIRE."|date"]);
+            $employee->hire_date = $request->get("hire_date");
         }
         $employee->save();
         return new Response([

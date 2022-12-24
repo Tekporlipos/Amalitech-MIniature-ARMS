@@ -89,7 +89,7 @@ class OnboardingController extends Controller
     {
         Onboarding::where("user_id", $id)->delete();
         return new Response([
-            "message"=>"Onboarding assistant deleted successfully"
+            "message"=>"On-boarding assistant deleted successfully"
         ], 202);
     }
 }

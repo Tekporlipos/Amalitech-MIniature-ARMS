@@ -20,13 +20,14 @@ class AuthRegisterValidate
     {
 
         $request->validate([
-            'firstName' => Constants::REQUIRE,
-            'lastName' => Constants::REQUIRE,
+            'first_name' => Constants::REQUIRE,
+            'last_name' => Constants::REQUIRE,
             'email' => Constants::REQUIRE.'|email|unique:users',
             'gender' => Constants::REQUIRE,
             'role' =>Constants::REQUIRE.'|min:4',
             'department' => Constants::REQUIRE,
-            'hireDate' => 'date|required',
+            'position' => Constants::REQUIRE,
+            'hire_date' => 'date|required',
             'salary' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         ]);
 

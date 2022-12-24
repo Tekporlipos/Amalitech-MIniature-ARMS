@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string("account_name")->nullable();
             $table->string("bank_branch")->nullable();
             $table->string("account_number")->nullable();
-            $table->string("tell")->nullable();
             $table->timestamps();
         });
     }
