@@ -55,21 +55,21 @@ import { RouterLink, RouterView } from 'vue-router'
          </a>
        </li>
 
-       <li class="nav-item ">
+       <li class="nav-item " v-if="['developer','admin'].includes(user.role)">
          <a class="nav-link" href="#">
            <i class="mdi mdi-square-inc-cash menu-icon"></i>
            <span class="menu-title">Finance</span>
          </a>
        </li>
 
-       <li class="nav-item ">
+       <li  class="nav-item ">
          <RouterLink class="nav-link" to="/employee">
            <i class="mdi mdi-account-multiple menu-icon"></i>
            <span class="menu-title">Employee</span>
          </RouterLink>
        </li>
 
-       <li class="nav-item ">
+       <li v-if="['developer','admin'].includes(user.role)" class="nav-item ">
          <RouterLink class="nav-link" to="/management">
            <i class="mdi mdi-fan menu-icon"></i>
            <span class="menu-title">Management</span>
@@ -77,12 +77,12 @@ import { RouterLink, RouterView } from 'vue-router'
        </li>
        
 
-       <li class="nav-item pt-4">
+       <li v-if="['developer','admin'].includes(user.role)" class="nav-item pt-4">
          <span >
            <span class="menu-title">Docs</span>
          </span>
        </li>
-       <li class="nav-item">
+       <li v-if="['developer','admin'].includes(user.role)" class="nav-item">
          <a class="nav-link" href="?">
            <i class="mdi mdi-file-document-box menu-icon"></i>
            <span class="menu-title">Documentation</span>

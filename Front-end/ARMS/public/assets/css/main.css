@@ -13565,9 +13565,8 @@ body.avgrund-active {
           padding-bottom: 1rem;
           font-size: 1rem;
           position: absolute;
-          left: 33px;
           text-align: left;
-          top: 10px;
+          top: -50px;
           font-weight: 500; }
           .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.datepicker-switch:hover,
           .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.datepicker-switch:hover {
@@ -13579,12 +13578,12 @@ body.avgrund-active {
               top: 14px; } }
         .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.prev,
         .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.prev {
-          right: 68px;
-          top: 16px; }
+          right: 30px;
+          top: -45px; }
         .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.next,
         .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.next {
-          top: 16px;
-          right: 31px; }
+          top: -45px;
+          right: -5px; }
         .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.dow,
         .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.dow {
           font-family: 'Poppins', sans-serif;;
@@ -13592,10 +13591,10 @@ body.avgrund-active {
           font-size: .875rem; }
           .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.dow:first-child,
           .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.dow:first-child {
-            text-align: left; }
+            text-align: center; }
           .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.dow:last-child,
           .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.dow:last-child {
-            text-align: right; }
+            text-align: center; }
     .datepicker.datepicker-dropdown .datepicker-days table.table-condensed tbody,
     .datepicker.datepicker-inline .datepicker-days table.table-condensed tbody {
       position: relative;
@@ -14293,7 +14292,7 @@ dl {
     position: absolute;
     top: 64px;
     bottom: 113px;
-    left: 36px; }
+    left: 7px; }
     @media (max-width: 768px) {
       .gradient-bullet-list:after {
         bottom: 100px; } }
