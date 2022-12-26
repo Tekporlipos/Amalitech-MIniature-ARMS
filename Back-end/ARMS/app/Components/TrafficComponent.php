@@ -1,6 +1,7 @@
 <?php
 namespace App\Components;
 use App\Models\Traffic;
+
 class TrafficComponent
 {
     private string $ip;

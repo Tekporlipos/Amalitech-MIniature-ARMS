@@ -193,19 +193,24 @@ var userData = ref({});
 var bankDetail = ref({});
 var update = ref(false);
 var dialogState = ref(false)
-userData.value  = VueCookieNext.getCookie("user");
+const user = VueCookieNext.getCookie("user");
+userData.value   = {...user};
 
 function uploadImage() {
   const inputData = document.querySelector("#file")
   var data = new FormData()
 data.append('profile', inputData.files[0])
-imageUpload("upload",data,user.token).then(value=>{
+console.log(user.token);
+imageUpload("upload",data, user.token).then(value=>{
   image.value = value.message;
+  console.log(value);
+  user.profile = value.message;
+  VueCookieNext.setCookie("user",user);
 });
 }
 
 function updateEmployee(data) {
-  patchData(`employees/${userData.value.user_id}`,data,userData.value.token).then(value=>{
+  patchData(`employees/${userData.value.user_id}`,data,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
@@ -217,20 +222,20 @@ function updateEmployee(data) {
 
 function updateBankDetail() {
   if(update){
-    patchData(`bank-detail`,bankDetail.value,userData.value.token).then(value=>{
+    patchData(`bank-detail`,bankDetail.value,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
       });
   }else{
-    postData(`bank-detail`,bankDetail.value,userData.value.token).then(value=>{
+    postData(`bank-detail`,bankDetail.value,user.token).then(value=>{
       bankDetail.value = {...value};
     });
   }
 }
 
 function getInfo() {
-  getData(`employees/${userData.value.user_id}`,userData.value.token).then(value=>{
+  getData(`employees/${userData.value.user_id}`,user.token).then(value=>{
     if(value.length>0){
       userData.value = {...value[0]};
     }
@@ -238,7 +243,7 @@ function getInfo() {
 }
 
 function getBankDetail() {
-  getData("bank-detail",userData.value.token).then(value=>{
+  getData("bank-detail",user.token).then(value=>{
     if(value.length > 0){
       update.value = true
       bankDetail.value = {...value[0]};

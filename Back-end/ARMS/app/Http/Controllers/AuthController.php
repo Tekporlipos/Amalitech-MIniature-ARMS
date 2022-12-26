@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\Constants;
 use App\Jobs\LoginAlertJob;
-use App\Jobs\MailSender;
-use App\Jobs\PasswordResetJob;
 use App\Models\Assign;
 use App\Models\PasswordReset;
 use App\Models\User;

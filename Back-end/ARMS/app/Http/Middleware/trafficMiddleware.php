@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Components\TrafficComponent;
 use Closure;
 use Illuminate\Http\Request;
-use App\Components\TrafficComponent;
-use App\Http\Controllers\TrafficController;
+
 class trafficMiddleware
 {
     /**

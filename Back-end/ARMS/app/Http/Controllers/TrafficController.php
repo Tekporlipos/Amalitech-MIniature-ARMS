@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Traffic;
-use  Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class TrafficController extends Controller
 {

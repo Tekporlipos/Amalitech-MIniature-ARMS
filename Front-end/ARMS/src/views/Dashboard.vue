@@ -77,10 +77,7 @@
                   <p class="text-muted"> Show overview of the past month
                   </p>
                 </div>
-                <div class="col-sm-5 text-md-right">
-                  <button type="button" class="btn btn-icon-text mb-3 mb-sm-0 btn-inverse-primary font-weight-normal">
-                    <i class="mdi mdi-email btn-icon-prepend"></i>Download Report </button>
-                </div>
+                
               </div>
               
               <div class="row my-3">
@@ -119,28 +116,25 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr v-for="emp of employee" >
                       <td>
                         <div class="d-flex align-items-center">
-                          <img src="assets/images/faces/face1.jpg" alt="image" />
+                          <img  :alt="emp.name" :src="emp.profile?emp.profile:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIUAAACFCAMAAABCBMsOAAAAMFBMVEXk5ueutLfDx8nn6eqrsbS0urzf4uPQ09Wxt7qnrrG4vcDKztDN0dLHy83X2ty9wsQYMyQeAAAC3klEQVR4nO2a25KDIAxAxXATFf7/bxd0u7ujtRAkyM5wnvrW0ySESzoMnU6n0+l0Op1Op9P53wDAID3+w2MKg1yc0IxprYVTXuUBBzkKztkLPnGz1PYAayZ2hPNRVvQA6fjJYfNga7V4gGLvJYKHqBUOd07GHyZVRcNcBuI7HGsFDRGRqKEBcQmflJlWAy4WxzEaC6UGzEkSXsMSWshECcYEXTBAp0oQViioj43igCSyGNJD4YMx0gQDFkwoqIKBqIotGDSVYVESXoPCAsbkZbozWQINQIaCpj4lrjY9orwELMiE+GCUXyXgsBK+MIpbDAZtwQk2eFy32CxccQuJlmDMlLdAFyfF9t4tmrPASxBUZ8ZKZQQbSRNdq40O3sZulrGzm/ISjZxyMk585SXwp19GcgZv4yaAXSVUV8QWboit3JZBpIeC8FGpiVcURIGS5WPTSHxdo355beGlMenBk7Iyf2jiBdpvax/bBnlNvDSamExsU5q3HpzNlRR2Dyumk0flidXmcZje8Qemd5tHmGQaHRBmtI9MMneRfaq7f3jm+0FKa9WOtduAuZ5K+PlWrU686iEQlgfTZlS2xrTbf4NdjebvF2pw0mJUkjIqPgez4ecVelYRq6XxCAr6IgRvTcbyIj4R7rptX4iIpWgTA1g0+pa6iYzFmggMMzIMfz1ckXjAoHSuw+ZR4m8IIFOOeBGPmycOGNacejgymTtp8fv33UDs3AkHqDIOgSn32ho5XyLhOu+iVCgbvx45xRE78GeAHyqWjkSAYzVudaprDVRtAEE6dhAasFJJIGasJfvEkfSJXs4oJF0jsYvSFcWukZiPki3zjUVaTjKGQjiNhPfx5L9k5ZMwTkMPIPAkBINwlf5YRCsD8EM6PFMsFPi5VAaxPxtWqM2Ai8QCP6/MIrKpUTeLnchILWemn0GkMGyN4owOkpbp9TpDy8f2CWqsQ+SpHCrxUaLT6XQ6/4YvuEMkBJwEQTUAAAAASUVORK5CYII='" alt="image" />
                           <div class="table-user-name ml-3">
-                            <p class="mb-0 font-weight-medium"> John Dzikunu </p>
-                            <small> dzikunujohn36@gmail.com</small>
+                            <p class="mb-0 font-weight-medium"> {{ emp.first_name }} </p>
+                            <small> {{ emp.email }}</small>
                           </div>
                         </div>
                       </td>
-                      <td>Service Center</td>
+                      <td>{{ emp.department }}</td>
                       <td>
-                        <div class="badge badge-inverse-success"> 2h ago </div>
+                        <div class="badge badge-inverse-success">{{ timeSince(emp.hire_date) }}</div>
                       </td>
                     </tr>
                     
                   </tbody>
                 </table>
               </div>
-              <a class="text-black mt-3 d-block pl-4" href="#">
-                <span class="font-weight-medium h6">View all</span>
-                <i class="mdi mdi-chevron-right"></i></a>
             </div>
           </div>
         </div>
@@ -265,5 +259,24 @@
 </template>
 
 <script setup>
-document.title = "ERP Adim Dashboard" 
+import "../../public/assets/js/dashboard"
+import {getData,timeSince} from '../assets/api'
+import { RouterLink } from 'vue-router'
+import { VueCookieNext } from 'vue-cookie-next'
+import {ref} from 'vue';
+document.title = "ERP Adim Dashboard"
+
+const employee = ref([]);
+const user = VueCookieNext.getCookie("user");
+function getEmployees() {
+  getData(`employees`,user.token).then(value=>{
+employee.value = value.message;
+});
+}
+
+getEmployees();
 </script>
+
+<style scoped > 
+
+</style>

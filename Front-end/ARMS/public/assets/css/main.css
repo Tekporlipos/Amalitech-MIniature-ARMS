@@ -1733,7 +1733,7 @@
   box-sizing: border-box; }
 
 html {
-  font-family: sans-serif;
+  font-family: 'Poppins', sans-serif;
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
@@ -1743,7 +1743,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -1844,7 +1844,7 @@ pre,
 code,
 kbd,
 samp {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: 'Poppins', sans-serif;
   font-size: 1em; }
 
 pre {
@@ -1893,7 +1893,7 @@ select,
 optgroup,
 textarea {
   margin: 0;
-  font-family: inherit;
+  font-family: 'Poppins', sans-serif;
   font-size: inherit;
   line-height: inherit; }
 
@@ -6965,7 +6965,7 @@ a.close.disabled {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: 'Poppins', sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -7050,7 +7050,7 @@ a.close.disabled {
   z-index: 1060;
   display: block;
   max-width: 276px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: 'Poppins', sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -9979,7 +9979,7 @@ button.bg-dark:focus,
     margin-left: auto !important; } }
 
 .text-monospace {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important; }
+  font-family: 'Poppins', sans-serif;}
 
 .text-justify {
   text-align: justify !important; }
@@ -10443,28 +10443,28 @@ input:focus {
 
 /* Fonts */
 @font-face {
-  font-family: "Rubik";
+  font-family: 'Poppins', sans-serif;
   src: url("../fonts/rubik/Rubik-Light.eot");
   src: url("../fonts/rubik/Rubik-Light.woff2") format("woff2"), url("../fonts/rubik/Rubik-Light.woff") format("woff"), url("../fonts/rubik/Rubik-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal; }
 
 @font-face {
-  font-family: "Rubik";
+  font-family: 'Poppins', sans-serif;
   src: url("../fonts/rubik/Rubik-Regular.eot");
   src: url("../fonts/rubik/Rubik-Regular.woff2") format("woff2"), url("../fonts/rubik/Rubik-Regular.woff") format("woff"), url("../fonts/rubik/Rubik-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal; }
 
 @font-face {
-  font-family: "Rubik";
+  font-family: 'Poppins', sans-serif;
   src: url("../fonts/rubik/Rubik-Medium.eot");
   src: url("../fonts/rubik/Rubik-Medium.woff2") format("woff2"), url("../fonts/rubik/Rubik-Medium.woff") format("woff"), url("../fonts/rubik/Rubik-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal; }
 
 @font-face {
-  font-family: "Rubik";
+  font-family: 'Poppins', sans-serif;
   src: url("../fonts/rubik/Rubik-Bold.eot");
   src: url("../fonts/rubik/Rubik-Bold.woff2") format("woff2"), url("../fonts/rubik/Rubik-Bold.woff") format("woff"), url("../fonts/rubik/Rubik-Bold.ttf") format("truetype");
   font-weight: 700;
@@ -12122,7 +12122,7 @@ code {
       transition-duration: 0s;
       -webkit-transition-duration: 250ms;
       transition-duration: 250ms;
-      font-family: Material Design Icons;
+      font-family: 'Poppins', sans-serif;
       opacity: 0;
       filter: alpha(opacity=0);
       -webkit-transform: scale(0);
@@ -13144,7 +13144,7 @@ select.tt-hint {
     .preview-list .preview-item .preview-item-content p {
       margin-bottom: 10px; }
       .preview-list .preview-item .preview-item-content p .content-category {
-        font-family: 'source-sans-pro-semibold', sans-serif;
+        font-family: 'Poppins', sans-serif;
         padding-right: 15px;
         border-right: 1px solid #ebedf2; }
     .rtl .preview-list .preview-item .preview-item-content {
@@ -13951,7 +13951,7 @@ body.avgrund-active {
   height: auto;
   background-image: none;
   text-shadow: none;
-  font-family: 'Poppins', sans-serif;;
+  font-family: 'Poppins', sans-serif;
   font-weight: 400;
   background-color: #ffffff;
   border-color: #ebedf2;
@@ -14163,7 +14163,7 @@ body.avgrund-active {
   border-radius: 3px;
   padding: 6px;
   font-size: .625rem;
-  font-family: inherit;
+  font-family: 'Poppins', sans-serif;
   line-height: 1; }
   .select2-container--default .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
     color: #ffffff; }
@@ -14244,7 +14244,7 @@ dl {
     .list-ticked li:before,
     .list-arrow li:before,
     .list-star li:before {
-      font-family: "Material Design Icons";
+      font-family: 'Poppins', sans-serif;
       margin-left: -1.5rem;
       width: 1.5rem;
       margin-right: .5rem; }
@@ -14477,7 +14477,7 @@ dl {
 
 /* Navbar */
 .navbar {
-  font-family: 'Poppins', sans-serif;;
+  font-family: 'Poppins', sans-serif;
   left: 200px;
   transition: left 0.25s ease, width 0.25s ease;
   -webkit-transition: left 0.25s ease, width 0.25s ease;
@@ -14777,7 +14777,7 @@ dl {
 
 /* Sidebar */
 .sidebar {
-  font-family: 'Poppins', sans-serif;;
+  font-family: 'Poppins', sans-serif;
   padding: 0;
   background-color: #f0eeeb;
   width: 200px;

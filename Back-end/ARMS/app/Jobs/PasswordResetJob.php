@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Mail\EmployeeMail;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
