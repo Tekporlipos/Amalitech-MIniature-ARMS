@@ -265,4 +265,5 @@
 </template>
 
 <script setup>
+document.title = "ERP Adim Dashboard" 
 </script>

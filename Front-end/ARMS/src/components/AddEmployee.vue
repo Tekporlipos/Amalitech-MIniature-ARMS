@@ -75,7 +75,7 @@
             <option value="">Select -- Position</option>
             <option value="Service Center">Junior Associate</option>
             <option value="Operation Center">Associate</option>
-            <option value="Others">Senior Associate</option>
+            <option value="Senior Associate">Senior Associate</option>
           </select>
         </div>
         <div class="form-group">
@@ -185,7 +185,6 @@ if(!value.errors){
 
 created(){
   if(this.user_id !== this.id){
-    console.log(this.user_id);
     this.user_id = this.id
     this.getDataAssistant();
     if(this.id){
@@ -196,7 +195,6 @@ created(){
 },
 updated() {
   if(this.user_id !== this.id){
-    console.log(this.user_id);
     this.user_id = this.id
     this.getDataAssistant();
     if(this.id){
@@ -227,7 +225,6 @@ updated() {
 .btn-defualt{
     border: solid rgba(100, 89, 89, 0.671) 2px;
 }
-
 .page-header{
   margin: 0px;
 }

@@ -70,7 +70,7 @@ class AuthController extends Controller
 
         if (!$user){
             return new Response([
-                "Message"=>"No user exist with this email",
+                "message"=>"There is no user with the specified email.",
             ], 504);
         }
 
@@ -89,7 +89,7 @@ class AuthController extends Controller
             ], 201);
         }
         return new Response([
-            "Message"=>"wrong credentials",
+            "message"=>"wrong credentials",
         ], 504);
     }
 
@@ -105,13 +105,14 @@ class AuthController extends Controller
         if ($user && Hash::check($request->get("old_password"), $user->password) ||
             (sizeof($passwordReset) && Hash::check($request->get("old_password"), $passwordReset[0]->token))){
             $user->password = bcrypt($request->get("password"));
+            $user->email_verified_at = date_create();
             $user->update();
 
             if (sizeof($passwordReset)){
                 $passwordResetModel->delete();
             }
 
-            $this->sendAlert($request, $user, "Your password was just changed.");
+//            $this->sendAlert($request, $user, "Your password was just changed.");
 
             return new Response([
                 "message"=>"password changed successful",
@@ -119,7 +120,7 @@ class AuthController extends Controller
             ], 201);
         }
         return new Response([
-            "Message"=>"wrong credential",
+            "message"=>"wrong credential",
         ], 504);
     }
 
@@ -141,7 +142,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request): Response
     {
         $request->validate([
-            'email'=>'string|email|required|unique:Password_Resets,email|exists:Users,email',
+            'email'=>'string|email|required|email|exists:users,email',
         ]);
 //
         $password =  strval(rand(11111111, 99999999));
@@ -150,7 +151,7 @@ class AuthController extends Controller
            'token'=>bcrypt($password),
        ]);
 
-        $this->dispatch(new PasswordResetJob($password, $request->get("email")));
+//        $this->dispatch(new PasswordResetJob($password, $request->get("email")));
 
         return  new Response([
            'message'=>"password reset token is sent to the email"

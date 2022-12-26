@@ -91,9 +91,11 @@
         <div class="form-group">
           <label for="exampleInputPassword1">Monthly Salary:<span class="required">*</span></label>
           <div class="input-group">
-            <input type="text" class="form-control" v-model="userData.salary" placeholder="Monthly Salary" aria-label="Monthly Salary" disabled aria-describedby="basic-addon2" />
+            <select v-model="userData.salary" @input="error.position = null" class="form-control form-control-lg" placeholder="Monthly Salary" aria-label="Monthly Salary">
+            <option :value="userData.salary">{{ userData.salary }}</option>
+          </select>
             <div class="input-group-append">
-            <button class="btn btn-sm btn-primary" type="button"> View Detail </button>
+            <button class="btn btn-sm btn-primary" @click="dialogState = true" type="button"> View Detail </button>
           </div>
          </div>
         </div>
@@ -163,6 +165,14 @@
 </div>
 </div>
 
+
+<GDialog v-model="dialogState"  max-width="75%">
+     
+      <div>
+         <Payslip :user="userData" @close="dialogState = false" />
+      </div>
+</GDialog>
+
 </template>
 
 <script setup>
@@ -170,12 +180,20 @@
 import { imageUpload,getData,patchData } from "../assets/api";
 import {ref} from 'vue'
 import { createToaster } from "@meforma/vue-toaster";
+import 'gitart-vue-dialog/dist/style.css'
+import { GDialog } from 'gitart-vue-dialog'
+import Payslip  from '../components/Payslip.vue'
+document.title = "ERP Adim Employee" 
+
 const toaster = createToaster({position:"top-left",});
 
 var image = ref(null);
 var userData = ref({});
 var bankDetail = ref({});
 var update = ref(false);
+var dialogState = ref(false)
+
+
 const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
 
 function uploadImage() {
@@ -238,7 +256,7 @@ getBankDetail();
 
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 .btn-defualt{
     border: solid rgba(100, 89, 89, 0.671) 2px;
 }
@@ -255,4 +273,5 @@ width: 200px;
 height: 200px;
 
 }
+
 </style>

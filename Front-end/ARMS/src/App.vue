@@ -1,9 +1,44 @@
-<script setup>
+<script>
+import { postData } from "./assets/api";
+export default {
+  name:"App",
+  components:{
+    RouterLink,RouterView
+  },
+  methods:{
+
+    data() {
+      return {
+        user:{},
+        lang: "",
+      }
+    },
+
+    logout(){
+      postData("logout",{},this.user.token).then(value=>{
+        this.$cookie.removeCookie("user");
+        window.location.replace("/login");
+          });
+    }
+  },
+  beforeCreate() {
+     this.user =   this.$cookie.getCookie("user")
+     this.lang =   this.$cookie.getCookie("lang")
+    if(window.location.pathname == '/login'){
+      if(this.user != null) window.location.replace("/");
+    }else{
+      if(this.user == null) window.location.replace("/login");
+    }
+},
+}
 import { RouterLink, RouterView } from 'vue-router'
+
+
+
 </script>
 
 <template>
-  <div class="container-scroller">
+  <div v-if="$route.name != 'login'" class="container-scroller">
 
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
  <div class="text-center sidebar-brand-wrapper d-flex align-items-center">
@@ -11,9 +46,6 @@ import { RouterLink, RouterView } from 'vue-router'
    <a class="sidebar-brand brand-logo-mini pl-4 pt-3" href="index.html"><h4>ERP</h4></a>
  </div>
  <ul class="nav">
-  
-   
-
    <div class="nav-space">
      <div>
        <li class="nav-item pt-3">
@@ -63,7 +95,7 @@ import { RouterLink, RouterView } from 'vue-router'
          <div class="nav-link">
            <div class="mt-4">
              
-             <ul class="mt-4 pl-0">
+             <ul @click="logout()" class="mt-4 pl-0">
                <li>Sign Out</li>
              </ul>
            </div>
@@ -86,16 +118,16 @@ import { RouterLink, RouterView } from 'vue-router'
      <ul class="navbar-nav navbar-nav-right ml-lg-auto">
        <li class="nav-item dropdown d-none d-xl-flex border-0">
          <a class="nav-link dropdown-toggle" id="languageDropdown" href="#" data-toggle="dropdown">
-           <i class="mdi mdi-earth"></i> English </a>
+           <i class="mdi mdi-earth"></i> {{ lang=="en"?"English":"Germany"}} </a>
          <div class="dropdown-menu navbar-dropdown" aria-labelledby="languageDropdown">
-           <a class="dropdown-item" href="#"> French </a>
+           <a class="dropdown-item" href="#"> English </a>
            <a class="dropdown-item" href="#"> Germany </a>
          </div>
        </li>
        <li class="nav-item nav-profile dropdown border-0">
          <a class="nav-link" href="#">
-           <img class="nav-profile-img mr-2" alt="" src="assets/images/faces/face1.jpg" />
-           <span class="profile-name">John Dzikunu</span>
+           <img class="nav-profile-img mr-2" :alt="user.name" :src="user.profile?user.profile:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIUAAACFCAMAAABCBMsOAAAAMFBMVEXk5ueutLfDx8nn6eqrsbS0urzf4uPQ09Wxt7qnrrG4vcDKztDN0dLHy83X2ty9wsQYMyQeAAAC3klEQVR4nO2a25KDIAxAxXATFf7/bxd0u7ujtRAkyM5wnvrW0ySESzoMnU6n0+l0Op1Op9P53wDAID3+w2MKg1yc0IxprYVTXuUBBzkKztkLPnGz1PYAayZ2hPNRVvQA6fjJYfNga7V4gGLvJYKHqBUOd07GHyZVRcNcBuI7HGsFDRGRqKEBcQmflJlWAy4WxzEaC6UGzEkSXsMSWshECcYEXTBAp0oQViioj43igCSyGNJD4YMx0gQDFkwoqIKBqIotGDSVYVESXoPCAsbkZbozWQINQIaCpj4lrjY9orwELMiE+GCUXyXgsBK+MIpbDAZtwQk2eFy32CxccQuJlmDMlLdAFyfF9t4tmrPASxBUZ8ZKZQQbSRNdq40O3sZulrGzm/ISjZxyMk585SXwp19GcgZv4yaAXSVUV8QWboit3JZBpIeC8FGpiVcURIGS5WPTSHxdo355beGlMenBk7Iyf2jiBdpvax/bBnlNvDSamExsU5q3HpzNlRR2Dyumk0flidXmcZje8Qemd5tHmGQaHRBmtI9MMneRfaq7f3jm+0FKa9WOtduAuZ5K+PlWrU686iEQlgfTZlS2xrTbf4NdjebvF2pw0mJUkjIqPgez4ecVelYRq6XxCAr6IgRvTcbyIj4R7rptX4iIpWgTA1g0+pa6iYzFmggMMzIMfz1ckXjAoHSuw+ZR4m8IIFOOeBGPmycOGNacejgymTtp8fv33UDs3AkHqDIOgSn32ho5XyLhOu+iVCgbvx45xRE78GeAHyqWjkSAYzVudaprDVRtAEE6dhAasFJJIGasJfvEkfSJXs4oJF0jsYvSFcWukZiPki3zjUVaTjKGQjiNhPfx5L9k5ZMwTkMPIPAkBINwlf5YRCsD8EM6PFMsFPi5VAaxPxtWqM2Ai8QCP6/MIrKpUTeLnchILWemn0GkMGyN4owOkpbp9TpDy8f2CWqsQ+SpHCrxUaLT6XQ6/4YvuEMkBJwEQTUAAAAASUVORK5CYII='" />
+           <span class="profile-name">{{ user.name }}</span>
          </a>
        </li>
      </ul>
@@ -116,8 +148,7 @@ import { RouterLink, RouterView } from 'vue-router'
        </footer>
      </div>
    </div>
-   <!-- main-panel ends -->
  </div>
- <!-- page-body-wrapper ends -->
 </div>
+<RouterView v-if="$route.name == 'login'"/>
 </template>

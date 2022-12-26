@@ -115,7 +115,7 @@
 
 <script setup>
 import AddEmployee from '../components/AddEmployee.vue'
-import {postData,getData,timeSince,deleteData} from '../assets/api'
+import {getData,timeSince,deleteData} from '../assets/api'
 import {ref} from 'vue';
 import 'gitart-vue-dialog/dist/style.css'
 import { GDialog } from 'gitart-vue-dialog'
@@ -124,6 +124,7 @@ const toaster = createToaster({position:"top-left",});
 let showAddModel = ref(false);
 let id = ref(null);
 const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
+document.title = "ERP Adim Management" 
 
 function ShowAddEmployeeModel() {
     showAddModel.value = !showAddModel.value;
