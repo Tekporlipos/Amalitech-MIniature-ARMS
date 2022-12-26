@@ -180,10 +180,11 @@
 import { imageUpload,getData,patchData } from "../assets/api";
 import {ref} from 'vue'
 import { createToaster } from "@meforma/vue-toaster";
-import 'gitart-vue-dialog/dist/style.css'
-import { GDialog } from 'gitart-vue-dialog'
-import Payslip  from '../components/Payslip.vue'
-document.title = "ERP Adim Employee" 
+import 'gitart-vue-dialog/dist/style.css';
+import { GDialog } from 'gitart-vue-dialog';
+import Payslip  from '../components/Payslip.vue';
+import { VueCookieNext } from 'vue-cookie-next';
+document.title = "ERP Adim Employee";
 
 const toaster = createToaster({position:"top-left",});
 
@@ -192,21 +193,19 @@ var userData = ref({});
 var bankDetail = ref({});
 var update = ref(false);
 var dialogState = ref(false)
-
-
-const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
+userData.value  = VueCookieNext.getCookie("user");
 
 function uploadImage() {
   const inputData = document.querySelector("#file")
   var data = new FormData()
 data.append('profile', inputData.files[0])
-imageUpload("upload",data,token).then(value=>{
+imageUpload("upload",data,user.token).then(value=>{
   image.value = value.message;
 });
 }
 
 function updateEmployee(data) {
-  patchData(`employees/04cade9f-ec45-4a8f-9e3c-4c5b0cf5f921`,data,token).then(value=>{
+  patchData(`employees/${userData.value.user_id}`,data,userData.value.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
@@ -218,20 +217,20 @@ function updateEmployee(data) {
 
 function updateBankDetail() {
   if(update){
-    patchData(`bank-detail`,bankDetail.value,token).then(value=>{
+    patchData(`bank-detail`,bankDetail.value,userData.value.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
       });
   }else{
-    postData(`bank-detail`,bankDetail.value,token).then(value=>{
+    postData(`bank-detail`,bankDetail.value,userData.value.token).then(value=>{
       bankDetail.value = {...value};
     });
   }
 }
 
 function getInfo() {
-  getData("employees/04cade9f-ec45-4a8f-9e3c-4c5b0cf5f921",token).then(value=>{
+  getData(`employees/${userData.value.user_id}`,userData.value.token).then(value=>{
     if(value.length>0){
       userData.value = {...value[0]};
     }
@@ -239,8 +238,7 @@ function getInfo() {
 }
 
 function getBankDetail() {
-  getData("bank-detail",token).then(value=>{
-
+  getData("bank-detail",userData.value.token).then(value=>{
     if(value.length > 0){
       update.value = true
       bankDetail.value = {...value[0]};

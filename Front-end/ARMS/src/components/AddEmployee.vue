@@ -120,7 +120,8 @@
 
 <script>
 import {postData,getData,patchData} from '../assets/api'
-const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
+import { VueCookieNext } from 'vue-cookie-next'
+const user  = VueCookieNext.getCookie('user')
 
 
 export default {
@@ -132,7 +133,7 @@ export default {
     },
     submitData(){
       if(this.id){
-        patchData(`employees/${this.id}`,this.inputData,token).then(value=>{
+        patchData(`employees/${this.id}`,this.inputData,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
@@ -145,7 +146,7 @@ export default {
       }
       });
     }else{
-        postData("register",this.inputData,token).then(value=>{
+        postData("register",this.inputData,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
         };
@@ -167,7 +168,7 @@ export default {
       }
     },
     getDataEmployees(){
-      getData(`employees/${this.id}`,token).then(value=>{
+      getData(`employees/${this.id}`,user.token).then(value=>{
         if(value.length>0){
           this.inputData = {...value[0]};
         }
@@ -175,7 +176,7 @@ export default {
     });
 },
 getDataAssistant(){
-  getData("assistant",token).then(value=>{
+  getData("assistant",user.token).then(value=>{
 if(!value.errors){
   this.canAssist = value
 }

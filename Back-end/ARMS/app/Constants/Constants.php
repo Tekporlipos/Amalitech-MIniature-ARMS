@@ -8,7 +8,7 @@ class Constants
    public static function EMPLOYEE_USER(int $page, int $limit) : string{
        return "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender, employees.department,employees.position, employees.tell,employees.salary,employees.hire_date
 FROM `users`, `employees`
-WHERE users.user_id = employees.user_id ORDER by users.id DESC limit $limit offset $page;";
+WHERE users.deleted_at IS NULL AND users.user_id = employees.user_id ORDER by users.id DESC limit $limit offset $page;";
 }
 const  EMPLOYEE_PAYROLL = "SELECT employees.user_id, email,role, employees.first_name, employees.last_name, employees.other_names,users.profile, employees.gender ,employees.position,employees.tell, employees.department,employees.salary,employees.hire_date
 FROM `users`, `employees`

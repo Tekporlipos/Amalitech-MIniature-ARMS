@@ -120,10 +120,11 @@ import {ref} from 'vue';
 import 'gitart-vue-dialog/dist/style.css'
 import { GDialog } from 'gitart-vue-dialog'
 import { createToaster } from "@meforma/vue-toaster";
+import { VueCookieNext } from 'vue-cookie-next'
 const toaster = createToaster({position:"top-left",});
 let showAddModel = ref(false);
 let id = ref(null);
-const token = "1|yx38Kzy7iaK9knwC2qkQsec3JFwaJjqKqtjPYD8l";
+const user = VueCookieNext.getCookie("user");
 document.title = "ERP Adim Management" 
 
 function ShowAddEmployeeModel() {
@@ -168,7 +169,7 @@ function append(p1,p2) {
 }
 
 function getEmployees() {
-  getData(`employees?page=${page}`,token).then(value=>{
+  getData(`employees?page=${page}`,user.token).then(value=>{
 employee.value = value.message;
 total = value.total;
 });
@@ -178,7 +179,7 @@ getEmployees();
 
 function deleteEmployee(id) {
 if(true){
-deleteData(`employees/`+id,token).then(value=>{
+deleteData(`employees/`+id,user.token).then(value=>{
   getEmployees();
   toaster.show(value.message);
 })
