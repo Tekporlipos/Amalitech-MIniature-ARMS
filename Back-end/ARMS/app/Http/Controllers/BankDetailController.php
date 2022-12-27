@@ -17,9 +17,9 @@ class BankDetailController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
 
         $id = $request->user()->user_id;
@@ -42,13 +42,13 @@ class BankDetailController extends Controller
             $request->validate(["tell"=>'min:9']);
         }
 
-        return BankDetails::create([
+        return new Response(BankDetails::create([
             "account_name"=>$request->get("account_name"),
             "user_id"=>$id,
             "bank_name"=>$request->get("bank_name"),
             "account_number"=> $request->get("account_number"),
             "bank_branch"=>$request->get("bank_branch")
-        ]);
+        ]));
 
     }
 
@@ -56,12 +56,12 @@ class BankDetailController extends Controller
      * Display the specified resource.
      *
      * @param Request $request
-     * @return Collection
+     * @return Response
      */
-    public function index(Request $request) : Collection
+    public function index(Request $request) : Response
     {
         $user = $request->user();
-        return BankDetails::where("user_id", $user->user_id)->get();
+        return new Response(BankDetails::where("user_id", $user->user_id)->get());
     }
 
 
@@ -71,7 +71,7 @@ class BankDetailController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function update(Request $request)
+    public function update(Request $request): Response
     {
         $bankDetails =  BankDetails::where("user_id", $request->user()->user_id)->first(['*']);
         if ($request->get("bank_name")) {
@@ -92,6 +92,6 @@ class BankDetailController extends Controller
             $bankDetails->tell = $request->get("tell");
         }
         $bankDetails->save();
-        return $bankDetails;
+        return new Response($bankDetails,202);
     }
 }

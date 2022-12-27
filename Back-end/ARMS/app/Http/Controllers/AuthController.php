@@ -85,10 +85,14 @@ class AuthController extends Controller
                 "token"=> $token
             ], 201);
         }
+
         return new Response([
             "message"=>"wrong credentials",
         ], 504);
     }
+
+
+
 
     public function changePassword(Request $request): Response
     {
@@ -121,20 +125,29 @@ class AuthController extends Controller
         ], 504);
     }
 
-    function user (Request $request)
+    function user (Request $request): Response
     {
-        return $request->user();
+        return new Response($request->user());
     }
 
     public function logout(Request $request): Response
     {
         $user = $request->user();
-        $user->tokens()->delete();
+        $user->currentAccessToken()->delete();
         return new Response([
             "message"=>"logout successful",
         ], 201);
     }
 
+
+    public function deepLogout(Request $request): Response
+    {
+        $user = $request->user();
+        $user->tokens()->delete();
+        return new Response([
+            "message"=>"logout successful, All sessions cleared",
+        ], 201);
+    }
 
     public function resetPassword(Request $request): Response
     {

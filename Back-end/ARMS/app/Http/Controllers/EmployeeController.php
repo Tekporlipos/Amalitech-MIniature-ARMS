@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\Constants;
 use App\Models\Employee;
 use App\Models\User;
+use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,19 +23,7 @@ class EmployeeController extends Controller
     {
         $page = 0;
         $limit = 10;
-
-        if ($request->get("page")){
-            $request->validate(["page"=>"required|int"]);
-            $page = $request->get("page");
-        }
-
-        if ($request->get("limit")){
-            $request->validate(["limit"=>"required|int"]);
-            $limit = $request->get("limit");
-        }
-
-        $page = $page * $limit;
-
+        $this->checkPageAndLimit($request);
         return new Response([
             "page"=>$page/$limit,
             "limit"=>$limit,
@@ -51,6 +40,47 @@ class EmployeeController extends Controller
     public function employeeWithBank(): array
     {
         return DB::select(Constants::EMPLOYEE_PAYROLL);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function statistics(): Response
+    {
+
+        $datetime = new DateTime();
+        return new Response([
+            "message"=>"The statistics of employees from the time of request",
+            "statistics"=>[
+                "total"=>Employee::count(),
+                "gender"=>[
+                    "female"=>Employee::where("gender","female")->count(),
+                    "male"=>Employee::where("gender","male")->count(),
+                ],
+                "added"=>[
+                    "today"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->modify('-1 day')
+                        ->format('Y-m-d H-i-s'))
+                        ->whereDate("created_at",'<=',date_create())->count(),
+                    "week"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->modify('-1 week')
+                        ->format('Y-m-d H-i-s'))
+                        ->whereDate("created_at",'<=',date_create())->count(),
+                    "month"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->modify('-1 month')
+                        ->format('Y-m-d H-i-s'))
+                        ->whereDate("created_at",'<=',date_create())->count(),
+                    "year"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->modify('-1 year')
+                        ->format('Y-m-d H-i-s'))
+                        ->whereDate("created_at",'<=',date_create())->count()
+                ]
+            ]
+
+        ]);
     }
 
     /**
@@ -81,36 +111,25 @@ class EmployeeController extends Controller
      * Display the specified resource.
      *
      * @param string $id
-     * @return Collection
+     * @return Response
      */
-    public function show(string $id)
+    public function show(string $id):Response
     {
-        return DB::select(Constants::EMPLOYEE_BY_ID($id));
+        return new Response(DB::select(Constants::EMPLOYEE_BY_ID($id)));
     }
 
 
     /**
      * Display the specified resource.
      *
-     * @param string $id
+     * @param Request $request
      * @return Response
      */
-    public function search(Request $request)
+    public function search(Request $request): Response
     {
          $page = 0;
          $limit = 10;
-
-        if ($request->get("page")){
-            $request->validate(["page"=>"required|int"]);
-            $page = $request->get("page");
-        }
-
-        if ($request->get("limit")){
-            $request->validate(["limit"=>"required|int"]);
-            $limit = $request->get("limit");
-        }
-
-        $page = $page * $limit;
+        $this->checkPageAndLimit($request);
         $search = $request->get('search');
         return new Response([
             "page"=>$page/$limit,
@@ -143,6 +162,13 @@ class EmployeeController extends Controller
             $employee->last_name = $request->get("last_name");
         }
         if ($request->get("tell")) {
+            $request->validate(['tell'=>'min:9|max:10']);
+            if(is_numeric($request->get("tell")) != 1){
+                return new Response([
+                    'message'=>["The tell must be numeric characters."],
+                    'errors'=>["The tell must be numeric characters."],
+                ], 422);
+            }
             $employee->tell = $request->get("tell");
         }
 
@@ -211,7 +237,22 @@ class EmployeeController extends Controller
       $user->profile = join("/", [Constants::URL,'profiles',$path->getFilename()]);
       $user->save();
         return new Response([
-            "message"=> join("/", [Constants::URL,'profiles',$path->getFilename()])
+            "message"=> $user->profile
         ], 202);
     }
+
+
+   public function checkPageAndLimit(Request $request){
+       global  $page,$limit;
+       if ($request->get("page")){
+           $request->validate(["page"=>"required|int"]);
+           $page = $request->get("page");
+       }
+       if ($request->get("limit")){
+           $request->validate(["limit"=>"required|int"]);
+           $limit = $request->get("limit");
+       }
+       $page = $page * $limit;
+   }
+
 }

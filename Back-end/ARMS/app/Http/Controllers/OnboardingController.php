@@ -32,15 +32,15 @@ class OnboardingController extends Controller
     public function store(Request $request): Response
     {
         $request->validate([
-            'user_id'=>'uuid|required|unique:Onboardings,user_id|exists:Users,user_id',
+            'user_id'=>'uuid|required|unique:onboardings,user_id|exists:users,user_id',
             'start_date'=>'string|required|date',
         ]);
-        return Onboarding::create([
-             "user_id"=>$request->get("user_id"),
-             "location"=>$request->get("location"),
-             "start_date"=>$request->get("start_date"),
-             "start_time"=>$request->get("start_time")
-         ]);
+        return new Response(Onboarding::create([
+            "user_id"=>$request->get("user_id"),
+            "location"=>$request->get("location"),
+            "start_date"=>$request->get("start_date"),
+            "start_time"=>$request->get("start_time")
+        ]),202);
 
     }
 
@@ -52,7 +52,7 @@ class OnboardingController extends Controller
      */
     public function show(string $id): Response
     {
-        return  Onboarding::where("user_id", $id)->get()[0];
+        return  new Response(Onboarding::where("user_id", $id)->get()[0]);
     }
 
 

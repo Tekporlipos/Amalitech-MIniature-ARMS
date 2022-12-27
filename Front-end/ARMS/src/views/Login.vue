@@ -1,10 +1,11 @@
 <template>
     <div class="login-page">
   <div class="form">
-    <form v-if="$route.name == 'changePassword'" class="register-form">
+    <p class="alert alert-danger" v-if="error.message"> {{ error.message }}</p>
+    <form v-if="$route.name == 'changePassword'"  @submit.prevent="changePassword()" class="register-form">
       <input v-model="data.old_password" type="password" placeholder="Old password"/>
       <input v-model="data.password" type="password" placeholder="New password"/>
-      <input v-model="data.password_conform" type="password" placeholder="New password"/>
+      <input v-model="data.password_confirmation" type="password" placeholder="New password"/>
       <button>Change Password</button>
       <p class="message">Use password with mixed characters</p>
     </form>
@@ -23,7 +24,7 @@
 </template>
 
 <script>
-import { postData } from "../assets/api";
+import { postData,patchData } from "../assets/api";
 export default {
     name:"Login",
     data() {
@@ -45,13 +46,24 @@ export default {
                 postData("login",this.data).then(value=>{
                     if(value.user){
                         this.$cookie.setCookie("user", {...value.user,"email":this.data.email,"token":value.token});
-                        window.location.replace("/");
+                       
+                        if(value.user.email_verified_at){
+                          window.location.replace("/");
+                        }else{
+                          window.location.replace("/change-password");
+                        }
                     }else{
                         this.error = value;
                     }
                 });
             }
         },
+        changePassword(){
+          patchData("change-password",this.data,this.$cookie.getCookie("user").token).then(value=>{
+                 
+                    this.error = value;
+                });
+        }
     },
 
     mounted() {

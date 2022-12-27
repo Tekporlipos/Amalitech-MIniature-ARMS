@@ -39,7 +39,7 @@
                             </td>
                             <td>{{ employ.department }}</td>
                             <td>{{ employ.position }}</td>
-                            <td>{{ employ.salary }}</td>
+                            <td>{{ formatter.format(employ.salary) }}</td>
                             <td>
                               <div class="badge badge-inverse-success"> {{ timeSince(employ.hire_date) }} </div>
                             </td>
@@ -90,7 +90,7 @@
             </div>
 
 
-            <GDialog v-model="showAddModel"  max-width="95%">
+            <GDialog v-model="showAddModel" persistent max-width="95%">
               <AddEmployee :id="id"  @close="ShowAddEmployeeModel" @submit="submited"/>
             </GDialog>
 
@@ -115,7 +115,7 @@
 
 <script setup>
 import AddEmployee from '../components/AddEmployee.vue'
-import {getData,timeSince,deleteData} from '../assets/api'
+import {getData,timeSince,deleteData, formatter} from '../assets/api'
 import {ref} from 'vue';
 import 'gitart-vue-dialog/dist/style.css'
 import { GDialog } from 'gitart-vue-dialog'
@@ -172,6 +172,10 @@ function getEmployees() {
   getData(`employees?page=${page}`,user.token).then(value=>{
 employee.value = value.message;
 total = value.total;
+if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
 });
 }
 
@@ -181,6 +185,10 @@ function deleteEmployee(id) {
 if(true){
 deleteData(`employees/`+id,user.token).then(value=>{
   getEmployees();
+  if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
   toaster.show(value.message);
 })
 }

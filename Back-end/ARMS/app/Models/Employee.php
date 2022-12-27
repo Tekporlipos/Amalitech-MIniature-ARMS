@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static find(int $int)
  * @method static select(string $string)
  * @method static count()
+ * @method static whereDate($fieldName, string $string, $fromDate)
  */
 class Employee extends Model
 {

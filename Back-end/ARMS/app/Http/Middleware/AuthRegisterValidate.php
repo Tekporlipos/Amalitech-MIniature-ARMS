@@ -35,6 +35,15 @@ class AuthRegisterValidate
             $request->validate(['assistantId'=>'uuid|exists:Users,user_id']);
         }
 
+        if ($request->get("tell")) {
+            $request->validate(['tell'=>'min:9|max:10']);
+            if(is_numeric($request->get("tell")) != 1){
+                return new Response([
+                    'message'=>["The tell must be numeric characters."],
+                    'errors'=>["The tell must be numeric characters."],
+                ],422);
+            }
+        }
 
 
         return $next($request);

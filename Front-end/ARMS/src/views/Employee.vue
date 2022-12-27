@@ -92,7 +92,7 @@
           <label for="exampleInputPassword1">Monthly Salary:<span class="required">*</span></label>
           <div class="input-group">
             <select v-model="userData.salary" @input="error.position = null" class="form-control form-control-lg" placeholder="Monthly Salary" aria-label="Monthly Salary">
-            <option :value="userData.salary">{{ userData.salary }}</option>
+            <option :value="userData.salary">{{ formatter.format(userData.salary) }}</option>
           </select>
             <div class="input-group-append">
             <button class="btn btn-sm btn-primary" @click="dialogState = true" type="button"> View Detail </button>
@@ -166,7 +166,7 @@
 </div>
 
 
-<GDialog v-model="dialogState"  max-width="75%">
+<GDialog v-model="dialogState" :fullscreen="true"  max-width="75%">
      
       <div>
          <Payslip :user="userData" @close="dialogState = false" />
@@ -177,7 +177,7 @@
 
 <script setup>
 
-import { imageUpload,getData,patchData } from "../assets/api";
+import { imageUpload,getData,patchData,formatter } from "../assets/api";
 import {ref} from 'vue'
 import { createToaster } from "@meforma/vue-toaster";
 import 'gitart-vue-dialog/dist/style.css';
@@ -202,10 +202,15 @@ function uploadImage() {
 data.append('profile', inputData.files[0])
 console.log(user.token);
 imageUpload("upload",data, user.token).then(value=>{
+  if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}else{
   image.value = value.message;
-  console.log(value);
   user.profile = value.message;
   VueCookieNext.setCookie("user",user);
+}
+  
 });
 }
 
@@ -214,6 +219,10 @@ function updateEmployee(data) {
         if(value.errors){
           this.error = value.errors;
         };
+        if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
         if(value.message){
     toaster.show(value.message);
   }
@@ -226,10 +235,20 @@ function updateBankDetail() {
         if(value.errors){
           this.error = value.errors;
         };
+        if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
       });
+
   }else{
     postData(`bank-detail`,bankDetail.value,user.token).then(value=>{
       bankDetail.value = {...value};
+
+      if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
     });
   }
 }
@@ -239,6 +258,11 @@ function getInfo() {
     if(value.length>0){
       userData.value = {...value[0]};
     }
+
+    if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
   });
 }
 
@@ -248,7 +272,10 @@ function getBankDetail() {
       update.value = true
       bankDetail.value = {...value[0]};
     }
-    
+    if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
   });
 }
 

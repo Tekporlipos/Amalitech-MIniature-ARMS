@@ -39,7 +39,7 @@
 
             <tr>
               <td><b>Annual Basic Salary:</b></td>
-              <td>Gh¢ {{ user.salary * 12 }}</td>
+              <td> {{formatter(user.salary * 12) }}</td>
             </tr>
             <tr>
               <td><b>Branch:</b></td>
@@ -97,7 +97,7 @@
           <tbody>
             <tr>
               <td>Basic Salary</td>
-              <td>Gh¢ {{ user.salary }} </td>
+              <td>{{ formatter (user.salary) }} </td>
             </tr>
 
             <tr>
@@ -145,7 +145,7 @@
     </div>
    
     <div>
-      <b>Gh¢ 2,788.42</b>
+      <b> 2,788.42</b>
     </div>
   </div>
 
@@ -176,6 +176,13 @@
             submit() {
       this.$emit('close')
     },
+    formatter(value){
+  const f = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GHS',
+});
+      return f.format(value);
+    }
         },
         data() {
             return {
@@ -183,6 +190,11 @@
             }
         },
     }
+
+    const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GHS',
+});
 </script>
 
 <style scoped>

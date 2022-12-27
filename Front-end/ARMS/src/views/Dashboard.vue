@@ -13,12 +13,12 @@
                   <div class="d-flex justify-content-between align-items-start">
                     <div class="color-card">
                       <p class="mb-0 color-card-head">Today</p>
-                      <h2 class="text-white"> 10
+                      <h2 class="text-white"> {{ statistics.statistics?.added.today }}
                       </h2>
                     </div>
                     <i class="card-icon-indicator mdi mdi-basket bg-inverse-icon-warning"></i>
                   </div>
-                  <h6 class="text-white">18.33% Since last month</h6>
+                  <h6 class="text-white">{{((statistics.statistics?.added.today)/statistics.statistics?.added.week)*100}}% Since last month</h6>
                 </div>
               </div>
             </div>
@@ -28,12 +28,12 @@
                   <div class="d-flex justify-content-between align-items-start">
                     <div class="color-card">
                       <p class="mb-0 color-card-head">Last Week</p>
-                      <h2 class="text-white"> 100
+                      <h2 class="text-white"> {{ statistics.statistics?.added.week }}
                       </h2>
                     </div>
                     <i class="card-icon-indicator mdi mdi-cube-outline bg-inverse-icon-danger"></i>
                   </div>
-                  <h6 class="text-white">13.21% Since last week</h6>
+                  <h6 class="text-white">{{((statistics.statistics?.added.week)/statistics.statistics?.added.month)*100}}% Since last week</h6>
                 </div>
               </div>
             </div>
@@ -43,12 +43,12 @@
                   <div class="d-flex justify-content-between align-items-start">
                     <div class="color-card">
                       <p class="mb-0 color-card-head">Last Month</p>
-                      <h2 class="text-white"> 130
+                      <h2 class="text-white"> {{ statistics.statistics?.added.month }}
                       </h2>
                     </div>
                     <i class="card-icon-indicator mdi mdi-briefcase-outline bg-inverse-icon-primary"></i>
                   </div>
-                  <h6 class="text-white">67.98% Since last month</h6>
+                  <h6 class="text-white">{{((statistics.statistics?.added.month)/statistics.statistics?.added.year)*100 }}% Since last month</h6>
                 </div>
               </div>
             </div>
@@ -58,11 +58,11 @@
                   <div class="d-flex justify-content-between align-items-start">
                     <div class="color-card">
                       <p class="mb-0 color-card-head">Last Year</p>
-                      <h2 class="text-white">2368</h2>
+                      <h2 class="text-white">{{ statistics.statistics?.added.year }}</h2>
                     </div>
                     <i class="card-icon-indicator mdi mdi-account-circle bg-inverse-icon-success"></i>
                   </div>
-                  <h6 class="text-white">20.32% Since last year</h6>
+                  <h6 class="text-white">{{((   statistics.statistics?.added.year - (statistics.statistics?.added.year -statistics.statistics?.added.month) )/statistics.statistics?.added.year)*100 }}% Since last year</h6>
                 </div>
               </div>
             </div>
@@ -92,7 +92,7 @@
                 <div class="">
                   <h4>Quote of the Day</h4>
                 
-                  <p class="text-muted mb-0"> Always seek out the seed of triumph in every adversity. <br><b> Og Mandino</b>
+                  <p class="text-muted mb-0"> {{ quote.text }} <br><b> {{ quote.author }}</b>
                   </p>
                 </div>
                
@@ -185,16 +185,16 @@
             <div class="card-body">
               <div class="row pt-4">
                 <div class="col-sm-6">
-                  <h1 class="text-white">10:16PM</h1>
-                  <h5 class="text-white">Monday 25 October, 2016</h5>
+                  <h1 class="text-white">{{ hour }} : {{ minute }} {{ hour < 12 ?"AM":"PM"  }}</h1>
+                  <h5 class="text-white">{{weekday[date.getUTCDay()]}} {{ date.getUTCDay() }} {{ month[date.getMonth()]}}, {{ date.getUTCFullYear() }}</h5>
                   <h5 class="text-white pt-2 m-0">Precipitation:50%</h5>
                   <h5 class="text-white m-0">Humidity:23%</h5>
-                  <h5 class="text-white m-0">Wind:13 km/h</h5>
+                  <h5 class="text-white m-0">Wind:{{ current_weather.windspeed }} km/h</h5>
                 </div>
                 <div class="col-sm-6 text-sm-right pt-3 pt-sm-0">
                   <h3 class="text-white">Clear Sky</h3>
-                  <p class="text-white m-0">London, UK</p>
-                  <h3 class="text-white m-0">21°C</h3>
+                  <p class="text-white m-0">Ghana, Accra</p>
+                  <h3 class="text-white m-0">{{ current_weather.temperature }}°C</h3>
                 </div>
               </div>
               <div class="row mt-5">
@@ -203,7 +203,7 @@
                     <li class="weakly-weather-item text-white font-weight-medium text-center active">
                       <p class="mb-0">TODAY</p>
                       <i class="mdi mdi-weather-cloudy"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ current_weather.temperature }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">MON</p>
@@ -259,22 +259,68 @@
 </template>
 
 <script setup>
-import "../../public/assets/js/dashboard"
-import {getData,timeSince} from '../assets/api'
+import {getData,timeSince,formatDate} from '../assets/api'
 import { RouterLink } from 'vue-router'
 import { VueCookieNext } from 'vue-cookie-next'
 import {ref} from 'vue';
 document.title = "ERP Adim Dashboard"
+const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const date = new Date();
+
+var hour = ref(date.getUTCHours());
+var minute = ref(date.getUTCMinutes());
+var statistics = ref({});
+
+setInterval(() => {
+  const date1 = new Date();
+  hour.value = date1.getUTCHours();
+  minute.value = date1.getUTCMinutes() ;
+}, 1000);
 
 const employee = ref([]);
+const quote = ref({});
 const user = VueCookieNext.getCookie("user");
 function getEmployees() {
   getData(`employees`,user.token).then(value=>{
 employee.value = value.message;
+if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+};
 });
 }
 
+function getStatistics() {
+  getData(`employees-statistics`,user.token).then(value=>{
+    statistics.value = value;
+  if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+};
+});
+}
+
+const startAt = formatDate(date).reduce((total,value)=>total+value) - 2061;
+fetch('https://type.fit/api/quotes')
+  .then((response) => response.json())
+  .then((data) => {
+    quote.value = data[startAt];
+  });
+const current_weather = ref({});
+
+
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=7.946527&longitude=-1.023194&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m')
+  .then((response) => response.json())
+  .then((data) => {
+    current_weather.value = data.current_weather
+
+  });
+
+
+
 getEmployees();
+getStatistics();
 </script>
 
 <style scoped > 

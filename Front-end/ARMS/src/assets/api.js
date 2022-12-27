@@ -90,6 +90,8 @@ export  async function patchData(url,data,token) {
       return response.json(); 
 }
 
+
+
 export function timeSince(DateString) {
 
     const date = Date.now() - (Date.now() - (new Date(DateString)))
@@ -120,3 +122,20 @@ export function timeSince(DateString) {
     return Math.abs(Math.floor(interval)) +  (interval > 0 ? " second(s) ago":" second(s) from now");
 
     }
+
+    export function formatDate(date) {
+      var d = new Date(date),
+          month =  (d.getMonth() + 1),
+          day =  d.getDate(),
+          year = d.getFullYear();
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+      return [year, month, day];
+  }
+
+  export const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GHS',
+  });

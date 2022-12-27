@@ -2,7 +2,9 @@ package com.amalitech.payroll.service;
 
 
 import com.amalitech.payroll.model.Employee;
+import com.amalitech.payroll.model.PayRollBatch;
 import com.amalitech.payroll.model.RewardAllocation;
+import com.amalitech.payroll.repository.BatchRepository;
 import com.amalitech.payroll.repository.EmployeeRepository;
 import com.amalitech.payroll.repository.RewardAllocationRepository;
 import com.amalitech.payroll.utils.Constants;
@@ -23,12 +25,19 @@ public class FetchUserService {
 
     final RewardAllocationRepository repository;
     final EmployeeRepository employeeRepository;
-
+    final BatchRepository batchRepository;
+    final Calendar instance = Calendar.getInstance();
     public ResponseData getAllUsers(String auth) throws IOException, ParseException {
         final ArrayList<Map<String, Object>> allEmployee = (ArrayList<Map<String, Object>>) getData(auth,"payroll");
         ArrayList<Employee> employees = new ArrayList<>();
         for(Map<String, Object> map : allEmployee){
-            employees.add(new Employee().convert(map,getReward("allowance",String.valueOf(map.get("user_id"))),getReward("bonus",String.valueOf(map.get("user_id")))));
+            Employee employee = new Employee().
+                    convert(map, getReward("allowance",
+                            String.valueOf(map.get("user_id"))),
+                    getReward("bonus",String.valueOf(map.get("user_id"))));
+            final long count = batchRepository.countByType(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
+            employee.setBatch(count);
+            employees.add(employee);
         }
         savePayRolls(employees);
         return new ResponseData(Constants.OK,Constants.SUCCESS,employees);
@@ -36,11 +45,9 @@ public class FetchUserService {
 
     public  ResponseData getPayRollByUserId(String token) throws IOException, ParseException {
         final Map<String, Object> user = (Map<String, Object>) getData(token,"user");
-        System.out.println(user);
         final Optional<Employee> byUserId = employeeRepository.findByUserId(String.valueOf(user.get("user_id")));
         return new ResponseData(Constants.OK,Constants.SUCCESS, byUserId.isPresent()? byUserId.get(): List.of());
     }
-
 
 
     public Object getData(String auth, String path) throws IOException, ParseException {
@@ -59,8 +66,9 @@ public class FetchUserService {
 
     void savePayRolls(ArrayList<Employee> employees){
         new Thread(() -> {
-            final Calendar instance = Calendar.getInstance();
-            employeeRepository.deleteAllByPayRollCodeEquals(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
+            final PayRollBatch payRollBatch = new PayRollBatch();
+            payRollBatch.setType(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
+            batchRepository.save(payRollBatch);
             employeeRepository.saveAll(employees);
         }).start();
     }

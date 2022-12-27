@@ -108,8 +108,8 @@
               <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block"></span>
               </h3>
               <div class="d-flex">
-                <button type="button" @click="$emit('close')" class="btn btn-sm ml-3 btn-defualt"> Discard </button>
-                <input type="submit" value=" Save"  class="btn btn-sm ml-3 btn-success">
+                <button type="button" @click="close()" class="btn btn-sm ml-3 btn-defualt"> Discard </button>
+                <input type="submit" value=" Save "  class="btn btn-sm ml-3 btn-success">
               </div>
             </div>
   </form>
@@ -122,26 +122,32 @@
 import {postData,getData,patchData} from '../assets/api'
 import { VueCookieNext } from 'vue-cookie-next'
 const user  = VueCookieNext.getCookie('user')
-
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({position:"top-left",});
 
 export default {
   name:"AddEmployee",
   props:["id"],
   methods: {
-    submit() {
-      this.$emit('someEvent')
+    close(){
+      this.inputData = {role:"employee"};
+        this.error ={};
+        this.canAssist = {};
+        this.user_id ="";
+        this.$emit("close");
     },
     submitData(){
       if(this.id){
         patchData(`employees/${this.id}`,this.inputData,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
+          this.$emit("submit",value.errors[0]);
         };
         if(value){
         this.$emit("submit",value);
         this.inputData = {role:"employee"};
         this.error ={};
-        this.canAssist = {};
+        this.canAssist = [];
         this.user_id ="";
       }
       });
@@ -149,14 +155,14 @@ export default {
         postData("register",this.inputData,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
-        };
-        if(value){
+          this.$emit("submit",value.errors[0]);
+        }else{
         this.$emit("submit",value);
         this.inputData = {role:"employee"};
         this.error ={};
         this.canAssist = {};
         this.user_id ="";
-      }
+        }
       });
     }
   },
@@ -176,9 +182,9 @@ export default {
     });
 },
 getDataAssistant(){
-  getData("assistant",user.token).then(value=>{
+  getData("available-assistant",user.token).then(value=>{
 if(!value.errors){
-  this.canAssist = value
+  this.canAssist = [...value]
 }
 });
 }

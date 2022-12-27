@@ -48,10 +48,12 @@ Route::group(['prefix' => '/v1'], function ()
 //        change password
         Route::patch('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/deeper-logout', [AuthController::class, 'deepLogout']);
         Route::get('/user', [AuthController::class, 'user']);
 
 //        manage employee
         Route::resource("employees", EmployeeController::class);
+        Route::get("employees-statistics", [EmployeeController::class,"statistics"]);
         Route::get("search", [EmployeeController::class,"search"]);
         Route::get("payroll", [EmployeeController::class,"employeeWithBank"]);
 

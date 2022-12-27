@@ -11,6 +11,7 @@ public class Employee {
     @Id
     @GeneratedValue
     private long id;
+    private Long batch;
     private String payRollCode;
     private String userId;
     private String firstName;
