@@ -5,12 +5,11 @@ namespace Tests\Feature;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class EmployeeTest extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      *
@@ -24,6 +23,16 @@ class EmployeeTest extends TestCase
                 "message" => "Unauthenticated.",
             ]);
     }
+
+    public function test_must_be_authenticated_to_update_employee_profile(): void
+    {
+        $this->json('POST', 'api/v1/upload')
+            ->assertStatus(401)
+            ->assertJson([
+                "message" => "Unauthenticated.",
+            ]);
+    }
+
 
     public function test_must_be_authenticated_to_access_employee_statistics(): void
     {
@@ -74,7 +83,8 @@ class EmployeeTest extends TestCase
         $loginData = ['email' => $user->email, 'password' => 'password'];
 
         $updateEmployee = ["first_name"=>"Tekpor"];
-        $response = $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json']);
+        $response = $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json'])
+                         ->assertStatus(201);
         $token = $response->json("token");
 
         $response =  $this->json('PATCH', 'api/v1/employees/'.$user->user_id, $updateEmployee, ['Accept' => 'application/json', 'Authorization' => 'Bearer ' . $token]);
@@ -95,10 +105,9 @@ class EmployeeTest extends TestCase
         $loginData = ['email' => $user->email, 'password' => 'password'];
 
 
-        $response = $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json']);
+        $response = $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json'])
+                         ->assertStatus(201);
         $token = $response->json("token");
-
-
 
 
         $employee = User::factory()->create();

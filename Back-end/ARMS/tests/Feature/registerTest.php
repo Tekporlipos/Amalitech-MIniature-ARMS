@@ -5,12 +5,11 @@ namespace Tests\Feature;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class registerTest extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
 
     /**
      * A basic feature test must be authenticated.
@@ -26,12 +25,13 @@ class registerTest extends TestCase
             ]);
     }
 
-    public function test_must_enter_firstName_lastName_email_gender_salary_role_position_department_and_hireDate(): void
+    public function test_must_enter_firstName_lastName_email_gender_salary_role_position_department_and_hireDate_to_register_employee(): void
     {
         //preparation
         $user = User::factory()->create();
         $loginData = ['email' => $user->email, 'password' => 'password'];
-        $response =   $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json']);
+        $response =   $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json'])
+                           ->assertStatus(201);
         $token = $response->json("token");
 
         $registerData = [];
@@ -49,7 +49,8 @@ class registerTest extends TestCase
         //preparation
         $user = User::factory()->create();
         $loginData = ['email' => $user->email, 'password' => 'password'];
-        $response =   $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json']);
+        $response =   $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json'])
+                           ->assertStatus(201);
         $token = $response->json("token");
 
         //testing
@@ -98,7 +99,8 @@ class registerTest extends TestCase
 
         $user = User::factory()->create(["role"=>"employee"]);
         $loginData = ['email' => $user->email, 'password' => 'password'];
-        $response =   $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json']);
+        $response =   $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json'])
+                           ->assertStatus(201);
         $token = $response->json("token");
 
         $user = User::factory()->create(["role"=>"employee"]);
@@ -117,7 +119,8 @@ class registerTest extends TestCase
     {
         $user = User::factory()->create(["role" => "admin"]);
         $loginData = ['email' => $user->email, 'password' => 'password'];
-        $response = $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json']);
+        $response = $this->json('POST', 'api/v1/login', $loginData, ['Accept' => 'application/json'])
+                         ->assertStatus(201);
         $token = $response->json("token");
 
         $user = User::factory()->create(["role" => "employee"]);

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->uuid("user_id")->unique()->index();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->string("location")->nullable()->default("Takoradi");;
+            $table->string("location")->nullable()->default("Takoradi");
             $table->string("start_date");
             $table->string("start_time")->nullable()->default("07:30 AM");
             $table->timestamps();

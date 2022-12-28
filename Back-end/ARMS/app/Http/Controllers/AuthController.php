@@ -169,7 +169,6 @@ class AuthController extends Controller
     }
 
 
-
     public function createAssistant(string $userId, string $assistantId)
     {
         Assign::create([
