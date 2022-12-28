@@ -7,6 +7,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TrafficController;
 use App\Http\Middleware\AdminAccess;
 use App\Http\Middleware\AuthRegisterValidate;
+use http\Client\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,17 +28,10 @@ Route::group(['prefix' => '/v1'], function ()
     Route::post("/reset-password", [AuthController::class,'resetPassword']);
     Route::post("/validate", [AuthController::class,'validateEmail']);
 
-    //the register is here for temporary use is for only admin
-//     Route::post("/register", [AuthController::class,'create'])
-//         ->middleware([AuthRegisterValidate::class]);
 
     //authorization
     Route::group(['middleware'=>'auth:sanctum'], function () {
 
-
-//        TO DO
-        //search
-        //pagination is not done
 
         //the register is here for temporary use is for only admin
          Route::post("/register", [AuthController::class,'create'])

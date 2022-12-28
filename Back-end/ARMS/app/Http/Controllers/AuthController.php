@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Jobs\LoginAlertJob;
 use App\Models\Assign;
+use App\Models\BankDetails;
+use App\Models\Employee;
+use App\Models\Onboarding;
 use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
@@ -15,6 +18,8 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+
+
     public function create(Request $request): Response|Application|ResponseFactory
     {
         $userId = Str::uuid()->toString();
@@ -32,10 +37,13 @@ class AuthController extends Controller
 
         //remember to uncomment this block
 
-//       $this->dispatch(new MailSender(
-//           $employee, $request->get("email"),
-//           $password, sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
-//       ));
+       $this->dispatch(
+           new MailSender($employee,
+           $request->get("email"),
+           $password,
+           sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
+       )
+       );
 
         return Response([
             "message"=>"New User added successfully",
@@ -77,7 +85,7 @@ class AuthController extends Controller
             $token = $user->createToken("amaliTech")->plainTextToken;
 
             //remember to uncomment this block
-//            $this->sendAlert($request, $user, "Your ARMS account was just login.");
+            $this->sendAlert($request, $user, "Your ARMS account was just login.");
 
             return new Response([
                 "message"=>"login successful",
@@ -113,7 +121,7 @@ class AuthController extends Controller
                 $passwordResetModel->delete();
             }
 
-//            $this->sendAlert($request, $user, "Your password was just changed.");
+            $this->sendAlert($request, $user, "Your password was just changed.");
 
             return new Response([
                 "message"=>"password changed successful",
@@ -161,7 +169,7 @@ class AuthController extends Controller
            'token'=>bcrypt($password),
        ]);
 
-//        $this->dispatch(new PasswordResetJob($password, $request->get("email")));
+        $this->dispatch(new PasswordResetJob($password, $request->get("email")));
 
         return  new Response([
            'message'=>"password reset token is sent to the email"
