@@ -65,7 +65,7 @@ class AuthController extends Controller
         ]);
         $user = User::where("email", $request->get("email"))->first();
 
-        if (!$user){
+        if (!$user) {
             return new Response([
                 "message"=>"There is no user with the specified email.",
             ], 504);
@@ -104,12 +104,12 @@ class AuthController extends Controller
         $passwordResetModel = PasswordReset::where('email', $request->user()->email);
         $passwordReset = $passwordResetModel->get();
         if ($user && Hash::check($request->get("old_password"), $user->password) ||
-            (sizeof($passwordReset) && Hash::check($request->get("old_password"), $passwordReset[0]->token))){
+            (sizeof($passwordReset) && Hash::check($request->get("old_password"), $passwordReset[0]->token))) {
             $user->password = bcrypt($request->get("password"));
             $user->email_verified_at = date_create();
             $user->update();
 
-            if (sizeof($passwordReset)){
+            if (sizeof($passwordReset)) {
                 $passwordResetModel->delete();
             }
 
@@ -125,7 +125,7 @@ class AuthController extends Controller
         ], 504);
     }
 
-    function user (Request $request): Response
+   public function user(Request $request): Response
     {
         return new Response($request->user());
     }
@@ -170,14 +170,16 @@ class AuthController extends Controller
 
 
 
-    public function createAssistant(string $userId, string $assistantId){
+    public function createAssistant(string $userId, string $assistantId)
+    {
         Assign::create([
             "assistant_id"=>$assistantId,
             "user_id"=>$userId
         ]);
     }
 
-    public function sendAlert(Request $request, $user, $message){
+    public function sendAlert(Request $request, $user, $message)
+    {
         $this->dispatch(new LoginAlertJob([
             "ip"=>$request->ip(),
             "name"=>$request->headers->get("user-agent"),
@@ -188,7 +190,8 @@ class AuthController extends Controller
         ]));
     }
 
-   public function createUser($request, $userId, $password){
+   public function createUser($request, $userId, $password)
+   {
        User::create(
            [
                "name" => $request->get("first_name") . " " . $request->get("last_name"),

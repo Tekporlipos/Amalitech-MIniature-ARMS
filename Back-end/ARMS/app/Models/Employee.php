@@ -34,7 +34,7 @@ class Employee extends Model
 
     public function user()
     {
-        return $this->hasOne(Employee::class,'user_id',"'user_id'");
+        return $this->hasOne(Employee::class, 'user_id', "'user_id'");
     }
     protected $hidden = [
         "deleted_at"

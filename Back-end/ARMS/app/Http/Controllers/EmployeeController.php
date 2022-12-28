@@ -6,7 +6,6 @@ use App\Constants\Constants;
 use App\Models\Employee;
 use App\Models\User;
 use DateTime;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +27,7 @@ class EmployeeController extends Controller
             "page"=>$page/$limit,
             "limit"=>$limit,
             "total"=>Employee::count(),
-            "message"=> DB::select(Constants::EMPLOYEE_USER($page, $limit))
+            "message"=> DB::select(Constants::employeeUser($page, $limit))
         ], 202);
     }
 
@@ -57,26 +56,31 @@ class EmployeeController extends Controller
             "statistics"=>[
                 "total"=>Employee::count(),
                 "gender"=>[
-                    "female"=>Employee::where("gender","female")->count(),
-                    "male"=>Employee::where("gender","male")->count(),
+                    "female"=>Employee::where("gender", "female")->count(),
+                    "male"=>Employee::where("gender", "male")->count(),
                 ],
                 "added"=>[
-                    "today"=>Employee::whereDate("created_at",'>=',$datetime
+                    "today"=>Employee::whereDate(
+                        Constants::CREATED, '>=', $datetime
                         ->modify('-1 day')
-                        ->format('Y-m-d H-i-s'))
-                        ->whereDate("created_at",'<=',date_create())->count(),
-                    "week"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->format(Constants::DATEFORMAT))
+                        ->whereDate(Constants::CREATED, '<=', date_create())->count(),
+                    "week"=>Employee::whereDate(
+                        Constants::CREATED, '>=', $datetime
                         ->modify('-1 week')
-                        ->format('Y-m-d H-i-s'))
-                        ->whereDate("created_at",'<=',date_create())->count(),
-                    "month"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->format(Constants::DATEFORMAT))
+                        ->whereDate(Constants::CREATED, '<=', date_create())->count(),
+                    "month"=>Employee::whereDate(
+                        Constants::CREATED,
+                        '>=', $datetime
                         ->modify('-1 month')
-                        ->format('Y-m-d H-i-s'))
-                        ->whereDate("created_at",'<=',date_create())->count(),
-                    "year"=>Employee::whereDate("created_at",'>=',$datetime
+                        ->format(Constants::DATEFORMAT))
+                        ->whereDate(Constants::CREATED, '<=', date_create())->count(),
+                    "year"=>Employee::whereDate(
+                        Constants::CREATED, '>=', $datetime
                         ->modify('-1 year')
-                        ->format('Y-m-d H-i-s'))
-                        ->whereDate("created_at",'<=',date_create())->count()
+                        ->format(Constants::DATEFORMAT))
+                        ->whereDate(Constants::CREATED, '<=', date_create())->count()
                 ]
             ]
 
@@ -115,7 +119,7 @@ class EmployeeController extends Controller
      */
     public function show(string $id):Response
     {
-        return new Response(DB::select(Constants::EMPLOYEE_BY_ID($id)));
+        return new Response(DB::select(Constants::employeeById($id)));
     }
 
 
@@ -134,7 +138,7 @@ class EmployeeController extends Controller
         return new Response([
             "page"=>$page/$limit,
             "limit"=>$limit,
-            "message"=> DB::select(Constants::SEARCH("%".$search."%", $page, $limit))
+            "message"=> DB::select(Constants::search("%".$search."%", $page, $limit))
         ], 202);
     }
 
@@ -163,7 +167,7 @@ class EmployeeController extends Controller
         }
         if ($request->get("tell")) {
             $request->validate(['tell'=>'min:9|max:10']);
-            if(is_numeric($request->get("tell")) != 1){
+            if (is_numeric($request->get("tell")) != 1) {
                 return new Response([
                     'message'=>["The tell must be numeric characters."],
                     'errors'=>["The tell must be numeric characters."],
@@ -177,9 +181,9 @@ class EmployeeController extends Controller
         }
 
         if ($request->get("other_names")) {
-            if(trim(strtolower($request->get("other_names"))) == "delete"){
+            if (trim(strtolower($request->get("other_names"))) == "delete") {
                 $employee->other_names = null;
-            }else{
+            } else {
                 $employee->other_names = $request->get("other_names");
             }
         }
@@ -242,13 +246,14 @@ class EmployeeController extends Controller
     }
 
 
-   public function checkPageAndLimit(Request $request){
+   public function checkPageAndLimit(Request $request)
+   {
        global  $page,$limit;
-       if ($request->get("page")){
+       if ($request->get("page")) {
            $request->validate(["page"=>"required|int"]);
            $page = $request->get("page");
        }
-       if ($request->get("limit")){
+       if ($request->get("limit")) {
            $request->validate(["limit"=>"required|int"]);
            $limit = $request->get("limit");
        }

@@ -35,12 +35,14 @@ class OnboardingController extends Controller
             'user_id'=>'uuid|required|unique:onboardings,user_id|exists:users,user_id',
             'start_date'=>'string|required|date',
         ]);
-        return new Response(Onboarding::create([
+        return new Response(
+            Onboarding::create([
             "user_id"=>$request->get("user_id"),
             "location"=>$request->get("location"),
             "start_date"=>$request->get("start_date"),
             "start_time"=>$request->get("start_time")
-        ]),202);
+        ]), 202
+        );
 
     }
 

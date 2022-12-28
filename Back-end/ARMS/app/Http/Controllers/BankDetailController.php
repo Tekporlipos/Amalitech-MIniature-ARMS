@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Constants\Constants;
 use App\Models\BankDetails;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -38,7 +37,7 @@ class BankDetailController extends Controller
             "bank_branch"=>Constants::REQUIRE,
         ]);
 
-        if ($request->get("tell")){
+        if ($request->get("tell")) {
             $request->validate(["tell"=>'min:9']);
         }
 
@@ -92,6 +91,6 @@ class BankDetailController extends Controller
             $bankDetails->tell = $request->get("tell");
         }
         $bankDetails->save();
-        return new Response($bankDetails,202);
+        return new Response($bankDetails, 202);
     }
 }
