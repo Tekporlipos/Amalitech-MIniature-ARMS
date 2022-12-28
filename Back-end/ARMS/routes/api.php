@@ -28,8 +28,8 @@ Route::group(['prefix' => '/v1'], function ()
     Route::post("/validate", [AuthController::class,'validateEmail']);
 
     //the register is here for temporary use is for only admin
-     Route::post("/register", [AuthController::class,'create'])
-         ->middleware([AuthRegisterValidate::class]);
+//     Route::post("/register", [AuthController::class,'create'])
+//         ->middleware([AuthRegisterValidate::class]);
 
     //authorization
     Route::group(['middleware'=>'auth:sanctum'], function () {
@@ -40,8 +40,8 @@ Route::group(['prefix' => '/v1'], function ()
         //pagination is not done
 
         //the register is here for temporary use is for only admin
-//         Route::post("/register", [AuthController::class,'create'])
-//             ->middleware([AuthRegisterValidate::class,AdminAccess::class]);
+         Route::post("/register", [AuthController::class,'create'])
+             ->middleware([AuthRegisterValidate::class,AdminAccess::class]);
 
 //        get all traffic on the website
         Route::get('/traffic', [TrafficController::class, 'getAll']);

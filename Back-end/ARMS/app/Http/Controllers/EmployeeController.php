@@ -151,58 +151,22 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, string $id): Response
     {
-
         $employee =  Employee::where("user_id", $id)->first(['*']);
 
-        if (!$employee) {
+        if (($request->user()->role=="admin" || $request->user()->user_id == $id)
+            && $employee) {
+
+            $this->checkAvailable($request);
+            $employee->save();
+
             return new Response([
-                "message" => "noting to update"
-            ], 404);
+                "message"=>"User information updated successfully",
+                "data"=>$employee
+            ]);
         }
-        if ($request->get("first_name")) {
-            $employee->first_name = $request->get("first_name");
-        }
-        if ($request->get("last_name")) {
-            $employee->last_name = $request->get("last_name");
-        }
-        if ($request->get("tell")) {
-            $request->validate(['tell'=>'min:9|max:10']);
-            if (is_numeric($request->get("tell")) != 1) {
-                return new Response([
-                    'message'=>["The tell must be numeric characters."],
-                    'errors'=>["The tell must be numeric characters."],
-                ], 422);
-            }
-            $employee->tell = $request->get("tell");
-        }
-
-        if ($request->get("position")) {
-            $employee->position = $request->get("position");
-        }
-
-        if ($request->get("other_names")) {
-            if (trim(strtolower($request->get("other_names"))) == "delete") {
-                $employee->other_names = null;
-            } else {
-                $employee->other_names = $request->get("other_names");
-            }
-        }
-        if ($request->get("gender")) {
-            $employee->gender = $request->get("gender");
-        }
-
-        if ($request->get("department")) {
-            $employee->department = $request->get("department");
-        }
-        if ($request->get("hire_date")) {
-            $request->validate(['hire_date' => Constants::REQUIRE."|date"]);
-            $employee->hire_date = $request->get("hire_date");
-        }
-        $employee->save();
         return new Response([
-            "message"=>"User information updated successfully",
-            "data"=>$employee
-        ]);
+            "message"=>"unauthorized request"
+        ], 401);
     }
 
     /**
@@ -224,7 +188,7 @@ class EmployeeController extends Controller
         } else {
             return new Response([
                 "message" => "unauthorized request"
-            ], 504);
+            ], 401);
         }
     }
 
@@ -259,5 +223,37 @@ class EmployeeController extends Controller
        }
        $page = $page * $limit;
    }
+
+ public  function checkAvailable(Request $request)
+ {
+        global $employee;
+         if ($request->get("first_name")) $employee->first_name = $request->get("first_name");
+         if ($request->get("last_name")) $employee->last_name = $request->get("last_name");
+         if ($request->get("position")) $employee->position = $request->get("position");
+         if ($request->get("gender")) $employee->gender = $request->get("gender");
+         if ($request->get("department")) $employee->department = $request->get("department");
+
+     if ($request->get("tell")) {
+         $request->validate(['tell'=>'min:9|max:10']);
+         if (is_numeric($request->get("tell")) != 1) {
+             return new Response([
+                 'message'=>["The tell must be numeric characters."],
+                 'errors'=>["The tell must be numeric characters."],
+             ], 422);
+         }
+         $employee->tell = $request->get("tell");
+     }
+     if ($request->get("other_names")) {
+         if (trim(strtolower($request->get("other_names"))) == "delete") {
+             $employee->other_names = null;
+         } else {
+             $employee->other_names = $request->get("other_names");
+         }
+     }
+     if ($request->get("hire_date")) {
+         $request->validate(['hire_date' => Constants::REQUIRE."|date"]);
+         $employee->hire_date = $request->get("hire_date");
+     }
+ }
 
 }
