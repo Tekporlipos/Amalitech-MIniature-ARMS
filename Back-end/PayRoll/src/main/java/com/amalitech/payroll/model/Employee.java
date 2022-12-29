@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 @Data
 @Entity
@@ -17,18 +18,14 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String otherName;
+    private String tell;
+    private String email;
     private String gender;
     private String profile;
-    private String role;
-    private String hireDate;
-    private String department;
-    private Double salary;
-    private Double allowance;
-    private Double bonus;
-    private Double ssf;
+    private String createdAt;
 
 
-    public Employee convert(Map<String,Object> data,Double allowance, Double bonus){
+    public Employee convert(Map<String,Object> data){
         final Calendar instance = Calendar.getInstance();
         setPayRollCode(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
         setUserId(String.valueOf(data.get("user_id")));
@@ -36,14 +33,10 @@ public class Employee {
         setLastName(String.valueOf(data.get("last_name")));
         setOtherName(String.valueOf(data.get("other_names")));
         setProfile(String.valueOf(data.get("profile")));
-        setRole(String.valueOf(data.get("role")));
+        setEmail(String.valueOf(data.get("email")));
         setGender(String.valueOf(data.get("gender")));
-        setHireDate(String.valueOf(data.get("hire_date")));
-        setDepartment(String.valueOf(data.get("department")));
-        setSalary(Double.parseDouble(String.valueOf(data.get("salary"))));
-        setSsf(Double.parseDouble(String.valueOf(data.get("salary"))) * 0.05);
-        setAllowance(allowance);
-        setBonus(bonus);
+        setTell(String.valueOf(data.get("tell")));
+        setCreatedAt(new Date().toString());
         return this;
     }
 }

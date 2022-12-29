@@ -1,17 +1,16 @@
 package com.amalitech.payroll.utils;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 
-public class Methods<T> {
-    public static String stream(String path, String method, String auth) throws IOException, ParseException {
+public class Methods {
+
+
+    private Methods() {}
+
+    public static String stream(String path, String method, String auth) throws IOException {
         // Sending get request
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -20,7 +19,7 @@ public class Methods<T> {
         conn.setRequestMethod(method);
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String output;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         while ((output = in.readLine()) != null) {
             response.append(output);
         }

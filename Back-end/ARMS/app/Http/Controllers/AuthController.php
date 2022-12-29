@@ -85,7 +85,7 @@ class AuthController extends Controller
             $token = $user->createToken("amaliTech")->plainTextToken;
 
             //remember to uncomment this block
-            $this->sendAlert($request, $user, "Your ARMS account was just login.");
+//            $this->sendAlert($request, $user, "Your ARMS account was just login.");
 
             return new Response([
                 "message"=>"login successful",

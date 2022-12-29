@@ -1,7 +1,6 @@
 package com.amalitech.payroll.service;
 
 import com.amalitech.payroll.contracts.RewardAllocationContract;
-import com.amalitech.payroll.model.Reward;
 import com.amalitech.payroll.model.RewardAllocation;
 import com.amalitech.payroll.repository.RewardAllocationRepository;
 import com.amalitech.payroll.utils.Constants;

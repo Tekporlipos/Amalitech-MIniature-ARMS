@@ -1,7 +1,7 @@
 <template>
     <div class="login-page">
   <div class="form">
-    <p class="alert alert-danger" v-if="error.message"> {{ error.message }}</p>
+    <p class="alert alert-danger" v-if="$route.name == 'changePassword'&&error.message"> {{ error.message }}</p>
     <form v-if="$route.name == 'changePassword'"  @submit.prevent="changePassword()" class="register-form">
       <input v-model="data.old_password" type="password" placeholder="Old password"/>
       <input v-model="data.password" type="password" placeholder="New password"/>
@@ -12,7 +12,7 @@
     <form v-if="$route.name == 'login'" @submit.prevent="login()" class="login-form">
         <h3 v-if="!reset">Login!</h3>
         <h3 v-if="reset">Reset password!</h3>
-        <p class="alert alert-danger" v-if="error.message"> {{ error.message }}</p>
+        <p class="alert alert-danger" v-if="$route.name == 'login'&&error.message"> {{ error.message }}</p>
       <input v-model="data.email" v-if="!reseted" @input="error.message = null" type="email" required placeholder="Email"/>
       <input v-model="data.password" v-if="!reset" type="password" required placeholder="password"/>
       <button type="submit">{{!reset?"login":"Reset"}}</button>
@@ -78,6 +78,7 @@ export default {
   padding: 8% 0 0;
   margin: auto;
 }
+
 .click{
     cursor: pointer;
 }

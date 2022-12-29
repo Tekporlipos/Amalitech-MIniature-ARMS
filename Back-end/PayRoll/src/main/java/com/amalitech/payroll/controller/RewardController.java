@@ -29,7 +29,7 @@ public class RewardController {
     }
 
     @DeleteMapping("")
-    public ResponseData DeleteReward(@RequestBody String name){
+    public ResponseData deleteReward(@RequestBody String name){
         return allowanceService.deleteRewardByName(name);
     }
 }

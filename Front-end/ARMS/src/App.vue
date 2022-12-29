@@ -56,7 +56,7 @@ import { RouterLink, RouterView } from 'vue-router'
        </li>
 
        <li class="nav-item " v-if="['developer','admin'].includes(user.role)">
-         <a class="nav-link" href="#">
+         <a class="nav-link" href="http://localhost:3000/payroll">
            <i class="mdi mdi-square-inc-cash menu-icon"></i>
            <span class="menu-title">Finance</span>
          </a>

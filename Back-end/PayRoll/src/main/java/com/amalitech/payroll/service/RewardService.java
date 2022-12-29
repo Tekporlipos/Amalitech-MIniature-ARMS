@@ -22,7 +22,7 @@ public class RewardService implements RewardContract {
     public ResponseData getAllReward() {
         final Iterable<Reward> all = rewardRepository.findAll();
         ArrayList<Reward> arrayList = new ArrayList<>();
-        all.forEach(value->arrayList.add(value));
+        all.forEach(arrayList::add);
         return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
     }
 

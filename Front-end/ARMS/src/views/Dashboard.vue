@@ -18,7 +18,7 @@
                     </div>
                     <i class="card-icon-indicator mdi mdi-basket bg-inverse-icon-warning"></i>
                   </div>
-                  <h6 class="text-white">{{((statistics.statistics?.added.today)/statistics.statistics?.added.week)*100}}% Since last month</h6>
+                  <h6 class="text-white">{{ getFour(((statistics.statistics?.added.today)/statistics.statistics?.added.week)*100) }}% Since last day</h6>
                 </div>
               </div>
             </div>
@@ -33,7 +33,7 @@
                     </div>
                     <i class="card-icon-indicator mdi mdi-cube-outline bg-inverse-icon-danger"></i>
                   </div>
-                  <h6 class="text-white">{{((statistics.statistics?.added.week)/statistics.statistics?.added.month)*100}}% Since last week</h6>
+                  <h6 class="text-white">{{getFour(((statistics.statistics?.added.week)/statistics.statistics?.added.month)*100)}}% Since last week</h6>
                 </div>
               </div>
             </div>
@@ -48,7 +48,7 @@
                     </div>
                     <i class="card-icon-indicator mdi mdi-briefcase-outline bg-inverse-icon-primary"></i>
                   </div>
-                  <h6 class="text-white">{{((statistics.statistics?.added.month)/statistics.statistics?.added.year)*100 }}% Since last month</h6>
+                  <h6 class="text-white">{{getFour(((statistics.statistics?.added.month)/statistics.statistics?.added.year)*100) }}% Since last month</h6>
                 </div>
               </div>
             </div>
@@ -62,7 +62,7 @@
                     </div>
                     <i class="card-icon-indicator mdi mdi-account-circle bg-inverse-icon-success"></i>
                   </div>
-                  <h6 class="text-white">{{((   statistics.statistics?.added.year - (statistics.statistics?.added.year -statistics.statistics?.added.month) )/statistics.statistics?.added.year)*100 }}% Since last year</h6>
+                  <h6 class="text-white">{{getFour(((   statistics.statistics?.added.year - (statistics.statistics?.added.year -statistics.statistics?.added.month) )/statistics.statistics?.added.year)*100) }}% Since last year</h6>
                 </div>
               </div>
             </div>
@@ -121,7 +121,7 @@
                         <div class="d-flex align-items-center">
                           <img  :alt="emp.name" :src="emp.profile?emp.profile:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIUAAACFCAMAAABCBMsOAAAAMFBMVEXk5ueutLfDx8nn6eqrsbS0urzf4uPQ09Wxt7qnrrG4vcDKztDN0dLHy83X2ty9wsQYMyQeAAAC3klEQVR4nO2a25KDIAxAxXATFf7/bxd0u7ujtRAkyM5wnvrW0ySESzoMnU6n0+l0Op1Op9P53wDAID3+w2MKg1yc0IxprYVTXuUBBzkKztkLPnGz1PYAayZ2hPNRVvQA6fjJYfNga7V4gGLvJYKHqBUOd07GHyZVRcNcBuI7HGsFDRGRqKEBcQmflJlWAy4WxzEaC6UGzEkSXsMSWshECcYEXTBAp0oQViioj43igCSyGNJD4YMx0gQDFkwoqIKBqIotGDSVYVESXoPCAsbkZbozWQINQIaCpj4lrjY9orwELMiE+GCUXyXgsBK+MIpbDAZtwQk2eFy32CxccQuJlmDMlLdAFyfF9t4tmrPASxBUZ8ZKZQQbSRNdq40O3sZulrGzm/ISjZxyMk585SXwp19GcgZv4yaAXSVUV8QWboit3JZBpIeC8FGpiVcURIGS5WPTSHxdo355beGlMenBk7Iyf2jiBdpvax/bBnlNvDSamExsU5q3HpzNlRR2Dyumk0flidXmcZje8Qemd5tHmGQaHRBmtI9MMneRfaq7f3jm+0FKa9WOtduAuZ5K+PlWrU686iEQlgfTZlS2xrTbf4NdjebvF2pw0mJUkjIqPgez4ecVelYRq6XxCAr6IgRvTcbyIj4R7rptX4iIpWgTA1g0+pa6iYzFmggMMzIMfz1ckXjAoHSuw+ZR4m8IIFOOeBGPmycOGNacejgymTtp8fv33UDs3AkHqDIOgSn32ho5XyLhOu+iVCgbvx45xRE78GeAHyqWjkSAYzVudaprDVRtAEE6dhAasFJJIGasJfvEkfSJXs4oJF0jsYvSFcWukZiPki3zjUVaTjKGQjiNhPfx5L9k5ZMwTkMPIPAkBINwlf5YRCsD8EM6PFMsFPi5VAaxPxtWqM2Ai8QCP6/MIrKpUTeLnchILWemn0GkMGyN4owOkpbp9TpDy8f2CWqsQ+SpHCrxUaLT6XQ6/4YvuEMkBJwEQTUAAAAASUVORK5CYII='" alt="image" />
                           <div class="table-user-name ml-3">
-                            <p class="mb-0 font-weight-medium"> {{ emp.first_name }} </p>
+                            <p class="mb-0 font-weight-medium"> {{ emp.first_name }} {{ emp.last_name }} </p>
                             <small> {{ emp.email }}</small>
                           </div>
                         </div>
@@ -186,7 +186,7 @@
               <div class="row pt-4">
                 <div class="col-sm-6">
                   <h1 class="text-white">{{ hour }} : {{ minute }} {{ hour < 12 ?"AM":"PM"  }}</h1>
-                  <h5 class="text-white">{{weekday[date.getUTCDay()]}} {{ date.getUTCDay() }} {{ month[date.getMonth()]}}, {{ date.getUTCFullYear() }}</h5>
+                  <h5 class="text-white">{{weekday[date.getUTCDay()]}} {{ date.getDate() }} {{ month[date.getMonth()]}}, {{ date.getUTCFullYear() }}</h5>
                   <h5 class="text-white pt-2 m-0">Precipitation:50%</h5>
                   <h5 class="text-white m-0">Humidity:23%</h5>
                   <h5 class="text-white m-0">Wind:{{ current_weather.windspeed }} km/h</h5>
@@ -201,44 +201,44 @@
                 <div class="col-sm-12">
                   <ul class="d-flex pl-0 overflow-auto">
                     <li class="weakly-weather-item text-white font-weight-medium text-center active">
-                      <p class="mb-0">TODAY</p>
+                      <p class="mb-0">Now</p>
                       <i class="mdi mdi-weather-cloudy"></i>
                       <p class="mb-0">{{ current_weather.temperature }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">MON</p>
                       <i class="mdi mdi-weather-hail"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[0]/24) }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">TUE</p>
                       <i class="mdi mdi-weather-cloudy"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[1]/24) }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">WED</p>
                       <i class="mdi mdi-weather-fog"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[2]/24) }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">THU</p>
                       <i class="mdi mdi-weather-hail"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[3]/24) }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">FRI</p>
                       <i class="mdi mdi-weather-cloudy"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[4]/24) }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">SAT</p>
                       <i class="mdi mdi-weather-hail"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[5]/24) }}<span class="symbol">°c</span></p>
                     </li>
                     <li class="weakly-weather-item text-white font-weight-medium text-center">
                       <p class="mb-0">SUN</p>
                       <i class="mdi mdi-weather-cloudy"></i>
-                      <p class="mb-0">21<span class="symbol">°c</span></p>
+                      <p class="mb-0">{{ getFour(hourly[6]/24) }}<span class="symbol">°c</span></p>
                     </li>
                   </ul>
                 </div>
@@ -260,7 +260,6 @@
 
 <script setup>
 import {getData,timeSince,formatDate} from '../assets/api'
-import { RouterLink } from 'vue-router'
 import { VueCookieNext } from 'vue-cookie-next'
 import {ref} from 'vue';
 document.title = "ERP Adim Dashboard"
@@ -271,6 +270,7 @@ const date = new Date();
 var hour = ref(date.getUTCHours());
 var minute = ref(date.getUTCMinutes());
 var statistics = ref({});
+var hourly = ref({});
 
 setInterval(() => {
   const date1 = new Date();
@@ -282,7 +282,7 @@ const employee = ref([]);
 const quote = ref({});
 const user = VueCookieNext.getCookie("user");
 function getEmployees() {
-  getData(`employees`,user.token).then(value=>{
+  getData(`employees?limit=5`,user.token).then(value=>{
 employee.value = value.message;
 if(value.message == "Unauthenticated."){
   VueCookieNext.removeCookie("user");
@@ -314,9 +314,24 @@ const current_weather = ref({});
   .then((response) => response.json())
   .then((data) => {
     current_weather.value = data.current_weather
-
+    let c = 0;
+    for(let a = 0; a < 7; a++){
+      for(let b = 0; b < 24; b++){
+        const date = new Date(data.hourly.time[c]);
+          let day = date.getDay();
+        if(!hourly.value[day]){
+          hourly.value[day] = data.hourly.temperature_2m[c]; 
+        }else{
+          hourly.value[day] += data.hourly.temperature_2m[c];
+        } 
+        c++;
+    }
+    }
   });
 
+function getFour(value) {
+  return String(value).substring(0,5)
+}
 
 
 getEmployees();

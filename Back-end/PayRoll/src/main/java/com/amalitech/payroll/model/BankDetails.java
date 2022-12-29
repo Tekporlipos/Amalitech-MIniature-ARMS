@@ -5,6 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
 @Entity
 @Data
 public class BankDetails {
@@ -13,9 +17,30 @@ public class BankDetails {
     @Id
     @GeneratedValue
     private Long id;
-    private String user_id;
-    private String bankBranch;
-    private String accountNumber;
-    private String accountName;
-    private String bankName;
+    private String userId;
+    private Long batch;
+    private String payRollCode;
+    private String position;
+    private String role;
+    private String hireDate;
+    private String department;
+    private Double salary;
+    private Double allowance;
+    private Double bonus;
+    private Double ssf;
+
+    public BankDetails convert(Map<String,Object> data, Double allowance, Double bonus){
+        final Calendar instance = Calendar.getInstance();
+        setPayRollCode(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
+        setUserId(String.valueOf(data.get("user_id")));
+        setRole(String.valueOf(data.get("role")));
+        setHireDate(String.valueOf(data.get("hire_date")));
+        setDepartment(String.valueOf(data.get("department")));
+        setPosition(String.valueOf(data.get("position")));
+        setSalary(Double.parseDouble(String.valueOf(data.get("salary"))));
+        setSsf(Double.parseDouble(String.valueOf(data.get("salary"))) * 0.05);
+        setAllowance(allowance);
+        setBonus(bonus);
+        return this;
+    }
 }

@@ -20,9 +20,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request): Response
     {
-        $page = 0;
-        $limit = 10;
-        $this->checkPageAndLimit($request);
+        [$limit, $page] =  $this->checkPageAndLimit($request);
         return new Response([
             "page"=>$page/$limit,
             "limit"=>$limit,
@@ -131,10 +129,8 @@ class EmployeeController extends Controller
      */
     public function search(Request $request): Response
     {
-         $page = 0;
-         $limit = 10;
-        $this->checkPageAndLimit($request);
-        $search = $request->get('search');
+        [$limit, $page] =  $this->checkPageAndLimit($request);
+        $search = $request->get('sq');
         return new Response([
             "page"=>$page/$limit,
             "limit"=>$limit,
@@ -149,7 +145,7 @@ class EmployeeController extends Controller
      * @param string $id
      * @return Response
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): Response
     {
 
         $employee =  Employee::where("user_id", $id)->first(['*']);
@@ -213,9 +209,10 @@ class EmployeeController extends Controller
     }
 
 
-   public function checkPageAndLimit(Request $request)
+   public function checkPageAndLimit(Request $request): array
    {
-       global  $page,$limit;
+       $page = 0;
+       $limit = 10;
        if ($request->get("page")) {
            $request->validate(["page"=>"required|int"]);
            $page = $request->get("page");
@@ -225,6 +222,7 @@ class EmployeeController extends Controller
            $limit = $request->get("limit");
        }
        $page = $page * $limit;
+       return [$limit,$page];
    }
 
    public function checkAndValidate(Request $request, Employee $employee)

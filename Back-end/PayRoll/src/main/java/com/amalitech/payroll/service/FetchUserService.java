@@ -1,9 +1,11 @@
 package com.amalitech.payroll.service;
 
 
+import com.amalitech.payroll.model.BankDetails;
 import com.amalitech.payroll.model.Employee;
 import com.amalitech.payroll.model.PayRollBatch;
 import com.amalitech.payroll.model.RewardAllocation;
+import com.amalitech.payroll.repository.BankDetailsRepository;
 import com.amalitech.payroll.repository.BatchRepository;
 import com.amalitech.payroll.repository.EmployeeRepository;
 import com.amalitech.payroll.repository.RewardAllocationRepository;
@@ -26,21 +28,30 @@ public class FetchUserService {
     final RewardAllocationRepository repository;
     final EmployeeRepository employeeRepository;
     final BatchRepository batchRepository;
+    final BankDetailsRepository bankDetailsRepository;
     final Calendar instance = Calendar.getInstance();
     public ResponseData getAllUsers(String auth) throws IOException, ParseException {
         final ArrayList<Map<String, Object>> allEmployee = (ArrayList<Map<String, Object>>) getData(auth,"payroll");
         ArrayList<Employee> employees = new ArrayList<>();
+        ArrayList<BankDetails> bankDetails = new ArrayList<>();
         for(Map<String, Object> map : allEmployee){
-            Employee employee = new Employee().
+
+            Employee employee = new Employee().convert(map);
+            final String filed = "user_id";
+            BankDetails bankDetail = new BankDetails().
                     convert(map, getReward("allowance",
-                            String.valueOf(map.get("user_id"))),
-                    getReward("bonus",String.valueOf(map.get("user_id"))));
+                                    String.valueOf(map.get(filed))),
+                            getReward("bonus",String.valueOf(map.get(filed))));
+
+
             final long count = batchRepository.countByType(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
             employee.setBatch(count);
+            bankDetail.setBatch(count);
             employees.add(employee);
+            bankDetails.add(bankDetail);
         }
-        savePayRolls(employees);
-        return new ResponseData(Constants.OK,Constants.SUCCESS,employees);
+        savePayRolls(employees,bankDetails);
+        return new ResponseData(Constants.OK,Constants.SUCCESS,"Pay roll generated successfully");
     }
 
     public  ResponseData getPayRollByUserId(String token) throws IOException, ParseException {
@@ -57,19 +68,26 @@ public class FetchUserService {
     }
 
 
-  public  ResponseData getAllPayRolls(){
-        final Iterable<Employee> all = employeeRepository.findAll();
-        ArrayList<Employee> arrayList = new ArrayList<>();
+  public  ResponseData getAllPayRolls(Optional<String> month, Optional<Integer> page, Optional<Integer> limit){
+      String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
+      Long cPage = Long.valueOf(page.orElse(0));
+      Long cLimit = Long.valueOf(limit.orElse(10));
+      final long byType = batchRepository.countByType(cMonth);
+      final Iterable<Map<String, Object>> all = employeeRepository.findAllByBatchAndPayCodeWithLimitAndOffSet(cMonth,byType-1,cLimit,cPage*cLimit);
+      ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
         all.forEach(arrayList::add);
-        return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
+        return new ResponseData(Constants.OK,Constants.SUCCESS,
+                Map.of("payroll",arrayList,"page",cPage,"limit",cLimit,"total",
+                        employeeRepository.countAllByBatchAndPayRollCode(byType-1,cMonth)));
     }
 
-    void savePayRolls(ArrayList<Employee> employees){
+    void savePayRolls(ArrayList<Employee> employees, ArrayList<BankDetails> bankDetails){
         new Thread(() -> {
             final PayRollBatch payRollBatch = new PayRollBatch();
             payRollBatch.setType(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
             batchRepository.save(payRollBatch);
             employeeRepository.saveAll(employees);
+            bankDetailsRepository.saveAll(bankDetails);
         }).start();
     }
 
