@@ -35,15 +35,12 @@ public class FetchUserService {
         ArrayList<Employee> employees = new ArrayList<>();
         ArrayList<BankDetails> bankDetails = new ArrayList<>();
         for(Map<String, Object> map : allEmployee){
-
             Employee employee = new Employee().convert(map);
             final String filed = "user_id";
             BankDetails bankDetail = new BankDetails().
-                    convert(map, getReward("allowance",
-                                    String.valueOf(map.get(filed))),
-                            getReward("bonus",String.valueOf(map.get(filed))));
-
-
+                    convert(map,
+                            getReward("allowance",String.valueOf(map.get(filed)),String.valueOf(map.get("department"))),
+                            getReward("bonus",String.valueOf(map.get(filed)),String.valueOf(map.get("department"))));
             final long count = batchRepository.countByType(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
             employee.setBatch(count);
             bankDetail.setBatch(count);
@@ -92,10 +89,9 @@ public class FetchUserService {
     }
 
 
-
-    Double getReward(String type, String userId){
+    Double getReward(String type, String userId,String department){
         Double reward = 0.0;
-        for (RewardAllocation next : repository.findAllByTypeAndUserId(type, userId)) {
+        for (RewardAllocation next : repository.findAllByTypeAndUserId(userId,type.trim().toLowerCase(), department.trim().toLowerCase())) {
             reward += next.getAmount();
         }
         return  reward;

@@ -6,7 +6,11 @@ import com.amalitech.payroll.utils.ResponseData;
 
 public interface RewardContract {
     ResponseData getAllReward();
-    ResponseData getAllRewardByType(String type);
+
+    default ResponseData getAllRewardByType(String type) {
+        return null;
+    }
+
     default ResponseData deleteRewardByName(String name) {
         return null;
     }

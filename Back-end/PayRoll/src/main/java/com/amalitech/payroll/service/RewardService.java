@@ -21,27 +21,37 @@ public class RewardService implements RewardContract {
     @Override
     public ResponseData getAllReward() {
         final Iterable<Reward> all = rewardRepository.findAll();
-        ArrayList<Reward> arrayList = new ArrayList<>();
-        all.forEach(arrayList::add);
-        return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
+        return new ResponseData(Constants.OK,Constants.SUCCESS,convertArray(all));
     }
 
     @Override
     public ResponseData getAllRewardByType(String type) {
-        Optional<Reward> byType = rewardRepository.findByType(type);
-        return new ResponseData(Constants.OK,Constants.SUCCESS, byType.isPresent()? byType.get(): Arrays.asList());
+        final Iterable<Reward> all = rewardRepository.findByType(type);
+        return new ResponseData(Constants.OK,Constants.SUCCESS, convertArray(all));
     }
 
     @Override
     public ResponseData deleteRewardByName(String name) {
-        rewardRepository.deleteByName(name);
+        rewardRepository.deleteByName(name.trim());
         return new ResponseData(Constants.OK,Constants.SUCCESS, Map.of("message","delete successful"));
     }
 
     @Override
     public ResponseData addReward(Reward reward) {
-        return new ResponseData(Constants.OK,Constants.SUCCESS,rewardRepository.save(reward));
+        boolean error = false;
+        reward.setDescription(reward.getDescription() == null?"":reward.getDescription().trim());
+        reward.setName(reward.getName().trim());
+        reward.setType(reward.getType().trim().toLowerCase());
+        if(reward.getType().isEmpty() || reward.getName().isEmpty()){
+            error = true;
+        }
+        return new ResponseData(error?Constants.BAD:Constants.OK,error?Constants.BAD_REQUEST:Constants.SUCCESS,error?"Sorry!, nothing to save.":rewardRepository.save(reward));
     }
 
+    public Object convertArray(Iterable<Reward> all){
+        ArrayList<Reward> arrayList = new ArrayList<>();
+        all.forEach(arrayList::add);
+        return arrayList;
+    }
 
 }

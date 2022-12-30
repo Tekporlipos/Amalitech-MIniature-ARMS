@@ -6,6 +6,9 @@ import com.amalitech.payroll.utils.ResponseData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/allocation")
@@ -15,17 +18,21 @@ public class RewardAllocationController {
     public ResponseData getRewardAllocation(){
         return allocationService.getAllReward();
     }
-    @GetMapping("/{type}")
-    public ResponseData getRewardByType( @PathVariable String type){
-        return allocationService.getAllRewardByType(type);
+
+
+    @GetMapping("/{userId}")
+    public ResponseData getRewardByType( @PathVariable String userId,
+                                         @RequestParam("department") Optional<String> department,
+                                         @RequestParam("type") Optional<String> type){
+        return allocationService.getAllRewardByType(userId,type.orElse(""), department.orElse(""));
     }
     @PostMapping("")
     public ResponseData addReward(@RequestBody RewardAllocation allowance){
        return allocationService.addRewardAllocation(allowance);
     }
 
-    @DeleteMapping("")
-    public ResponseData deleteReward(@RequestBody String name){
-        return allocationService.deleteRewardByName(name);
+    @DeleteMapping("/{uid}")
+    public ResponseData deleteReward(@PathVariable String uid){
+        return allocationService.deleteRewardById(UUID.fromString(uid));
     }
 }

@@ -58,8 +58,8 @@
                             <div class="dropdown-menu" aria-labelledby="actions">
                   
                               <div class="dropdown-item" href="#">
-                                <button type="button" @click="addReward=true" class="btn btn-sm ml-3 btn-success"> Add Reward</button>
-                                <button class="btn btn-danger btn-md m-1" @click="view = true">View Rewards</button>
+                                <button type="button" @click="[addReward=true,beneficial={name:employ.first_name+' '+employ.last_name, id:employ.user_id}]" class="btn btn-sm ml-3 btn-success"> Add Reward</button>
+                                <button class="btn btn-danger btn-md m-1" @click="[view = true,viewValues(employ.user_id,employ.department,name=append(employ.first_name,employ.last_name))]">View Rewards</button>
                                 
                               </div>
                              
@@ -101,8 +101,8 @@
 
              <GDialog v-model="view" persistent  max-width="50%">
               <div class="card">
-                <div class="card-title p-2 pl-5">
-                  <h4><b>John Dzikunu</b></h4>
+                <div class="card-title pt-2 pl-5">
+                  <h4><b>{{ name }}</b></h4>
                 </div>
                 <div class="card-content container">
 
@@ -112,10 +112,10 @@
         <table class="table">
         
           <tbody>
-            <tr>
-              <td>Basic Salary</td>
-              <td>ddd </td>
-              <td> <div class="require text-danger btn" @click="deleteed = true">X</div></td>
+            <tr v-for="rewardBonus of bonusData">
+              <td>{{ rewardBonus.rewardName }}</td>
+              <td>{{ formatter.format(rewardBonus.amount) }}</td>
+              <td> <div class="require text-danger btn" @click="[deleteed = true,deleteId = {name:rewardBonus.rewardName,id:rewardBonus.id}]">X</div></td>
             </tr>
           </tbody>
         </table>
@@ -127,10 +127,10 @@
       <div class="table-responsive">
         <table class="table">
           <tbody>
-            <tr>
-              <td>Basic Salary</td>
-              <td>ddd </td>
-              <td> <div class="require text-danger btn" @click="deleteed = true">X</div> </td>
+            <tr v-for="rewardAllownce of allowanceData">
+              <td>{{ rewardAllownce.rewardName }}</td>
+              <td>{{formatter.format(rewardAllownce.amount) }} </td>
+              <td> <div class="require text-danger btn" @click="[deleteed = true,deleteId = {name:rewardAllownce.rewardName,id:rewardAllownce.id}]">X</div> </td>
             </tr>
           </tbody>
         </table>
@@ -144,7 +144,6 @@
 </h3>
 <div class="d-flex">
   <button type="button" @click="view=false"  class="btn btn-sm ml-3 btn-defualt"> Close </button>
-  <input type="submit"  value="Add"  class="btn btn-sm ml-3 btn-success">
 </div>
   </div>
 </div>
@@ -174,36 +173,33 @@
             <!-- add reward -->
 
             <GDialog v-model="rewardType" persistent  max-width="500">
-              <div class="card">
-                <div class="card-title text-center p-2">
-                  <h4>Add Reward Type</h4>
-                </div>
-                <div class="card-content container">
-<form class="forms-sample" action="">
+  <form class="card" @submit.prevent="addRewardType()">
+   <div class="card-title text-center p-2">
+ <h4>Add Reward Type</h4>
+ </div>
+   <div class="card-content container">
+<div class="forms-sample">
 
   <div class="form-group">
-          <label >Reward Type:<span class="required" v-if="!id">*</span></label>
-          <br><small class="required">error</small>
-          <select  class="form-control form-control-lg" :required="!id">
+          <label >Reward Type:<span class="required">*</span></label>
+          <select v-model="raddRewardType.type" class="form-control form-control-lg" :required="true">
             <option value="">Select -- Reward Type</option>
-            <option value="Service Center">Bonus</option>
-            <option value="Operation Center">Allowance</option>
+            <option value="Bonus">Bonus</option>
+            <option value="Allowance">Allowance</option>
           </select>
   </div>
 
   <div class="form-group">
-          <label >Reward Name:<span v-if="!id" class="required">*</span></label>
-          <br><small class="required">error</small>
-          <input type="text" class="form-control"  placeholder="Reward name" />
+          <label >Reward Name:<span class="required">*</span></label>
+          <input v-model="raddRewardType.name" required type="text" class="form-control"  placeholder="Reward name" />
   </div>
 
   <div class="form-group">
-          <label >Reward Name:</label>
-          <br><small class="required">error</small>
-          <textarea class="form-control" rows="3"  placeholder="Reward Description" ></textarea>
+          <label >Reward Description:</label>
+          <textarea v-model="raddRewardType.description" class="form-control" rows="3"  placeholder="Reward Description" ></textarea>
   </div>
 
-</form>
+</div>
                 </div>
                 <div class="card-footer">
   <div class="page-header flex-wrap">
@@ -215,52 +211,60 @@
 </div>
   </div>
 </div>
-              </div>
+</form>
             </GDialog>
 
 
              <!-- add reward -->
 
              <GDialog v-model="addReward" persistent  max-width="500">
-              <div class="card">
+              <form class="card" @submit.prevent="setRewardFunction()">
                 <div class="card-title text-center p-2">
                   <h4>Add Reward</h4>
                 </div>
                 <div class="card-content container">
-<form class="forms-sample" action="">
+<div class="forms-sample" >
 
   <div class="form-group">
           <label >Reward Type:<span class="required" v-if="!id">*</span></label>
-          <br><small class="required">error</small>
-          <select  class="form-control form-control-lg" :required="!id">
+          <select @change="getRewardByType(setReward.type)" v-model="setReward.type" class="form-control form-control-lg" :required="!id">
             <option value="">Select -- Reward Type</option>
-            <option value="Service Center">Bonus</option>
-            <option value="Operation Center">Allowance</option>
+            <option value="Bonus">Bonus</option>
+            <option value="Allowance">Allowance</option>
           </select>
   </div>
 
   <div class="form-group">
           <label >Reward Name:<span v-if="!id" class="required">*</span></label>
-          <br><small class="required">error</small>
-          <select  class="form-control form-control-lg" :required="!id">
+          <select :disabled="!setReward.type" v-model="setReward.rewardName" class="form-control form-control-lg" :required="!id">
             <option value="">Select -- Reward Name</option>
-            <option value="Service Center">Bonus</option>
-            <option value="Operation Center">Allowance</option>
+            <option v-for="reward of rewards" :value="reward.name">{{ reward.name }}</option>
+            
           </select>
   </div>
 
   <div class="form-group">
           <label >Beneficial:<span v-if="!id" class="required">*</span></label>
-          <br><small class="required">error</small>
-          <select  class="form-control form-control-lg" :required="!id">
+          <select v-model="setReward.userId" class="form-control form-control-lg" :required="!id">
             <option value="">Select -- Beneficial</option>
-            <option value="Service Center">John Dzikunu</option>
-            <option value="Operation Center">All Service center</option>
-            <option value="Operation Center">All Operation center</option>
+            <option :value="beneficial.id">{{ beneficial.name }}</option>
+            <option value="service center">All Service center</option>
+            <option value="operation center">All Operation center</option>
           </select>
   </div>
 
-</form>
+  <div class="form-group">
+          <label >Reward Month:<span class="required">*</span></label>
+          <input v-model="setReward.startMonth" required type="date" class="form-control"  placeholder="Reward name" />
+  </div>
+  
+  <div class="form-group">
+          <label >Reward Amount:<span class="required">*</span></label>
+          <input v-model="setReward.amount" required type="number" class="form-control"  placeholder="Reward name" />
+  </div>
+
+
+</div>
                 </div>
                 <div class="card-footer">
   <div class="page-header flex-wrap">
@@ -272,7 +276,7 @@
 </div>
   </div>
 </div>
-              </div>
+</form>
             </GDialog>
 
 
@@ -280,7 +284,8 @@
             <GDialog v-model="deleteed"  max-width="500">
               <div class="card container p-3">
                 <h3 class="card-title">DELETE ALERT</h3>
-                <div class="card-content">Are you sure you want to delete</div>
+                <div class="card-content">Are you sure you want to delete {{ deleteId.name }}?</div>
+                <div class="card-content">If is a group assigment it will delete of all.</div>
               </div>
               <div class="card-footer">
                 <div class="page-header flex-wrap">
@@ -288,7 +293,7 @@
               </h3>
               <div class="d-flex">
                 <button type="button" @click="deleteed = false" class="btn btn-sm ml-3 btn-defualt"> Discard </button>
-                <input type="button"  value=" Delete"   class="btn btn-sm ml-3 btn-success">
+                <input type="button" @click="[deleteRewardByName(deleteId.id),deleteed = false]"  value=" Delete"   class="btn btn-sm ml-3 btn-success">
               </div>
             </div>
               </div>
@@ -310,17 +315,35 @@ document.title = "ERP Adim PayRoll Generation"
 
 
 let employee = ref([]);
+let beneficial = ref("");
+let name = ref("");
+let deleteId = ref({});
 let page = 0;
+let activeUser = ref({})
 let total = 0;
 let rewardType = ref(false)
+let setReward = ref({})
+let rewards = ref([])
 let generating = ref(false)
 let addReward = ref(false)
 let deleteed = ref(false)
 let view = ref(false);
+let bonusData = ref({});
+let allowanceData = ref({});
+let raddRewardType = ref({});
 
 function next() {
   page++;
   getEmployees();
+}
+
+
+async function viewValues(user_id,department) {
+  if(user_id && department){
+    activeUser.value = {user_id,department}
+  }
+  bonusData.value =  await getRewardByUserId(activeUser.value.user_id,'bonus',activeUser.value.department);
+  allowanceData.value = await getRewardByUserId(activeUser.value.user_id,'allowance',activeUser.value.department);
 }
 
 function prev() {
@@ -343,6 +366,79 @@ function getEmployees() {
 }
 
 
+function getRewardByType(type) {
+  if(type){
+    const t = type.trim().toLowerCase();
+    fetch(`http://localhost:8080/reward/${t}`)
+    .then((response) => response.json())
+    .then((data) => {
+     rewards.value = data.data
+    });
+  }
+}
+
+
+
+function setRewardFunction() {
+  const date  = new Date(setReward.value.startMonth);
+  const startMonth = date.getFullYear()+""+date.getMonth()
+  
+  setReward.value = {...setReward.value,startMonth}
+
+  fetch('http://localhost:8080/allocation',{
+    method: 'POST',
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+    body: JSON.stringify(setReward.value)
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    setReward.value = {};
+    toaster.show(["Error",500].includes(data.status)?"You entered invalid data":"Added "+ data.status);
+    addReward.value = false;
+  });
+}
+
+
+function addRewardType() {
+  fetch('http://localhost:8080/reward',{
+    method: 'POST',
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+    body: JSON.stringify(raddRewardType.value)
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    raddRewardType.value = {};
+    toaster.show(["Error",500].includes(data.status)?"You entered invalid data":"Added "+ data.status);
+    rewardType.value = false;
+  });
+}
+
+function deleteRewardByName(name) {
+  fetch('http://localhost:8080/reward/'+name,{
+    method: 'DELETE',
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    toaster.show(data.data.message);
+    viewValues()
+  });
+}
+
+
+
 function generatePayRoll() {
   generating.value = true;
   fetch('http://localhost:8080/payroll/generate',{
@@ -360,6 +456,24 @@ function generatePayRoll() {
       getEmployees();  
     }, 1000);
   });
+}
+
+
+async function getRewardByUserId(userId,type,department,) {
+ const response = await fetch(`http://localhost:8080/allocation/${userId}?type=${type}&department=${department}`,{
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+  });
+  const data  = await response.json();
+  return data.data;
+}
+
+
+function append(p1,p2) {
+  return p1+" "+p2;
 }
 
 getEmployees();
