@@ -1,10 +1,7 @@
 package com.amalitech.payroll.service;
 
 
-import com.amalitech.payroll.model.BankDetails;
-import com.amalitech.payroll.model.Employee;
-import com.amalitech.payroll.model.PayRollBatch;
-import com.amalitech.payroll.model.RewardAllocation;
+import com.amalitech.payroll.model.*;
 import com.amalitech.payroll.repository.BankDetailsRepository;
 import com.amalitech.payroll.repository.BatchRepository;
 import com.amalitech.payroll.repository.EmployeeRepository;
@@ -51,12 +48,13 @@ public class FetchUserService {
         return new ResponseData(Constants.OK,Constants.SUCCESS,"Pay roll generated successfully");
     }
 
-    public  ResponseData getPayRollByUserId(String token) throws IOException, ParseException {
+    public  ResponseData getPayRollByUserId(String token,Optional<String> month) throws IOException, ParseException {
         final Map<String, Object> user = (Map<String, Object>) getData(token,"user");
-        final Optional<Employee> byUserId = employeeRepository.findByUserId(String.valueOf(user.get("user_id")));
+        String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
+        final long byType = batchRepository.countByType(cMonth);
+        final Optional<Map<String, Object>> byUserId = Optional.ofNullable(employeeRepository.findByPayRollCodeAndBatchAndUserId(cMonth, byType - 1, String.valueOf(user.get("user_id"))).iterator().next());
         return new ResponseData(Constants.OK,Constants.SUCCESS, byUserId.isPresent()? byUserId.get(): List.of());
     }
-
 
     public Object getData(String auth, String path) throws IOException, ParseException {
         String stream = Methods.stream(Constants.URL + path, REQUESTS.GET.name(), auth);
@@ -97,4 +95,10 @@ public class FetchUserService {
         return  reward;
     }
 
+    public ResponseData getPayCode(String token) {
+        final Iterable<String> allPayCode = employeeRepository.findAllPayCode();
+        ArrayList<String> arrayList = new ArrayList<>();
+        allPayCode.forEach(arrayList::add);
+       return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
+    };
 }

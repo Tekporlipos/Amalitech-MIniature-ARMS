@@ -25,13 +25,17 @@ public class FetchUsersController {
     }
 
     @GetMapping("/generate")
-    public Object getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
+    public ResponseData getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
         return fetchUserService.getAllUsers(token);
     }
 
     @GetMapping("/user")
-    public Object getPayrollByUserId(@RequestHeader("authorization") String token) throws IOException, ParseException {
-        return  fetchUserService.getPayRollByUserId(token);
+    public ResponseData getPayrollByUserId(@RequestHeader("authorization") String token,@RequestParam("month") Optional<String> month) throws IOException, ParseException {
+        return  fetchUserService.getPayRollByUserId(token,month);
+    }
+    @GetMapping("/paycode")
+    public ResponseData getAllPayCode(@RequestHeader("authorization") String token){
+        return  fetchUserService.getPayCode(token);
     }
 
 

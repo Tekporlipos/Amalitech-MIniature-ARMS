@@ -3,8 +3,29 @@
               <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Payroll Generation Center.</span>
               </h3>
               <div class="d-flex">
-               <button type="button" @click="generatePayRoll()"  class="btn btn-sm ml-3 btn-success"> Generate Payroll</button>
-               <button type="button" @click="rewardType = true"  class="btn btn-sm ml-3 btn-success"> Add Reward Type</button>
+        <div class="nav-item dropdown border-0">
+         <a class="btn btn-sm btn-success dropdown-toggle" id="month" href="#" data-toggle="dropdown">
+           <i class="mdi mdi-earth"></i> Month</a>
+         <div class="dropdown-menu navbar-dropdown" aria-labelledby="month">
+          <template v-for="paycodes of paycode">
+            <a class="dropdown-item btn btn-sm" @click="setMonth(paycodes)" > {{convertToMonth(paycodes)}} </a>
+          </template>
+         </div>
+       </div>
+
+      <div class="nav-item dropdown border-0 ">
+         <a class="btn btn-sm ml-3 btn-success dropdown-toggle" id="month" href="#" data-toggle="dropdown">
+           <i class="mdi mdi-earth"></i> Reward Type</a>
+         <div class="dropdown-menu navbar-dropdown" aria-labelledby="month">
+
+          <a class="dropdown-item btn btn-sm" @click="rewardType = true" > Add Reward </a>
+           <hr>
+           <a class="dropdown-item btn btn-sm " @click="[vRewards=true,getVRReward()]" > View Reward </a>
+         </div>
+      </div>
+
+      <button type="button" @click="generatePayRoll()"  class="btn btn-sm ml-3 btn-success"> Generate Payroll</button>
+
               </div>
             </div>
             
@@ -172,6 +193,52 @@
 
             <!-- add reward -->
 
+
+
+             <!-- view Rewards -->
+
+             <GDialog v-model="vRewards" persistent  max-width="50%">
+              <div class="card">
+  
+                <div class="card-content">
+                  <div class="card-body px-0 overflow-auto">
+      <h4 class="card-title pl-4 bold"><b>Reward Types</b></h4>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <td>Type</td>
+              <td>Name</td>
+              <td>Description</td>
+              <td>Actions</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="vReward of VVrewards">
+              <td class="text-capitalize">{{ vReward.type }}</td>
+              <td class="text-capitalize">{{ vReward.name }} </td>
+              <td>{{ vReward.description.length>1?vReward.description:"---" }} </td>
+              <td> <div class="require text-danger btn" @click="[deleteed=true,deleteId = {name:vReward.name,id:vReward.id}]">X</div> </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+                </div>
+                <div class="card-footer">
+  <div class="page-header flex-wrap">
+<h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block"></span>
+</h3>
+<div class="d-flex">
+  <button type="button" @click="vRewards=false"  class="btn btn-sm ml-3 btn-defualt"> Close </button>
+</div>
+  </div>
+</div>
+        
+              </div>
+            </GDialog>
+
+
             <GDialog v-model="rewardType" persistent  max-width="500">
   <form class="card" @submit.prevent="addRewardType()">
    <div class="card-title text-center p-2">
@@ -285,7 +352,7 @@
               <div class="card container p-3">
                 <h3 class="card-title">DELETE ALERT</h3>
                 <div class="card-content">Are you sure you want to delete {{ deleteId.name }}?</div>
-                <div class="card-content">If is a group assigment it will delete of all.</div>
+                <div class="card-content" v-if="String(deleteId.id).length>5">If is a group assigment it will delete for all.</div>
               </div>
               <div class="card-footer">
                 <div class="page-header flex-wrap">
@@ -293,7 +360,7 @@
               </h3>
               <div class="d-flex">
                 <button type="button" @click="deleteed = false" class="btn btn-sm ml-3 btn-defualt"> Discard </button>
-                <input type="button" @click="[deleteRewardByName(deleteId.id),deleteed = false]"  value=" Delete"   class="btn btn-sm ml-3 btn-success">
+                <input type="button" @click="[String(deleteId.id).length>5?deleteRewardByName(deleteId.id):deleteTypes(deleteId.name),deleteed = false]"  value=" Delete"   class="btn btn-sm ml-3 btn-success">
               </div>
             </div>
               </div>
@@ -312,7 +379,7 @@ import { VueCookieNext } from 'vue-cookie-next'
 const toaster = createToaster({position:"top-left",});
 const user = VueCookieNext.getCookie("user");
 document.title = "ERP Adim PayRoll Generation" 
-
+const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 let employee = ref([]);
 let beneficial = ref("");
@@ -329,8 +396,12 @@ let addReward = ref(false)
 let deleteed = ref(false)
 let view = ref(false);
 let bonusData = ref({});
+let paycode = ref([]);
 let allowanceData = ref({});
 let raddRewardType = ref({});
+let vRewards = ref(false);
+let VVrewards = ref({});
+let seletedMont = ref("");
 
 function next() {
   page++;
@@ -353,9 +424,32 @@ function prev() {
   }
 }
 
+function deleteTypes(name) {
+  fetch('http://localhost:8080/reward',{
+    method: 'DELETE',
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+    body: JSON.stringify({name})
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    toaster.show(["Error",500].includes(data.status)?"You entered invalid data":"Delete "+ data.status);
+    getVRReward()
+  });
+}
+
+function setMonth(month) {
+  if(seletedMont.value != month){
+    seletedMont.value = month;
+  getEmployees();
+  }
+}
 
 function getEmployees() {
-  fetch(`http://localhost:8080/payroll?month=202211&page=${page}`)
+  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}`)
   .then((response) => response.json())
   .then((data) => {
     if(data.data.payroll && data.data.payroll.length>0){
@@ -365,6 +459,13 @@ function getEmployees() {
   });
 }
 
+function getVRReward() {
+  fetch(`http://localhost:8080/reward`)
+  .then((response) => response.json())
+  .then((data) => {
+    VVrewards.value = data.data;
+  });
+}
 
 function getRewardByType(type) {
   if(type){
@@ -377,7 +478,19 @@ function getRewardByType(type) {
   }
 }
 
-
+function getPayCode() {
+    fetch(`http://localhost:8080/payroll/paycode`,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      paycode.value = data.data
+    });
+}
 
 function setRewardFunction() {
   const date  = new Date(setReward.value.startMonth);
@@ -402,7 +515,6 @@ function setRewardFunction() {
   });
 }
 
-
 function addRewardType() {
   fetch('http://localhost:8080/reward',{
     method: 'POST',
@@ -422,7 +534,7 @@ function addRewardType() {
 }
 
 function deleteRewardByName(name) {
-  fetch('http://localhost:8080/reward/'+name,{
+  fetch('http://localhost:8080/allocation/'+name,{
     method: 'DELETE',
     headers: {
           'Content-Type': 'application/json',
@@ -436,8 +548,6 @@ function deleteRewardByName(name) {
     viewValues()
   });
 }
-
-
 
 function generatePayRoll() {
   generating.value = true;
@@ -458,6 +568,11 @@ function generatePayRoll() {
   });
 }
 
+function convertToMonth(month) {
+  const y = month.substring(0,4);
+  const m = month.substr(4);
+  return  months[m]+", "+ y;
+}
 
 async function getRewardByUserId(userId,type,department,) {
  const response = await fetch(`http://localhost:8080/allocation/${userId}?type=${type}&department=${department}`,{
@@ -471,13 +586,12 @@ async function getRewardByUserId(userId,type,department,) {
   return data.data;
 }
 
-
 function append(p1,p2) {
   return p1+" "+p2;
 }
 
 getEmployees();
-
+getPayCode();
 </script>
 
 <style scoped>

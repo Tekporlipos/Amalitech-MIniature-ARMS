@@ -28,8 +28,8 @@ public class RewardController {
        return allowanceService.addReward(allowance);
     }
 
-    @DeleteMapping("/{rewardName}")
-    public ResponseData deleteReward(@PathVariable String rewardName){
-        return allowanceService.deleteRewardByName(rewardName);
+    @DeleteMapping("")
+    public ResponseData deleteReward(@RequestBody Reward name){
+        return allowanceService.deleteRewardByName(name.getName());
     }
 }
