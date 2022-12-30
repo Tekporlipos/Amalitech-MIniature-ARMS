@@ -80,9 +80,14 @@
       <p class="card-description">Identity data</p>
       <form class="forms-sample">
         <div class="form-group">
-          <label for="exampleInputUsername1">Email:<span class="required">*</span></label>
-          <input type="email" class="form-control" v-model="userData.email" disabled placeholder="Email" />
-        </div>
+          <label for="exampleInputUsername1">Phone Number:<span class="required">*</span></label>
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="userData.tell"  placeholder="Phone Number" aria-label="Phone Number" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" @click="updateEmployee({'tell':userData.tell})" type="button"> Update </button>
+          </div>
+         </div>
+           </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Department:<span class="required">*</span></label>
           <input type="text" class="form-control" v-model="userData.department" placeholder="Department" disabled />
@@ -91,11 +96,11 @@
         <div class="form-group">
           <label for="exampleInputPassword1">Monthly Salary:<span class="required">*</span></label>
           <div class="input-group">
-            <select v-model="userData.salary" @input="error.position = null" class="form-control form-control-lg" placeholder="Monthly Salary" aria-label="Monthly Salary">
-            <option :value="userData.salary">{{ formatter.format(userData.salary) }}</option>
+            <select v-model="seletedMont" class="form-control form-control-lg" placeholder="Monthly Salary" aria-label="Monthly Salary">
+            <option  v-for="paycodes of paycode"  :value="paycodes">{{convertToMonth(paycodes)}} - {{ formatter.format(userData.salary) }}</option>
           </select>
             <div class="input-group-append">
-            <button class="btn btn-sm btn-primary" @click="dialogState = true" type="button"> View Detail </button>
+            <button class="btn btn-sm btn-primary" @click="dialogState = true" type="button"> View Payslip </button>
           </div>
          </div>
         </div>
@@ -149,17 +154,13 @@
           <input type="text" class="form-control" v-model="bankDetail.account_name" placeholder="Bank Branch" aria-label="Bank Branch" aria-describedby="basic-addon2" />
           
         </div>
-
-
         <div class="form-group">
-          <label for="exampleInputUsername1">Phone Number:<span class="required">*</span></label>
-          <div class="input-group">
-            <input type="text" class="form-control" v-model="userData.tell"  placeholder="Phone Number" aria-label="Phone Number" aria-describedby="basic-addon2" />
-            <div class="input-group-append">
-            <button class="btn btn-sm btn-primary" @click="updateEmployee({'tell':userData.tell})" type="button"> Update </button>
-          </div>
-         </div>
-           </div>
+          <label for="exampleInputUsername1">Bank Branch<span class="required">*</span></label>
+          <input type="text" class="form-control" v-model="bankDetail.bank_branch" placeholder="Bank Branch" aria-label="Bank Branch" aria-describedby="basic-addon2" />
+          
+        </div>
+
+        
     </div>
   </div>
 </div>
@@ -169,7 +170,7 @@
 <GDialog v-model="dialogState" :fullscreen="true"  max-width="75%">
      
       <div>
-         <Payslip :user="userData" @close="dialogState = false" />
+         <Payslip :user="user" :userData="userData" :bank="bankDetail" :month="seletedMont" @close="dialogState = false" />
       </div>
 </GDialog>
 
@@ -185,22 +186,24 @@ import { GDialog } from 'gitart-vue-dialog';
 import Payslip  from '../components/Payslip.vue';
 import { VueCookieNext } from 'vue-cookie-next';
 document.title = "ERP Adim Employee";
-
+const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const toaster = createToaster({position:"top-left",});
-
+const date  = new Date();
 var image = ref(null);
 var userData = ref({});
 var bankDetail = ref({});
 var update = ref(false);
+let paycode = ref([]);
 var dialogState = ref(false)
+var salary = ref("")
 const user = VueCookieNext.getCookie("user");
 userData.value   = {...user};
+let seletedMont = ref(date.getFullYear()+""+date.getMonth());
 
 function uploadImage() {
   const inputData = document.querySelector("#file")
   var data = new FormData()
 data.append('profile', inputData.files[0])
-console.log(user.token);
 imageUpload("upload",data, user.token).then(value=>{
   if(value.message == "Unauthenticated."){
   VueCookieNext.removeCookie("user");
@@ -234,7 +237,9 @@ function updateBankDetail() {
     patchData(`bank-detail`,bankDetail.value,user.token).then(value=>{
         if(value.errors){
           this.error = value.errors;
-        };
+        }else{
+          bankDetail.value = value;
+        }
         if(value.message == "Unauthenticated."){
   VueCookieNext.removeCookie("user");
   window.location.replace("/login");
@@ -242,9 +247,8 @@ function updateBankDetail() {
       });
 
   }else{
-    postData(`bank-detail`,bankDetail.value,user.token).then(value=>{
+    postData(`bank-detail`,bankDetail.value, user.token).then(value=>{
       bankDetail.value = {...value};
-
       if(value.message == "Unauthenticated."){
   VueCookieNext.removeCookie("user");
   window.location.replace("/login");
@@ -257,6 +261,7 @@ function getInfo() {
   getData(`employees/${userData.value.user_id}`,user.token).then(value=>{
     if(value.length>0){
       userData.value = {...value[0]};
+      salary.value = value[0].salary;
     }
 
     if(value.message == "Unauthenticated."){
@@ -279,8 +284,26 @@ function getBankDetail() {
   });
 }
 
+function convertToMonth(month) {
+  const y = month.substring(0,4);
+  const m = month.substr(4);
+  return  months[m]+", "+ y;
+}
 
-
+function getPayCode() {
+    fetch(`http://localhost:8080/payroll/paycode`,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      paycode.value = data.data
+    });
+}
+getPayCode();
 getInfo();
 getBankDetail();
 

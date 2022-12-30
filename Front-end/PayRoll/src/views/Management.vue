@@ -380,7 +380,7 @@ const toaster = createToaster({position:"top-left",});
 const user = VueCookieNext.getCookie("user");
 document.title = "ERP Adim PayRoll Generation" 
 const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
+const date  = new Date();
 let employee = ref([]);
 let beneficial = ref("");
 let name = ref("");
@@ -401,7 +401,7 @@ let allowanceData = ref({});
 let raddRewardType = ref({});
 let vRewards = ref(false);
 let VVrewards = ref({});
-let seletedMont = ref("");
+let seletedMont = ref(date.getFullYear()+""+date.getMonth());
 
 function next() {
   page++;

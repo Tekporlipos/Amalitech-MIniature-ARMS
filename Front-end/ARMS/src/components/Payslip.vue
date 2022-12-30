@@ -29,22 +29,24 @@
           <tbody>
             <tr>
               <td><b>Staff Name:</b></td>
-              <td> {{ user.first_name }} {{ user.other_names }}  {{ user.last_name }} </td>
+              <td> {{ userData.first_name }} {{ userData.other_names }}  {{ userData.last_name }} </td>
             </tr>
 
             <tr>
               <td><b>Department:</b></td>
-              <td>{{ user.department }} </td>
+              <td>{{ userData.department }} </td>
             </tr>
 
             <tr>
               <td><b>Annual Basic Salary:</b></td>
-              <td> {{formatter(user.salary * 12) }}</td>
+              <td> {{formatter(userData.salary * 12) }}</td>
             </tr>
+
             <tr>
               <td><b>Branch:</b></td>
-              <td>CalBank</td>
+              <td>{{bank.bank_branch}}</td>
             </tr>
+
             <tr>
               <td><b>SSNIT Number:</b></td>
               <td>1400002840458</td>
@@ -67,7 +69,7 @@
 
             <tr>
               <td><b>Job Position:</b></td>
-              <td> {{ user.position }}</td>
+              <td> {{ userData.position }}</td>
             </tr>
 
             <tr>
@@ -76,11 +78,11 @@
             </tr>
             <tr>
               <td><b>Bank Name:</b></td>
-              <td>CalBank</td>
+              <td>{{ bank.bank_name }}</td>
             </tr>
             <tr>
               <td><b>Account Number:</b></td>
-              <td>1400002840458</td>
+              <td>{{bank.account_number}}</td>
             </tr>
           </tbody>
         </table>
@@ -97,17 +99,21 @@
           <tbody>
             <tr>
               <td>Basic Salary</td>
-              <td>{{ formatter (user.salary) }} </td>
+              <td>{{ formatter ( payroll.salary) }} </td>
+            </tr>
+            <tr v-for="bon of bonus">
+              <td>{{ bon.rewardName }}</td>
+              <td>{{ bon.amount }}</td>
+            </tr>
+
+            <tr v-for="all of allowance">
+              <td>{{ all.rewardName }}</td>
+              <td>{{ all.amount }}</td>
             </tr>
 
             <tr>
-              <td>Lunch Allowance</td>
-              <td>dddd</td>
-            </tr>
-
-            <tr>
-              <td>Total Earnings</td>
-              <td>dddd</td>
+              <td><b>Total Earnings</b></td>
+              <td><b>{{ formatter ( payroll.salary + payroll.allowance + payroll.bonus) }}</b></td>
             </tr>
           </tbody>
         </table>
@@ -121,17 +127,17 @@
           <tbody>
             <tr>
               <td>Employee SSF (5.5%)</td>
-              <td> helo </td>
+              <td> {{ formatter ( payroll.ssf) }} </td>
             </tr>
 
             <tr>
-              <td>PAYE</td>
-              <td>dddd</td>
+              <td>PAYE (17%)</td>
+              <td>{{ formatter ( payroll.ssf * (1-0.17) ) }}</td>
             </tr>
 
             <tr>
-              <td>Total Deductions</td>
-              <td>dddd</td>
+              <td><b>Total Deductions</b></td>
+              <td><b>{{ formatter ( (payroll.ssf * (1-0.17)) + payroll.ssf ) }}</b></td>
             </tr>
           </tbody>
         </table>
@@ -145,7 +151,7 @@
     </div>
    
     <div>
-      <b> 2,788.42</b>
+      <b>{{ formatter ( (payroll.salary + payroll.allowance + payroll.bonus)-( (payroll.ssf * (1-0.17)) + payroll.ssf )) }}</b>
     </div>
   </div>
 
@@ -168,7 +174,7 @@
 <script>
     export default {
         name:"Payslip",
-        props:["user"],
+        props:["user","month","bank","userData"],
         methods:{
             docPrint() {
                     window.print()
@@ -177,24 +183,71 @@
       this.$emit('close')
     },
     formatter(value){
-  const f = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GHS',
-});
+            const f = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'GHS',
+          });
       return f.format(value);
-    }
+    },
+     getPayCode() {
+    fetch(`http://localhost:8080/payroll/user`,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+this.user.token
         },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.payroll = data.data;
+    });
+}
+,getPayCodeBonus() {
+    fetch(`http://localhost:8080/allocation/${this.user.user_id}?type=bonus&department=${this.user.department}`,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+this.user.token
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.bonus = data.data;
+    });
+},getPayCodeAllowance() {
+    fetch(`http://localhost:8080/allocation/${this.user.user_id}?type=allowance&department=${this.user.department}`,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+this.user.token
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.allowance = data.data;
+    });
+}
+},
         data() {
             return {
-                
+             payroll:{},   
+             allowance:[],
+             bonus:[],
             }
         },
+        updated() {
+          if(!this.payroll.salary){
+            this.getPayCode();
+          console.log(this.month,this.user);
+          }
+        },
+        mounted() {
+          if(!this.payroll.salary){
+            this.getPayCode();
+          console.log(this.month,this.user);
+          }
+        },
     }
-
-    const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GHS',
-});
 </script>
 
 <style scoped>

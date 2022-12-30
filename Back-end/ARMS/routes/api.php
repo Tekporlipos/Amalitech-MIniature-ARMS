@@ -54,8 +54,9 @@ Route::group(['prefix' => '/v1'], function ()
         Route::post("upload", [EmployeeController::class,"upload"]);
 
         Route::resource("assistant", OnboardingController::class);
-        Route::resource("bank-detail", BankDetailController::class)->middleware([AdminAccess::class]);
+        Route::resource("bank-detail", BankDetailController::class);
         Route::patch("bank-detail", [BankDetailController::class,'update']);
+
         Route::get("can-assistant", [OnboardingController::class, "showCanOnboard"]);
         Route::get("available-assistant", [OnboardingController::class, "showAvailable"]);
 
