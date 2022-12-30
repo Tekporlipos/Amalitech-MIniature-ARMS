@@ -1,4 +1,22 @@
-<template>       
+<template>     
+
+
+<div class="page-header flex-wrap mb-2">
+              <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block"></span>
+              </h3>
+              <div class="d-flex">
+                <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="search"   placeholder="Search employee" aria-label="Phone Number" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" @click="searchEmployees(search)"  type="button"> Search </button>
+          </div>
+         </div>
+           </div>
+              </div>
+            </div>
+
+
     <div class="page-header flex-wrap">
               <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Enterprise Resource Planning Center.</span>
               </h3>
@@ -123,6 +141,7 @@ import { createToaster } from "@meforma/vue-toaster";
 import { VueCookieNext } from 'vue-cookie-next'
 const toaster = createToaster({position:"top-left",});
 let showAddModel = ref(false);
+let search = ref("");
 let id = ref(null);
 const user = VueCookieNext.getCookie("user");
 document.title = "ERP Adim Management" 
@@ -170,6 +189,18 @@ function append(p1,p2) {
 
 function getEmployees() {
   getData(`employees?page=${page}`,user.token).then(value=>{
+employee.value = value.message;
+total = value.total;
+if(value.message == "Unauthenticated."){
+  VueCookieNext.removeCookie("user");
+  window.location.replace("/login");
+}
+});
+}
+
+
+function searchEmployees(value) {
+  getData(`search?sq=${value}`,user.token).then(value=>{
 employee.value = value.message;
 total = value.total;
 if(value.message == "Unauthenticated."){

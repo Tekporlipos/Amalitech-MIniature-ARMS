@@ -24,6 +24,13 @@ public class FetchUsersController {
         return  fetchUserService.getAllPayRolls(month,page,limit);
     }
 
+    @GetMapping("/search")
+    public ResponseData searchAllPayroll(@RequestParam("month") Optional<String> month,
+                                         @RequestParam("search") Optional<String> search){
+        return  fetchUserService.searchAllPayRolls(month,search);
+    }
+
+
     @GetMapping("/generate")
     public ResponseData getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
         return fetchUserService.getAllUsers(token);
@@ -33,6 +40,7 @@ public class FetchUsersController {
     public ResponseData getPayrollByUserId(@RequestHeader("authorization") String token,@RequestParam("month") Optional<String> month) throws IOException, ParseException {
         return  fetchUserService.getPayRollByUserId(token,month);
     }
+
     @GetMapping("/paycode")
     public ResponseData getAllPayCode(@RequestHeader("authorization") String token){
         return  fetchUserService.getPayCode(token);

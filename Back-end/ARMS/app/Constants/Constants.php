@@ -38,10 +38,9 @@ WHERE users.user_id = employees.user_id AND users.user_id = '$userId'";
        employees.last_name, employees.other_names,users.profile, employees.gender,
        employees.department,employees.position,employees.tell,employees.salary,
        employees.hire_date FROM `users`, `employees`
-       WHERE users.user_id = employees.user_id
-       AND  employees.first_name LIKE '$search' OR employees.last_name LIKE '$search'
-          OR employees.other_names LIKE '$search'
-          OR users.email LIKE '$search' ORDER by users.id DESC limit $limit offset $page;";
+       WHERE (employees.first_name LIKE '$search' OR employees.last_name LIKE '$search'
+                  OR employees.other_names LIKE '$search' OR users.email LIKE '$search')
+         AND users.user_id = employees.user_id ORDER by users.id DESC limit $limit offset $page";
     }
 
    const CAN_ADD = "SELECT users.user_id, users.name, users.email,users.profile,users.email_verified_at, users.role

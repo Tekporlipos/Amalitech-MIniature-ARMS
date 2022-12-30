@@ -18,18 +18,19 @@ export default {
     logout(){
       postData("http://127.0.0.1:8000/api/v1/logout",{},this.user.token).then(value=>{
         this.$cookie.removeCookie("user");
-        window.location.replace("/login");
+        window.location.replace("http://localhost:2000/");
           });
     }
   },
   beforeCreate() {
      this.user =   this.$cookie.getCookie("user")
-     this.lang =   this.$cookie.getCookie("lang")
-    if(window.location.pathname == '/login'){
-      if(this.user != null) window.location.replace("/");
-    }else{
-      if(this.user == null) window.location.replace("/login");
-    }
+     if(this.user == null) {
+        window.location.replace("http://localhost:2000/login")
+      }else{
+        if(this.user.role != "admin"){
+          if(this.user != null) window.location.replace("http://localhost:2000/login");
+        }
+      }
 },
 }
 

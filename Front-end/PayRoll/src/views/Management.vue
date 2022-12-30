@@ -1,4 +1,20 @@
 <template>       
+
+<div class="page-header flex-wrap mb-2">
+              <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block"></span>
+              </h3>
+              <div class="d-flex">
+                <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="search" placeholder="Search employee" aria-label="Phone Number" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" @click="searchPayRoll()"  type="button"> Search </button>
+          </div>
+         </div>
+           </div>
+              </div>
+            </div>
+
     <div class="page-header flex-wrap">
               <h3 class="mb-0"><span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Payroll Generation Center.</span>
               </h3>
@@ -384,6 +400,7 @@ const date  = new Date();
 let employee = ref([]);
 let beneficial = ref("");
 let name = ref("");
+let search = ref("");
 let deleteId = ref({});
 let page = 0;
 let activeUser = ref({})
@@ -449,13 +466,24 @@ function setMonth(month) {
 }
 
 function getEmployees() {
-  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}`)
+  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}&search=${search.value}`)
   .then((response) => response.json())
   .then((data) => {
     if(data.data.payroll && data.data.payroll.length>0){
       employee.value  = data.data.payroll
     }
     total = data.data.total;
+  });
+}
+
+function searchPayRoll() {
+  fetch(`http://localhost:8080/payroll/search?search=${search.value}&month=${seletedMont.value}`)
+  .then((response) => response.json())
+  .then((data) => {
+    if(data.data && data.data.length>0){
+      employee.value  = data.data
+    }
+    total = data.data.length;
   });
 }
 
@@ -574,7 +602,7 @@ function convertToMonth(month) {
   return  months[m]+", "+ y;
 }
 
-async function getRewardByUserId(userId,type,department,) {
+async function getRewardByUserId(userId,type,department) {
  const response = await fetch(`http://localhost:8080/allocation/${userId}?type=${type}&department=${department}`,{
     headers: {
           'Content-Type': 'application/json',

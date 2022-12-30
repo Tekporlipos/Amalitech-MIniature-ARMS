@@ -101,4 +101,14 @@ public class FetchUserService {
         allPayCode.forEach(arrayList::add);
        return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
     };
+
+    public ResponseData searchAllPayRolls(Optional<String> month,Optional<String> search) {
+        String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
+        final long byType = batchRepository.countByType(cMonth);
+        final String cSearch = search.orElse("");
+        final Iterable<Map<String, Object>> all = employeeRepository.searchAllByBatchAndPayRollCodeOrFirstNameOrLastNameOrOtherName(byType - 1, cMonth, "%"+cSearch+"%");
+        ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+        all.forEach(arrayList::add);
+        return new ResponseData(Constants.OK,Constants.SUCCESS,all);
+    }
 }
