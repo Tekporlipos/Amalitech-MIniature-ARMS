@@ -1,9 +1,12 @@
 package com.amalitech.payroll.model;
-import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 import java.util.Map;
+
 @Data
 @Entity
 public class Employee {
@@ -24,7 +27,7 @@ public class Employee {
     private String createdAt;
 
 
-    public Employee convert(Map<String,Object> data,String month){
+    public Employee convert(Map<String,Object> data, String month){
         setPayRollCode(month);
         setUserId(String.valueOf(data.get("user_id")));
         setFirstName(String.valueOf(data.get("first_name")));

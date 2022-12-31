@@ -53,7 +53,8 @@ public class FetchUserService {
         final Map<String, Object> user = (Map<String, Object>) getData(token,"user");
         String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
         final long byType = batchRepository.countByType(cMonth);
-        final Optional<Map<String, Object>> byUserId = Optional.ofNullable(employeeRepository.findByPayRollCodeAndBatchAndUserId(cMonth, byType - 1, String.valueOf(user.get("user_id"))).iterator().next());
+        final Iterator<Map<String, Object>> userPayroll = employeeRepository.findByPayRollCodeAndBatchAndUserId(cMonth, byType - 1, String.valueOf(user.get("user_id"))).iterator();
+        final Optional<Map<String, Object>> byUserId = Optional.ofNullable(userPayroll.hasNext()?userPayroll.next():null);
         return new ResponseData(Constants.OK,Constants.SUCCESS, byUserId.isPresent()? byUserId.get(): List.of());
     }
 
@@ -102,11 +103,13 @@ public class FetchUserService {
        return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
     }
 
-    public ResponseData searchAllPayRolls(Optional<String> month, Optional<String> search, Optional<Long> batch) {
+    public ResponseData searchAllPayRolls(Optional<String> month, Optional<String> search, Optional<Long> batch, Optional<Integer> page, Optional<Integer> limit) {
         String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
         Long byType = batch.orElseGet(() -> batchRepository.countByType(cMonth));
+        Integer cPage = page.orElse(0);
+        Integer cLimit = limit.orElse(10);
         final String cSearch = search.orElse("");
-        final Iterable<Map<String, Object>> all = employeeRepository.searchAllByBatchAndPayRollCodeOrFirstNameOrLastNameOrOtherName(byType - 1, cMonth, "%"+cSearch+"%");
+        final Iterable<Map<String, Object>> all = employeeRepository.searchAllByBatchAndPayRollCodeOrFirstNameOrLastNameOrOtherNameWithLimitAndOffSet(byType - 1, cMonth, "%"+cSearch+"%",cPage,cLimit);
         ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
         all.forEach(arrayList::add);
         return new ResponseData(Constants.OK,Constants.SUCCESS,all);

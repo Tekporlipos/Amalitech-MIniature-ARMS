@@ -1,9 +1,8 @@
 package com.amalitech.payroll.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Optional;
+import javax.persistence.*;
 
 
 @Entity

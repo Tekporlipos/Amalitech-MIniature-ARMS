@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 
-public interface RewardAllocationRepository extends CrudRepository<RewardAllocation, UUID> {
+public interface RewardAllocationRepository extends CrudRepository<RewardAllocation, Long> {
 
     @Modifying
     @Transactional

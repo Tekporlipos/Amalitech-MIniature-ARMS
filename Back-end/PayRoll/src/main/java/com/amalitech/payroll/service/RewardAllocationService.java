@@ -1,8 +1,9 @@
 package com.amalitech.payroll.service;
 
 import com.amalitech.payroll.contracts.RewardAllocationContract;
-import com.amalitech.payroll.model.Reward;
 import com.amalitech.payroll.model.RewardAllocation;
+import com.amalitech.payroll.model.RewardAllocationDTO;
+import com.amalitech.payroll.model.RewardDTO;
 import com.amalitech.payroll.repository.RewardAllocationRepository;
 import com.amalitech.payroll.utils.Constants;
 import com.amalitech.payroll.utils.ResponseData;
@@ -25,13 +26,13 @@ public class RewardAllocationService implements RewardAllocationContract {
 
 
     @Override
-    public ResponseData deleteRewardById(UUID uuid) {
+    public ResponseData deleteRewardById(Long uuid) {
         repository.deleteById(uuid);
         return new ResponseData(Constants.OK,Constants.SUCCESS, Map.of("message"," deleted successful"));
     }
 
     @Override
-    public ResponseData addReward(Reward reward) {
+    public ResponseData addReward(RewardDTO reward) {
         return RewardAllocationContract.super.addReward(reward);
     }
 
@@ -42,9 +43,15 @@ public class RewardAllocationService implements RewardAllocationContract {
 
 
     @Override
-    public ResponseData addRewardAllocation(RewardAllocation rewardAllocation) {
-        rewardAllocation.setUserId(rewardAllocation.getUserId().trim().toLowerCase());
-        rewardAllocation.setType(rewardAllocation.getType().trim().toLowerCase());
+    public ResponseData addRewardAllocation(RewardAllocationDTO rewardAllocationDTO) {
+        RewardAllocation rewardAllocation = new RewardAllocation();
+
+        rewardAllocation.setUserId(rewardAllocationDTO.getUserId().trim().toLowerCase());
+        rewardAllocation.setType(rewardAllocationDTO.getType().trim().toLowerCase());
+        rewardAllocation.setRewardName(rewardAllocationDTO.getRewardName());
+        rewardAllocation.setAmount(rewardAllocationDTO.getAmount());
+        rewardAllocation.setUserId(rewardAllocationDTO.getUserId());
+
         RewardAllocation save = repository.save(rewardAllocation);
         return new ResponseData(Constants.OK,Constants.SUCCESS,save);
     }

@@ -1,16 +1,18 @@
 package com.amalitech.payroll.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 
 @Data
 @Entity
 public class RewardAllocation {
+    @javax.persistence.Id
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue
+    private Long id;
     private String userId;
     private String type;
     private String rewardName;

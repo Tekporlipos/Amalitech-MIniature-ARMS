@@ -466,7 +466,13 @@ function setMonth(month) {
 }
 
 function getEmployees() {
-  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}`)
+  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}`,{
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+  })
   .then((response) => response.json())
   .then((data) => {
     if(data.data.payroll && data.data.payroll.length>0){
@@ -477,7 +483,13 @@ function getEmployees() {
 }
 
 function searchPayRoll() {
-  fetch(`http://localhost:8080/payroll/search?search=${search.value}&month=${seletedMont.value}`)
+  fetch(`http://localhost:8080/payroll/search?search=${search.value}&month=${seletedMont.value}`,{
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+  })
   .then((response) => response.json())
   .then((data) => {
     if(data.data && data.data.length>0){
@@ -488,7 +500,13 @@ function searchPayRoll() {
 }
 
 function getVRReward() {
-  fetch(`http://localhost:8080/reward`)
+  fetch(`http://localhost:8080/reward`,{
+    headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+  })
   .then((response) => response.json())
   .then((data) => {
     VVrewards.value = data.data;
@@ -498,7 +516,13 @@ function getVRReward() {
 function getRewardByType(type) {
   if(type){
     const t = type.trim().toLowerCase();
-    fetch(`http://localhost:8080/reward/${t}`)
+    fetch(`http://localhost:8080/reward/${t}`,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+user.token
+        },
+    })
     .then((response) => response.json())
     .then((data) => {
      rewards.value = data.data
@@ -528,7 +552,8 @@ function setRewardFunction() {
   const Cdate  = new Date();
   const CstartMonth = Cdate.getFullYear()+""+date.getMonth()
 
-  if(Number(seletedMont)  >= Number(CstartMonth) ){
+
+  if(!seletedMont || Number(seletedMont.value)  >= Number(CstartMonth) ){
     setReward.value = {...setReward.value,startMonth}
 
 fetch('http://localhost:8080/allocation',{
