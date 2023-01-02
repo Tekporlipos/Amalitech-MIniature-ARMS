@@ -60,3 +60,9 @@ Use the Sonarlint extension
 Use version control (Git and GitHub) 
 NOTE: 
 During the review, I’ll primarily consider your back-end code, especially the payroll API. Don’t  worry too much about having a beautiful front-end. For this project, functionality matters more.
+
+
+
+## Documentation
+> PAYROLL API : http://localhost:8080/swagger-ui.html
+> ARMS API: 
