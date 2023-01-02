@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Profile("test")
-@Configuration
 class RewardAllocationTest {
 
     @Autowired
@@ -73,6 +72,7 @@ class RewardAllocationTest {
                         .getAllRewardByType(
                                 Mockito.anyString(),
                                 Mockito.any(),
+                                Mockito.any(),
                                 Mockito.any()))
                 .thenReturn(new ResponseData(Constants.OK,
                         Constants.SUCCESS,"Test Data"));
@@ -82,6 +82,7 @@ class RewardAllocationTest {
         Assertions.assertEquals(rewardAllocation
                         .getRewardByType("token",
                                 "userid",
+                                Optional.empty(),
                                 Optional.empty(),
                                 Optional.empty()),
                 ResponseEntity
@@ -96,6 +97,7 @@ class RewardAllocationTest {
         Assertions.assertEquals(rewardAllocation
                         .getRewardByType("token",
                                 null,
+                                Optional.empty(),
                                 Optional.empty(),
                                 Optional.empty()),
                 ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,

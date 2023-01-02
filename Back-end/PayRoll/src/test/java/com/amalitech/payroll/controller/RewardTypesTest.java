@@ -25,13 +25,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Profile("test")
-@Configuration
 class RewardTypesTest {
-
-
     @Autowired
     RewardTypes rewardTypes;
-
     @MockBean
     RewardService rewardService;
     @MockBean
@@ -64,7 +60,6 @@ class RewardTypesTest {
                 "type"),
                 ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,
                         Constants.UNAUTHORIZED,Constants.UN_AUTH)));
-
     }
 
     @Test

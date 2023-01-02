@@ -13,6 +13,6 @@ public interface RewardAllocationRepository extends CrudRepository<RewardAllocat
 
     @Modifying
     @Transactional
-    @Query(value = "SELECT * FROM reward_allocation WHERE (user_id = ?1 OR user_id = ?3) AND  type = ?2", nativeQuery = true)
-    Iterable<RewardAllocation> findAllByTypeAndUserId(String userid,String type, String department);
+    @Query(value = "SELECT * FROM reward_allocation WHERE (user_id = ?1 OR user_id = ?3) AND  type = ?2 AND start_month = ?4", nativeQuery = true)
+    Iterable<RewardAllocation> findAllByTypeAndUserId(String userid,String type, String department, String month);
 }

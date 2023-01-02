@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,7 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.util.Optional;
 
-@Configuration
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Profile("test")
@@ -28,7 +26,6 @@ class GeneratePayRollTest {
 
  @Autowired
  GeneratePayRoll generatePayRoll;
-
  @MockBean
  FetchUserService fetchUserService;
  @MockBean
@@ -46,7 +43,6 @@ class GeneratePayRollTest {
                      Mockito.any()))
              .thenReturn(new ResponseData(Constants.OK,
                      Constants.SUCCESS,"Test Data"));
-
 
      //If user is authenticated and is admin
      Assertions.assertEquals(generatePayRoll

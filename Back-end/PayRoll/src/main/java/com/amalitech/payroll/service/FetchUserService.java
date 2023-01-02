@@ -13,7 +13,6 @@ import com.amalitech.payroll.utils.ResponseData;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class FetchUserService {
-
     final RewardAllocationRepository repository;
     final EmployeeRepository employeeRepository;
     final BatchRepository batchRepository;
@@ -38,8 +36,8 @@ public class FetchUserService {
             final String filed = "user_id";
             BankDetails bankDetail = new BankDetails().
                     convert(map,
-                            getReward("allowance",String.valueOf(map.get(filed)),String.valueOf(map.get("department"))),
-                            getReward("bonus",String.valueOf(map.get(filed)),String.valueOf(map.get("department"))),cMonth);
+                            getReward("allowance",String.valueOf(map.get(filed)),String.valueOf(map.get("department")),cMonth),
+                            getReward("bonus",String.valueOf(map.get(filed)),String.valueOf(map.get("department")),cMonth),cMonth);
             final long count = batchRepository.countByType(cMonth);
             employee.setBatch(count);
             bankDetail.setBatch(count);
@@ -89,9 +87,9 @@ public class FetchUserService {
         }).start();
     }
 
-    Double getReward(String type, String userId,String department){
+    Double getReward(String type, String userId,String department, String month){
         Double reward = 0.0;
-        for (RewardAllocation next : repository.findAllByTypeAndUserId(userId,type.trim().toLowerCase(), department.trim().toLowerCase())) {
+        for (RewardAllocation next : repository.findAllByTypeAndUserId(userId,type.trim().toLowerCase(), department.trim().toLowerCase(),month)) {
             reward += next.getAmount();
         }
         return  reward;
@@ -103,7 +101,6 @@ public class FetchUserService {
         allPayCode.forEach(arrayList::add);
        return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
     }
-
     public ResponseData searchAllPayRolls(Optional<String> month, Optional<String> search, Optional<Long> batch, Optional<Integer> page, Optional<Integer> limit) {
         String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
         Long byType = batch.orElseGet(() -> batchRepository.countByType(cMonth));

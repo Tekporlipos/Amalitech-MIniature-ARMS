@@ -37,13 +37,17 @@ public class RewardAllocation {
                     @ApiImplicitParam(dataType = "department",name = "month", value = "Optional query parameter of the department of the employee", paramType = "Query"),
                     @ApiImplicitParam(dataType = "type" ,value = "Optional query parameter of the the reward type", paramType = "Query")}
     )
+
     public ResponseEntity<ResponseData> getRewardByType(@RequestHeader("authorization") String token,
                                          @PathVariable String userId,
                                          @RequestParam("department") Optional<String> department,
-                                         @RequestParam("type") Optional<String> type){
+                                         @RequestParam("type") Optional<String> type,
+                                          @RequestParam("month") Optional<String> month
+    ){
         if (!authorizationFilter.isAuth(token))return ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,Constants.UNAUTHORIZED,"Unauthenticated."));
-        return ResponseEntity.ok(allocationService.getAllRewardByType(userId,type.orElse(""), department.orElse("")));
+        return ResponseEntity.ok(allocationService.getAllRewardByType(userId,type.orElse(""), department.orElse(""),month));
     }
+
 
     @PostMapping("")
     @ApiOperation(value = "Assign a reward to an employee")
@@ -51,6 +55,7 @@ public class RewardAllocation {
         if (!authorizationFilter.isAdmin(token))return ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,Constants.UNAUTHORIZED,Constants.UN_AUTH));
         return ResponseEntity.ok(allocationService.addRewardAllocation(allowance));
     }
+
 
     @DeleteMapping("/{rid}")
     @ApiOperation(value = "Delete reward from an employee")

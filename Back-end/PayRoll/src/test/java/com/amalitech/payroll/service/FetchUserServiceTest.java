@@ -9,13 +9,9 @@ import com.amalitech.payroll.utils.ResponseData;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.IterableUtil;
 import org.json.simple.parser.ParseException;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.internal.util.collections.Iterables;
-import org.springframework.boot.autoconfigure.condition.ConditionMessage;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -24,12 +20,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Profile("test")
-@Configuration
 class FetchUserServiceTest {
     @MockBean
      RewardAllocationRepository repository;
@@ -75,7 +73,7 @@ class FetchUserServiceTest {
 
         Mockito.doReturn(user).when(fetchUserService).getData(Mockito.anyString(),Mockito.any());
         Mockito.doNothing().when(fetchUserService).savePayRolls(Mockito.any(),Mockito.any(),Mockito.any());
-        Mockito.doReturn(100.54).when(fetchUserService).getReward(Mockito.any(),Mockito.any(),Mockito.any());
+        Mockito.doReturn(100.54).when(fetchUserService).getReward(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.anyString());
         Assertions.assertThat(
                 fetchUserService.
                         getAllUsers("token",

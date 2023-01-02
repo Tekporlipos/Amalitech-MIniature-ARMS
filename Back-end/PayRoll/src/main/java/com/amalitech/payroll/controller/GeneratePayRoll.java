@@ -19,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Api(value = "Generate, search and get all the employee payroll")
 public class GeneratePayRoll {
-
     final FetchUserService fetchUserService;
     final AuthorizationFilter authorizationFilter;
 
@@ -39,7 +38,6 @@ public class GeneratePayRoll {
                                         @RequestParam("limit") Optional<Integer> limit){
         if (!authorizationFilter.isAdmin(token))return ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,Constants.UNAUTHORIZED,Constants.UN_AUTH));
         return  ResponseEntity.ok(fetchUserService.getAllPayRolls(month,page,limit,batch));
-
     }
 
     @ApiOperation(value = "Search for employees in payroll of data")

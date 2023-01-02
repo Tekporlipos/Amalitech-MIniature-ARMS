@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -17,14 +16,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Profile("test")
-@Configuration
 class RewardAllocationServiceTest {
     @MockBean
     RewardAllocationRepository repository;
