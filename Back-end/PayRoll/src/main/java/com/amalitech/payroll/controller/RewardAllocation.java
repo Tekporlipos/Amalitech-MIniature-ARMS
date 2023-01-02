@@ -37,8 +37,8 @@ public class RewardAllocation {
                     @ApiImplicitParam(dataType = "department",name = "month", value = "Optional query parameter of the department of the employee", paramType = "Query"),
                     @ApiImplicitParam(dataType = "type" ,value = "Optional query parameter of the the reward type", paramType = "Query")}
     )
-    public ResponseEntity<ResponseData> getRewardByType( @PathVariable String userId,
-                                         @RequestHeader("authorization") String token,
+    public ResponseEntity<ResponseData> getRewardByType(@RequestHeader("authorization") String token,
+                                         @PathVariable String userId,
                                          @RequestParam("department") Optional<String> department,
                                          @RequestParam("type") Optional<String> type){
         if (!authorizationFilter.isAuth(token))return ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,Constants.UNAUTHORIZED,"Unauthenticated."));

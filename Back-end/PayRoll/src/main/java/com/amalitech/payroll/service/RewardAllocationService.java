@@ -1,5 +1,4 @@
 package com.amalitech.payroll.service;
-
 import com.amalitech.payroll.contracts.RewardAllocationContract;
 import com.amalitech.payroll.model.RewardAllocation;
 import com.amalitech.payroll.model.RewardAllocationDTO;
@@ -9,7 +8,6 @@ import com.amalitech.payroll.utils.Constants;
 import com.amalitech.payroll.utils.ResponseData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -23,7 +21,6 @@ public class RewardAllocationService implements RewardAllocationContract {
         Iterable<RewardAllocation> all = repository.findAll();
         return new ResponseData(Constants.OK,Constants.SUCCESS, convertArray(all));
     }
-
 
     @Override
     public ResponseData deleteRewardById(Long uuid) {
@@ -40,7 +37,6 @@ public class RewardAllocationService implements RewardAllocationContract {
         Iterable<RewardAllocation> all = repository.findAllByTypeAndUserId(userId, type.trim().toLowerCase(), department.trim().toLowerCase());
         return new ResponseData(Constants.OK,Constants.SUCCESS, convertArray(all));
     }
-
 
     @Override
     public ResponseData addRewardAllocation(RewardAllocationDTO rewardAllocationDTO) {

@@ -84,7 +84,7 @@ public class GeneratePayRoll {
     @GetMapping("/paycode")
     public ResponseEntity<ResponseData> getAllPayCode(@RequestHeader("authorization") String token){
         if (!authorizationFilter.isAuth(token))return ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,Constants.UNAUTHORIZED,"Unauthenticated."));
-        return ResponseEntity.ok(fetchUserService.getPayCode(token));
+        return ResponseEntity.ok(fetchUserService.getPayCode());
     }
 
 

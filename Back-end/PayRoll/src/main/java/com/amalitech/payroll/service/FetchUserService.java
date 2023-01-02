@@ -13,6 +13,7 @@ import com.amalitech.payroll.utils.ResponseData;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class FetchUserService {
     final EmployeeRepository employeeRepository;
     final BatchRepository batchRepository;
     final BankDetailsRepository bankDetailsRepository;
-    final Calendar instance = Calendar.getInstance();
+    Calendar instance = Calendar.getInstance();
     public ResponseData getAllUsers(String auth, Optional<String> month) throws IOException, ParseException {
         String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
         final ArrayList<Map<String, Object>> allEmployee = (ArrayList<Map<String, Object>>) getData(auth,"payroll");
@@ -45,7 +46,7 @@ public class FetchUserService {
             employees.add(employee);
             bankDetails.add(bankDetail);
         }
-        savePayRolls(employees,bankDetails,cMonth);
+        this.savePayRolls(employees,bankDetails,cMonth);
         return new ResponseData(Constants.OK,Constants.SUCCESS,"Pay roll generated successfully");
     }
 
@@ -96,7 +97,7 @@ public class FetchUserService {
         return  reward;
     }
 
-    public ResponseData getPayCode(String token) {
+    public ResponseData getPayCode() {
         final Iterable<String> allPayCode = employeeRepository.findAllPayCode();
         ArrayList<String> arrayList = new ArrayList<>();
         allPayCode.forEach(arrayList::add);

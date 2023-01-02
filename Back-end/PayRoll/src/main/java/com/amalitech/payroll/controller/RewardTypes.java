@@ -1,8 +1,5 @@
 package com.amalitech.payroll.controller;
-
-
 import com.amalitech.payroll.filters.AuthorizationFilter;
-import com.amalitech.payroll.model.Reward;
 import com.amalitech.payroll.model.RewardDTO;
 import com.amalitech.payroll.service.RewardService;
 import com.amalitech.payroll.utils.Constants;

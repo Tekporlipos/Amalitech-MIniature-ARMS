@@ -6,10 +6,6 @@ import java.io.InputStreamReader;
 import java.net.*;
 
 public class Methods {
-
-
-    private Methods() {}
-
     public static String stream(String path, String method, String auth) throws IOException {
         // Sending get request
         URL url = new URL(path);
@@ -31,7 +27,5 @@ public class Methods {
         }
 
     }
-
-
 
 }

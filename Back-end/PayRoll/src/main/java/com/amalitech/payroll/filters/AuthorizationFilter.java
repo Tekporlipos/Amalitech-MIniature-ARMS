@@ -1,7 +1,6 @@
 package com.amalitech.payroll.filters;
 import com.amalitech.payroll.model.Auth;
 import com.amalitech.payroll.repository.AuthRepository;
-import com.amalitech.payroll.service.FetchUserService;
 import com.amalitech.payroll.utils.Constants;
 import com.amalitech.payroll.utils.Methods;
 import com.amalitech.payroll.utils.REQUESTS;
@@ -37,8 +36,9 @@ public class AuthorizationFilter {
                     auth = authRepository.save(authNew);
                 }
             }
-        } catch (Exception ignored) {}
-        System.out.println(auth);
+        } catch (Exception ignored) {
+            // Empty on purpose or missing piece of code
+        }
         return auth != null && auth.getRole().length()>4;
     }
 

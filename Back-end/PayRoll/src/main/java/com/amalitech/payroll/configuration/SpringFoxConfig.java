@@ -29,8 +29,8 @@ public class SpringFoxConfig {
                 """
                         The payroll backend should be able to
                         1. create an allowance type
-                        "2. create a bonus type
-                        "3. create a bonus for an employee for the current month (bonus type and amount) 
+                        2. create a bonus type
+                        3. create a bonus for an employee for the current month (bonus type and amount)
                         
                         Payroll front-end "The payroll front-end consumes the ARMS API, which in turn consumes the Payroll API.
                         
