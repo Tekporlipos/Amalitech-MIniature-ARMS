@@ -46,9 +46,12 @@ There should be a payroll section which displays all the payroll data for the mo
 
 • MySQL (database) 
 
-> PAYROLL BACK-END 
+> PAYROLL BACK-END
+>  
 • Java Spring boot 
+
 • Postgres (database) 
+
 > PAYROLL FRONT-END 
 • Vuejs 
 
