@@ -83,7 +83,7 @@ import { RouterLink, RouterView } from 'vue-router'
          </span>
        </li>
        <li v-if="['developer','admin'].includes(user.role)" class="nav-item">
-         <a class="nav-link" href="?">
+         <a class="nav-link" href="https://documenter.getpostman.com/view/24837966/2s8Z712D1U">
            <i class="mdi mdi-file-document-box menu-icon"></i>
            <span class="menu-title">Documentation</span>
          </a>

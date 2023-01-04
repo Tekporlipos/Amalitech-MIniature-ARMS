@@ -28,17 +28,12 @@ class AuthController extends Controller
 
         $employee =  (new EmployeeController)->create($request, $userId);
 
-        if ($request->get("assistant_id")) {
-            $this->createAssistant($userId, $request->get("assistant_id"));
-        }
-
         $assist = User::where("user_id", $request->get("assistant_id"))->get();
 
         //remember to uncomment this block
 
        $this->dispatch(
-           new MailSender
-           (
+           new MailSender(
                $employee,
                $request->get("email"), $password,
                sizeof($assist)?
@@ -87,7 +82,7 @@ class AuthController extends Controller
             $token = $user->createToken("amaliTech")->plainTextToken;
 
             //remember to uncomment this block
-//            $this->sendAlert($request, $user, "Your ARMS account was just login.");
+            $this->sendAlert($request, $user, "Your ARMS account was just login.");
 
             return new Response([
                 "message"=>"login successful",

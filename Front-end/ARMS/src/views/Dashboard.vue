@@ -301,7 +301,7 @@ function getStatistics() {
 });
 }
 
-const startAt = formatDate(date).reduce((total,value)=>total+value) - 2061;
+const startAt = formatDate(date).reduce((total,value)=>total+value) - 2028;
 fetch('https://type.fit/api/quotes')
   .then((response) => response.json())
   .then((data) => {

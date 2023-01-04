@@ -50,8 +50,6 @@
 <div class="col-md-6 grid-margin stretch-card">
   <div class="card">
     <div class="card-body">
-      <!-- <h4 class="card-title">Other Details</h4>
-      <p class="card-description">Identity data</p> -->
       <div class="forms-sample">
         <div class="form-group">
           <label >Email:<span class="required" v-if="!id">*</span></label>
@@ -90,8 +88,8 @@
         </div>        
         <div class="form-group">
           <label >Contant Assistant</label>
-          <br><small v-if="error.assistant" class="required">{{ error.assistant }}</small>
-          <select v-model="inputData.assistant" @input="error.assistant = null" class="form-control form-control-lg">
+          <br><small v-if="error.assistant_id" class="required">{{ error.assistant_id }}</small>
+          <select v-model="inputData.assistant_id" @input="error.assistant_id = null" class="form-control form-control-lg">
             <option value="">Select ----Assistant</option>
             <option v-for="a of canAssist" :value="a.user_id">{{ a.name }}</option>
           </select>

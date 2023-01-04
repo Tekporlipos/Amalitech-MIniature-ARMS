@@ -84,7 +84,7 @@ export default {
          </span>
        </li>
        <li v-if="['developer','admin'].includes(user.role)" class="nav-item">
-         <a class="nav-link" href="?">
+         <a class="nav-link" href="http://localhost:8080/swagger-ui.html">
            <i class="mdi mdi-file-document-box menu-icon"></i>
            <span class="menu-title">Documentation</span>
          </a>
