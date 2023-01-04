@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Constants\Constants;
@@ -9,8 +8,6 @@ use Illuminate\Http\Response;
 
 class BankDetailController extends Controller
 {
-
-
 
     /**
      * Store a newly created resource in storage.

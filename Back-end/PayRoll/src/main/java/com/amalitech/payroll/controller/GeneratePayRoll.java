@@ -47,7 +47,7 @@ public class GeneratePayRoll {
                     @ApiImplicitParam(dataType = "Long", name = "batch",value = "Optional query parameter to set the batch of the search result", paramType = "Query"),
                     @ApiImplicitParam(dataType = "Long", name = "page", defaultValue = "0", value = "Optional query parameter to set the page of the search result", paramType = "Query"),
                     @ApiImplicitParam(dataType = "Long", name = "limit", defaultValue = "10", value = "Optional query parameter to set the limit of the search result", paramType = "Query"),
-                    @ApiImplicitParam(dataType = "Long", name = "search", required = true, value = "Optional query parameter of the name you are searching for", paramType = "Query")}
+                    @ApiImplicitParam(dataType = "Long", name = "search", required = true, value = "Required query parameter of the name you are searching for", paramType = "Query")}
     )
 
     @GetMapping("/search")
@@ -56,7 +56,7 @@ public class GeneratePayRoll {
                                          @RequestParam("batch") Optional<Long> batch,
                                          @RequestParam("page") Optional<Integer> page,
                                          @RequestParam("limit") Optional<Integer> limit,
-                                         @RequestParam("search") Optional<String> search){
+                                         @RequestParam("search") String search){
         if (!authorizationFilter.isAdmin(token))return ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,Constants.UNAUTHORIZED,Constants.UN_AUTH));
         return ResponseEntity.ok(fetchUserService.searchAllPayRolls(month,search,batch,page,limit));
     }

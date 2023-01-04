@@ -83,7 +83,7 @@ class RewardAllocationTest {
                         .getRewardByType("token",
                                 "userid",
                                 Optional.empty(),
-                                Optional.empty(),
+                                "bonus",
                                 Optional.empty()),
                 ResponseEntity
                         .ok(new ResponseData(Constants.OK,
@@ -98,7 +98,7 @@ class RewardAllocationTest {
                         .getRewardByType("token",
                                 null,
                                 Optional.empty(),
-                                Optional.empty(),
+                                "bonus",
                                 Optional.empty()),
                 ResponseEntity.unprocessableEntity().body(new ResponseData(Constants.BAD,
                         Constants.UNAUTHORIZED,"Unauthenticated.")));

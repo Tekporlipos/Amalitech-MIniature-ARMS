@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Constants\Constants;
 use App\Jobs\LoginAlertJob;
+use App\Jobs\MailSender;
+use App\Jobs\PasswordResetJob;
 use App\Models\Assign;
-use App\Models\BankDetails;
-use App\Models\Employee;
-use App\Models\Onboarding;
 use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
@@ -38,11 +37,14 @@ class AuthController extends Controller
         //remember to uncomment this block
 
        $this->dispatch(
-           new MailSender($employee,
-           $request->get("email"),
-           $password,
-           sizeof($assist)? $assist[0]->name : Constants::DEFAULT_ASSISTANT
-       )
+           new MailSender
+           (
+               $employee,
+               $request->get("email"), $password,
+               sizeof($assist)?
+                   $assist[0]->name
+               : Constants::DEFAULT_ASSISTANT
+           )
        );
 
         return Response([

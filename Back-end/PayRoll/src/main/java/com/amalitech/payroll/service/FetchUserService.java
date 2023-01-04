@@ -101,13 +101,12 @@ public class FetchUserService {
         allPayCode.forEach(arrayList::add);
        return new ResponseData(Constants.OK,Constants.SUCCESS,arrayList);
     }
-    public ResponseData searchAllPayRolls(Optional<String> month, Optional<String> search, Optional<Long> batch, Optional<Integer> page, Optional<Integer> limit) {
+    public ResponseData searchAllPayRolls(Optional<String> month, String search, Optional<Long> batch, Optional<Integer> page, Optional<Integer> limit) {
         String cMonth = month.orElseGet(() -> instance.get(Calendar.YEAR) + "" + instance.get(Calendar.MONTH));
         Long byType = batch.orElseGet(() -> batchRepository.countByType(cMonth));
         Integer cPage = page.orElse(0);
         Integer cLimit = limit.orElse(10);
-        final String cSearch = search.orElse("");
-        final Iterable<Map<String, Object>> all = employeeRepository.searchAllByBatchAndPayRollCodeOrFirstNameOrLastNameOrOtherNameWithLimitAndOffSet(byType - 1, cMonth, "%"+cSearch+"%",cPage,cLimit);
+        final Iterable<Map<String, Object>> all = employeeRepository.searchAllByBatchAndPayRollCodeOrFirstNameOrLastNameOrOtherNameWithLimitAndOffSet(byType - 1, cMonth, "%"+search+"%",cPage,cLimit);
         ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
         all.forEach(arrayList::add);
         return new ResponseData(Constants.OK,Constants.SUCCESS,all);
