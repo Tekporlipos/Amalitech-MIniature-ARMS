@@ -100,7 +100,7 @@
             <option  v-for="paycodes of paycode"  :value="paycodes">{{convertToMonth(paycodes)}} - {{ formatter.format(userData.salary) }}</option>
           </select>
             <div class="input-group-append">
-            <button class="btn btn-sm btn-primary" @click="dialogState = true" type="button"> View Payslip </button>
+            <button class="btn btn-sm btn-primary" @click="[dialogState = true,setOpen()]" type="button"> View Payslip </button>
           </div>
          </div>
         </div>
@@ -170,7 +170,7 @@
 <GDialog v-model="dialogState" :fullscreen="true"  max-width="75%">
      
       <div>
-         <Payslip :user="user" :userData="userData" :bank="bankDetail" :month="seletedMont" @close="dialogState = false" />
+         <Payslip :user="user" :open="open" :userData="userData" :bank="bankDetail" :month="seletedMont" @close="dialogState = false" />
       </div>
 </GDialog>
 
@@ -196,6 +196,7 @@ var update = ref(false);
 let paycode = ref([]);
 var dialogState = ref(false)
 var salary = ref("")
+let open = ref("")
 const user = VueCookieNext.getCookie("user");
 userData.value   = {...user};
 let seletedMont = ref(date.getFullYear()+""+date.getMonth());
@@ -215,6 +216,10 @@ imageUpload("upload",data, user.token).then(value=>{
 }
   
 });
+}
+
+function setOpen() {
+  open.value = new Date();
 }
 
 function updateEmployee(data) {

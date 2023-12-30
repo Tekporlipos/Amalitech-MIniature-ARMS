@@ -5,8 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 @Entity
@@ -29,9 +27,8 @@ public class BankDetails {
     private Double bonus;
     private Double ssf;
 
-    public BankDetails convert(Map<String,Object> data, Double allowance, Double bonus){
-        final Calendar instance = Calendar.getInstance();
-        setPayRollCode(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
+    public BankDetails convert(Map<String,Object> data, Double allowance, Double bonus,String month){
+        setPayRollCode(month);
         setUserId(String.valueOf(data.get("user_id")));
         setRole(String.valueOf(data.get("role")));
         setHireDate(String.valueOf(data.get("hire_date")));

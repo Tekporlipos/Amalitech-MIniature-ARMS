@@ -466,7 +466,7 @@ function setMonth(month) {
 }
 
 function getEmployees() {
-  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}&search=${search.value}`)
+  fetch(`http://localhost:8080/payroll?month=${seletedMont.value}&page=${page}`)
   .then((response) => response.json())
   .then((data) => {
     if(data.data.payroll && data.data.payroll.length>0){
@@ -591,7 +591,8 @@ function generatePayRoll() {
     generating.value = false;
     toaster.show(data.data);
     setTimeout(() => {
-      getEmployees();  
+      getEmployees(); 
+      getPayCode(); 
     }, 1000);
   });
 }

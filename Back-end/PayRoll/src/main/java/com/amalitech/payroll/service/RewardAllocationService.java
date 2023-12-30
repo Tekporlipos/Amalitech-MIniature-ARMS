@@ -26,7 +26,6 @@ public class RewardAllocationService implements RewardAllocationContract {
 
     @Override
     public ResponseData deleteRewardById(UUID uuid) {
-        System.out.println(uuid);
         repository.deleteById(uuid);
         return new ResponseData(Constants.OK,Constants.SUCCESS, Map.of("message"," deleted successful"));
     }

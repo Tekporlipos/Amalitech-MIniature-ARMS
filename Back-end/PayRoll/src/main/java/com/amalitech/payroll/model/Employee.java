@@ -2,7 +2,6 @@ package com.amalitech.payroll.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 @Data
@@ -25,9 +24,8 @@ public class Employee {
     private String createdAt;
 
 
-    public Employee convert(Map<String,Object> data){
-        final Calendar instance = Calendar.getInstance();
-        setPayRollCode(instance.get(Calendar.YEAR)+""+instance.get(Calendar.MONTH));
+    public Employee convert(Map<String,Object> data,String month){
+        setPayRollCode(month);
         setUserId(String.valueOf(data.get("user_id")));
         setFirstName(String.valueOf(data.get("first_name")));
         setLastName(String.valueOf(data.get("last_name")));

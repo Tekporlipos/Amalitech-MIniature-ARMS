@@ -19,21 +19,23 @@ public class FetchUsersController {
 
     @GetMapping("")
     public ResponseData getAllPayroll(@RequestParam("month") Optional<String> month,
+                                      @RequestParam("batch") Optional<Long> batch,
                                       @RequestParam("page") Optional<Integer> page,
                                       @RequestParam("limit") Optional<Integer> limit){
-        return  fetchUserService.getAllPayRolls(month,page,limit);
+        return  fetchUserService.getAllPayRolls(month,page,limit,batch);
     }
 
     @GetMapping("/search")
     public ResponseData searchAllPayroll(@RequestParam("month") Optional<String> month,
+                                         @RequestParam("batch") Optional<Long> batch,
                                          @RequestParam("search") Optional<String> search){
-        return  fetchUserService.searchAllPayRolls(month,search);
+        return  fetchUserService.searchAllPayRolls(month,search,batch);
     }
 
 
     @GetMapping("/generate")
-    public ResponseData getUsers(@RequestHeader("authorization") String token) throws IOException, ParseException {
-        return fetchUserService.getAllUsers(token);
+    public ResponseData getUsers(@RequestHeader("authorization") String token,@RequestParam("month") Optional<String> month) throws IOException, ParseException {
+        return fetchUserService.getAllUsers(token,month);
     }
 
     @GetMapping("/user")

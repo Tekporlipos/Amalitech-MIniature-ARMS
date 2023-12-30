@@ -132,12 +132,12 @@
 
             <tr>
               <td>PAYE (17%)</td>
-              <td>{{ formatter ( payroll.ssf * (1-0.17) ) }}</td>
+              <td>{{ formatter ( (payroll.salary + payroll.allowance + payroll.bonus) * (0.17) ) }}</td>
             </tr>
 
             <tr>
               <td><b>Total Deductions</b></td>
-              <td><b>{{ formatter ( (payroll.ssf * (1-0.17)) + payroll.ssf ) }}</b></td>
+              <td><b>{{ formatter ( ((payroll.salary + payroll.allowance + payroll.bonus) * (0.17)) + (payroll.ssf)) }}</b></td>
             </tr>
           </tbody>
         </table>
@@ -174,7 +174,7 @@
 <script>
     export default {
         name:"Payslip",
-        props:["user","month","bank","userData"],
+        props:["user","month","bank","userData","open"],
         methods:{
             docPrint() {
                     window.print()
@@ -203,7 +203,7 @@
     });
 }
 ,getPayCodeBonus() {
-    fetch(`http://localhost:8080/allocation/${this.user.user_id}?type=bonus&department=${this.user.department}`,{
+    fetch(`http://localhost:8080/allocation/${this.user.user_id}?type=bonus&department=${this.userData.department}`,{
       headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -214,8 +214,9 @@
     .then((data) => {
       this.bonus = data.data;
     });
-},getPayCodeAllowance() {
-    fetch(`http://localhost:8080/allocation/${this.user.user_id}?type=allowance&department=${this.user.department}`,{
+},
+getPayCodeAllowance() {
+    fetch(`http://localhost:8080/allocation/${this.user.user_id}?type=allowance&department=${this.userData.department}`,{
       headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -232,20 +233,27 @@
             return {
              payroll:{},   
              allowance:[],
+             cMonth:"",
              bonus:[],
             }
         },
         updated() {
-          if(!this.payroll.salary){
+          if(this.open !==this.cMonth){
             this.getPayCode();
-          console.log(this.month,this.user);
+            this.getPayCodeAllowance();
+            this.getPayCodeBonus();
+            this.cMonth = this.open;
           }
         },
         mounted() {
-          if(!this.payroll.salary){
+          if(this.cMonth !==this.month){
             this.getPayCode();
-          console.log(this.month,this.user);
+            this.getPayCodeAllowance();
+            this.getPayCodeBonus();
           }
+        },
+        unmounted() {
+          this.cMonth = "";
         },
     }
 </script>
