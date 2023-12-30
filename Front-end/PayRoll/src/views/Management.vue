@@ -24,7 +24,7 @@
            <i class="mdi mdi-earth"></i> Month</a>
          <div class="dropdown-menu navbar-dropdown" aria-labelledby="month">
           <template v-for="paycodes of paycode">
-            <a class="dropdown-item btn btn-sm" @click="setMonth(paycodes)" > {{convertToMonth(paycodes)}} </a>
+            <a class="dropdown-item btn btn-sm" :class="seletedMont==paycodes?'text-primary':''" @click="setMonth(paycodes)" > {{convertToMonth(paycodes)}} </a>
           </template>
          </div>
        </div>
@@ -523,24 +523,33 @@ function getPayCode() {
 function setRewardFunction() {
   const date  = new Date(setReward.value.startMonth);
   const startMonth = date.getFullYear()+""+date.getMonth()
-  
-  setReward.value = {...setReward.value,startMonth}
 
-  fetch('http://localhost:8080/allocation',{
-    method: 'POST',
-    headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer '+user.token
-        },
-    body: JSON.stringify(setReward.value)
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    setReward.value = {};
-    toaster.show(["Error",500].includes(data.status)?"You entered invalid data":"Added "+ data.status);
-    addReward.value = false;
-  });
+
+  const Cdate  = new Date();
+  const CstartMonth = Cdate.getFullYear()+""+date.getMonth()
+
+  if(Number(seletedMont)  >= Number(CstartMonth) ){
+    setReward.value = {...setReward.value,startMonth}
+
+fetch('http://localhost:8080/allocation',{
+  method: 'POST',
+  headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+user.token
+      },
+  body: JSON.stringify(setReward.value)
+})
+.then((response) => response.json())
+.then((data) => {
+  setReward.value = {};
+  toaster.show(["Error",500].includes(data.status)?"You entered invalid data":"Added "+ data.status);
+  addReward.value = false;
+});
+  }else{
+    toaster.show("This operation is currently not allowed. Change month date and try again.");
+  }
+  
 }
 
 function addRewardType() {
@@ -591,6 +600,7 @@ function generatePayRoll() {
     generating.value = false;
     toaster.show(data.data);
     setTimeout(() => {
+      seletedMont.value = date.getFullYear()+""+date.getMonth();
       getEmployees(); 
       getPayCode(); 
     }, 1000);
